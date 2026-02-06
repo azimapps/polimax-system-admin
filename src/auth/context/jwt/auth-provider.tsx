@@ -22,22 +22,25 @@ type Props = {
 };
 
 export function AuthProvider({ children }: Props) {
-  const { state, setState } = useSetState<AuthState>({ user: null, loading: true });
+  const { state, setState } = useSetState<AuthState>({
+    user: {
+      id: 'admin-id',
+      username: 'admin',
+      displayName: 'Admin User',
+      email: 'admin@polimax.com',
+      photoURL: '',
+      role: 'admin',
+      roles: ['admin'],
+      phone: '+998 90 123 45 67',
+      authProvider: 'jwt',
+      lastSeen: new Date().toISOString(),
+      status: 'active',
+    },
+    loading: false,
+  });
 
   const checkUserSession = useCallback(async () => {
-    try {
-      const accessToken = decodeToken(cookies.get('m_at') as string)?._id || '';
-
-      if (accessToken) {
-        const res = await axios.get(endpoints.auth.me(accessToken));
-        setState({ user: { ...res.data.data, accessToken }, loading: false });
-      } else {
-        setState({ user: null, loading: false });
-      }
-    } catch (error) {
-      console.error(error);
-      setState({ user: null, loading: false });
-    }
+    setState({ loading: false });
   }, [setState]);
 
   useEffect(() => {

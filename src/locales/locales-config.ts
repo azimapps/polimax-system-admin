@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 
 export const fallbackLng = 'uz';
-export const languages = ['en', 'ru', 'uz'];
+export const languages = ['ru', 'uz', 'uz-Cyrl'];
 export const defaultNS = 'common';
 
 export type LanguageValue = (typeof languages)[number];
@@ -26,11 +26,6 @@ export const changeLangMessages: Record<
   LanguageValue,
   { success: string; error: string; loading: string }
 > = {
-  en: {
-    success: 'Language has been changed!',
-    error: 'Error changing language!',
-    loading: 'Loading...',
-  },
   ru: {
     success: 'Язык был изменён!',
     error: 'Ошибка при смене языка!',
@@ -40,5 +35,10 @@ export const changeLangMessages: Record<
     success: 'Til muvaffaqiyatli o‘zgartirildi!',
     error: 'Tilni o‘zgartirishda xatolik yuz berdi!',
     loading: 'Yuklanmoqda...',
+  },
+  'uz-Cyrl': {
+    success: 'Тил муваффақиятли ўзгартирилди!',
+    error: 'Тилни ўзгартиришда хатолик юз берди!',
+    loading: 'Юкланмоқда...',
   },
 };

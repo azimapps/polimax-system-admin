@@ -46,7 +46,9 @@ export const useNavData = (): NavSectionProps['data'] => {
     () => [
       /**
        * Overview
+       * Hiding existing sections as requested, but keeping code for reference.
        */
+      /*
       {
         subheader: t('allInformation'),
         items: [
@@ -59,9 +61,11 @@ export const useNavData = (): NavSectionProps['data'] => {
           },
         ],
       },
+      */
       /**
        * Management
        */
+      /*
       {
         subheader: t('game'),
         items: [
@@ -139,6 +143,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           },
         ],
       },
+      */
     ],
     [t]
   );

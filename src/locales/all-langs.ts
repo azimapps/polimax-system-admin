@@ -9,22 +9,8 @@ import { enUS as enUSDataGrid, ruRU as ruRUDataGrid } from '@mui/x-data-grid/loc
 
 export const allLangs = [
   {
-    value: 'en',
-    label: 'English',
-    countryCode: 'GB',
-    adapterLocale: 'en',
-    numberFormat: { code: 'en-US', currency: 'USD' },
-    systemValue: {
-      components: {
-        ...enUSCore.components,
-        ...enUSDate.components,
-        ...enUSDataGrid.components,
-      },
-    },
-  },
-  {
     value: 'ru',
-    label: 'Russian',
+    label: 'Русский',
     countryCode: 'RU',
     adapterLocale: 'ru',
     numberFormat: { code: 'ru-RU', currency: 'RUB' },
@@ -37,12 +23,26 @@ export const allLangs = [
   },
   {
     value: 'uz',
-    label: 'Uzbek',
+    label: 'O’zbekcha',
     countryCode: 'UZ',
     adapterLocale: 'uz',
     numberFormat: { code: 'uz-UZ', currency: 'UZS' },
     systemValue: {
       // Fallback to English components for now, since MUI doesn’t offer uz localization
+      components: {
+        ...enUSCore.components,
+        ...enUSDate.components,
+        ...enUSDataGrid.components,
+      },
+    },
+  },
+  {
+    value: 'uz-Cyrl',
+    label: 'Ўзбекча',
+    countryCode: 'UZ',
+    adapterLocale: 'uz',
+    numberFormat: { code: 'uz-UZ', currency: 'UZS' },
+    systemValue: {
       components: {
         ...enUSCore.components,
         ...enUSDate.components,

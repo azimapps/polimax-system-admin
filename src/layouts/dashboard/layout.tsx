@@ -31,6 +31,7 @@ import { LayoutSection } from '../core/layout-section';
 import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
 import { LanguagePopover } from '../components/language-popover';
+import { FullScreenButton } from 'src/components/settings/drawer/fullscreen-button';
 import { dashboardLayoutVars, dashboardNavColorVars } from './css-vars';
 import { NotificationsDrawer } from '../components/notifications-drawer';
 
@@ -143,7 +144,10 @@ export function DashboardLayout({
       rightArea: (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 0.75 } }}>
           {/** @slot Searchbar */}
-          <Searchbar data={navData} />
+          {/* <Searchbar data={navData} /> */}
+
+          {/** @slot Fullscreen button */}
+          <FullScreenButton />
 
           {/** @slot Language popover */}
           <LanguagePopover data={allLangs} />
@@ -157,7 +161,7 @@ export function DashboardLayout({
           <SettingsButton />
 
           {/** @slot Account drawer */}
-          <AccountDrawer />
+          {/* <AccountDrawer /> */}
         </Box>
       ),
     };
