@@ -2,27 +2,9 @@ import type { NavSectionProps } from 'src/components/nav-section';
 
 import { useMemo } from 'react';
 
-import { paths } from 'src/routes/paths';
-
-import { CONFIG } from 'src/global-config';
 import { useTranslate } from 'src/locales';
 
-import { SvgColor } from 'src/components/svg-color';
-
 // ----------------------------------------------------------------------
-
-const icon = (name: string) => (
-  <SvgColor src={`${CONFIG.assetsDir}/assets/icons/navbar/${name}.svg`} />
-);
-
-const ICONS = {
-  user: icon('ic-user'),
-  analytics: icon('ic-analytics'),
-  wordBattle: icon('ic-wb'),
-  flashCard: icon('ic-flash-card'),
-  picWord: icon('ic-pic'),
-  oddOneOut: icon('ic-odd'),
-};
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +23,7 @@ const ICONS = {
  * - `disabled`: An optional boolean to disable the item.
  */
 export const useNavData = (): NavSectionProps['data'] => {
-  const { t } = useTranslate('navbar');
+  useTranslate('navbar');
   return useMemo(
     () => [
       /**
@@ -145,6 +127,6 @@ export const useNavData = (): NavSectionProps['data'] => {
       },
       */
     ],
-    [t]
+    []
   );
 };

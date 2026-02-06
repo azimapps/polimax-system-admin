@@ -14,6 +14,7 @@ import { _notifications } from 'src/_mock';
 
 import { Logo } from 'src/components/logo';
 import { useSettingsContext } from 'src/components/settings';
+import { FullScreenButton } from 'src/components/settings/drawer/fullscreen-button';
 
 import { useAuthContext } from 'src/auth/hooks';
 
@@ -23,15 +24,12 @@ import { NavVertical } from './nav-vertical';
 import { layoutClasses } from '../core/classes';
 import { NavHorizontal } from './nav-horizontal';
 import { MainSection } from '../core/main-section';
-import { Searchbar } from '../components/searchbar';
 import { useNavData } from '../nav-config-dashboard';
 import { MenuButton } from '../components/menu-button';
-import { HeaderSection } from '../core/header-section';
 import { LayoutSection } from '../core/layout-section';
-import { AccountDrawer } from '../components/account-drawer';
+import { HeaderSection } from '../core/header-section';
 import { SettingsButton } from '../components/settings-button';
 import { LanguagePopover } from '../components/language-popover';
-import { FullScreenButton } from 'src/components/settings/drawer/fullscreen-button';
 import { dashboardLayoutVars, dashboardNavColorVars } from './css-vars';
 import { NotificationsDrawer } from '../components/notifications-drawer';
 

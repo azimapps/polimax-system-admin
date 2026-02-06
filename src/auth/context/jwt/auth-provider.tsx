@@ -1,10 +1,5 @@
-import cookies from 'js-cookie';
 import { useSetState } from 'minimal-shared/hooks';
 import { useMemo, useEffect, useCallback } from 'react';
-
-import { decodeToken } from 'src/utils/decode';
-
-import axios, { endpoints } from 'src/lib/axios';
 
 import { AuthContext } from '../auth-context';
 
