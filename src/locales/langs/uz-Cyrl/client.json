@@ -17,6 +17,7 @@
     },
     "upload_photo": "Расм юклаш",
     "update_photo": "Расмни янгилаш",
+    "allowed_formats_hint": "Рухсат этилган *.jpeg, *.jpg, *.png, *.gif\nАвтоматик 300КБ гача сиқилади",
     "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Телефон рақам формати нотўғри: +998 XX XXX-XX-XX",
     "required": "Мажбурий",

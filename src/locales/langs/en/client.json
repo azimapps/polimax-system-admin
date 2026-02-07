@@ -17,6 +17,7 @@
     },
     "upload_photo": "Upload photo",
     "update_photo": "Update photo",
+    "allowed_formats_hint": "Allowed *.jpeg, *.jpg, *.png, *.gif\nAutomatically compressed to 300KB",
     "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Phone number must be in format: +998 XX XXX-XX-XX",
     "required": "Required",

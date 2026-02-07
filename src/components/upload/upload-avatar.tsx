@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useState, useEffect, useCallback } from 'react';
 import { varAlpha, mergeClasses } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
@@ -9,6 +9,7 @@ import { Image } from '../image';
 import { Iconify } from '../iconify';
 import { uploadClasses } from './classes';
 import { RejectionFiles } from './components/rejection-files';
+import { ImageCropDialog } from './components/image-crop-dialog';
 
 import type { UploadProps } from './types';
 
@@ -22,12 +23,29 @@ export function UploadAvatar({
   helperText,
   placeholder,
   className,
+  onDrop: onDropProp,
   ...other
-}: UploadProps) {
+}: UploadProps & { onDrop?: (acceptedFiles: File[]) => void }) {
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropImage, setCropImage] = useState<string>('');
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        setCropImage(URL.createObjectURL(file));
+        setCropOpen(true);
+      }
+    },
+    []
+  );
+
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     multiple: false,
     disabled,
     accept: { 'image/*': [] },
+    maxSize: 10485760, // 10MB limit for initial selection
+    onDrop,
     ...other,
   });
 
@@ -44,6 +62,22 @@ export function UploadAvatar({
       setPreview(URL.createObjectURL(value));
     }
   }, [value]);
+
+  const handleCropComplete = (croppedFile: File) => {
+    setCropOpen(false);
+    if (onDropProp) {
+      // Call the original onDrop with the processed file
+      // We simulate the DropEvent structure expected by some handlers if necessary, 
+      // but usually just passing the file array is enough for custom handlers.
+      // However, react-dropzone's onDrop signature is (acceptedFiles, fileRejections, event).
+      onDropProp([croppedFile], [], { type: 'drop' } as any);
+    }
+  };
+
+  const handleCropClose = () => {
+    setCropOpen(false);
+    setCropImage('');
+  };
 
   const renderPreview = () =>
     hasFile && (
@@ -141,6 +175,15 @@ export function UploadAvatar({
       {helperText && helperText}
 
       {!!fileRejections.length && <RejectionFiles files={fileRejections} />}
+
+      {cropImage && (
+        <ImageCropDialog
+          open={cropOpen}
+          onClose={handleCropClose}
+          image={cropImage}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </>
   );
 }

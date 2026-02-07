@@ -98,7 +98,7 @@ export function KlientlarForm({ client, onSuccess }: Props) {
                         placeholder={profileUrl ? t('update_photo') : t('upload_photo')}
                         helperText={
                             <Box component="span" sx={{ typography: 'caption', color: 'text.disabled', mt: 2, display: 'block', textAlign: 'center' }}>
-                                {t('upload_photo')}
+                                {t('allowed_formats_hint')}
                             </Box>
                         }
                     />

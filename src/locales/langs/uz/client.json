@@ -17,6 +17,7 @@
     },
     "upload_photo": "Rasm yuklash",
     "update_photo": "Rasmni yangilash",
+    "allowed_formats_hint": "Ruxsat etilgan *.jpeg, *.jpg, *.png, *.gif\nAvtomatik 300KB gacha siqiladi",
     "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Telefon raqam formati noto'g'ri: +998 XX XXX-XX-XX",
     "required": "Majburiy",
