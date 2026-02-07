@@ -1,9 +1,13 @@
 {
-  "allInformation": "Общая информация",
+  "allInformation": "Общая Информация",
   "statistics": "Статистика",
   "list": "Список",
   "game": "Игры",
   "create": "Создать",
   "users": "Пользователи",
-  "settings": "Настройки"
+  "settings": "Настройки",
+  "clients": "Клиенты",
+  "crm": "CRM",
+  "materials": "Материалы",
+  "orders": "Книга Заказов"
 }

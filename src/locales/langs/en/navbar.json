@@ -5,5 +5,9 @@
   "game": "Games",
   "create": "Create",
   "users": "Users",
-  "settings": "Settings"
+  "settings": "Settings",
+  "clients": "Clients",
+  "crm": "CRM",
+  "materials": "Materials",
+  "orders": "Order Book"
 }

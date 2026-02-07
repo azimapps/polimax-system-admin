@@ -1,0 +1,36 @@
+{
+    "list_title": "Clients List",
+    "create_title": "Create New Client",
+    "edit_title": "Edit Client",
+    "detail_title": "Client Details",
+    "new_client": "New Client",
+    "create": "Create",
+    "update": "Update",
+    "cancel": "Cancel",
+    "form": {
+        "fullname": "Full Name",
+        "phone_number": "Phone Number",
+        "company": "Company",
+        "profile_url": "Profile Image URL",
+        "notes": "Notes",
+        "image_urls": "Image URLs"
+    },
+    "table": {
+        "id": "ID",
+        "fullname": "Name",
+        "phone_number": "Phone",
+        "company": "Company",
+        "actions": "Actions",
+        "no_data": "No data found"
+    },
+    "messages": {
+        "success_create": "Client created successfully",
+        "success_update": "Client updated successfully",
+        "success_delete": "Client deleted successfully",
+        "error_create": "Error creating client",
+        "error_update": "Error updating client",
+        "error_delete": "Error deleting client",
+        "error_generic": "An error occurred"
+    },
+    "search_placeholder": "Search..."
+}

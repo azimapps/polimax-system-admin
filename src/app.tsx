@@ -1,6 +1,7 @@
 import 'src/global.css';
 
 import { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -32,28 +33,30 @@ type AppProps = {
 export default function App({ children }: AppProps) {
   useScrollToTop();
   return (
-    <I18nProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <SettingsProvider defaultSettings={defaultSettings}>
-            <LocalizationProvider>
-              <ThemeProvider
-                modeStorageKey={themeConfig.modeStorageKey}
-                defaultMode={themeConfig.enableSystemMode ? 'system' : themeConfig.defaultMode}
-              >
-                <Snackbar />
-                <MotionLazy>
-                  <ProgressBar />
-                  <SettingsDrawer defaultSettings={defaultSettings} />
-                  {children}
-                </MotionLazy>
-              </ThemeProvider>
-            </LocalizationProvider>
-          </SettingsProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </AuthProvider>
-    </I18nProvider>
+    <HelmetProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <SettingsProvider defaultSettings={defaultSettings}>
+              <LocalizationProvider>
+                <ThemeProvider
+                  modeStorageKey={themeConfig.modeStorageKey}
+                  defaultMode={themeConfig.enableSystemMode ? 'system' : themeConfig.defaultMode}
+                >
+                  <Snackbar />
+                  <MotionLazy>
+                    <ProgressBar />
+                    <SettingsDrawer defaultSettings={defaultSettings} />
+                    {children}
+                  </MotionLazy>
+                </ThemeProvider>
+              </LocalizationProvider>
+            </SettingsProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </AuthProvider>
+      </I18nProvider>
+    </HelmetProvider>
   );
 }
 

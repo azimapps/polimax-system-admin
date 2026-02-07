@@ -12,8 +12,6 @@ import { GuestGuard } from 'src/auth/guard/guest-guard';
 
 const CenteredLayout = {
   SignInPage: lazy(() => import('src/pages/auth/sign-in')),
-  SignUpPage: lazy(() => import('src/pages/auth/sign-up')),
-  SignInPhonePage: lazy(() => import('src/pages/auth/sign-in-phone')),
 };
 
 const authCentered = {
@@ -24,9 +22,7 @@ const authCentered = {
     </AuthCenteredLayout>
   ),
   children: [
-    { path: 'sign-in', element: <CenteredLayout.SignInPage /> },
-    { path: 'sign-in-phone', element: <CenteredLayout.SignInPhonePage /> },
-    { path: 'sign-up', element: <CenteredLayout.SignUpPage /> },
+    { path: ':method/sign-in', element: <CenteredLayout.SignInPage /> },
   ],
 };
 

@@ -1,0 +1,36 @@
+{
+    "list_title": "Клиентлар Рўйхати",
+    "create_title": "Янги Клиент Яратиш",
+    "edit_title": "Клиентни Таҳрирлаш",
+    "detail_title": "Клиент Тафсилотlari",
+    "new_client": "Янги Клиент",
+    "create": "Яратиш",
+    "update": "Янгилаш",
+    "cancel": "Бекор қилиш",
+    "form": {
+        "fullname": "Тўлиқ Исм",
+        "phone_number": "Телефон Рақам",
+        "company": "Компания",
+        "profile_url": "Профиль Расми URL",
+        "notes": "Изоҳлар",
+        "image_urls": "Расмлар URL"
+    },
+    "table": {
+        "id": "ID",
+        "fullname": "Исм",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "actions": "Ҳаракатлар",
+        "no_data": "Маълумот топилмади"
+    },
+    "messages": {
+        "success_create": "Клиент муваффақиятли яратилди",
+        "success_update": "Клиент муваффақиятли янгиланди",
+        "success_delete": "Клиент муваффақиятли ўчирилди",
+        "error_create": "Клиент яратишда хатолик",
+        "error_update": "Клиентни янгилашда хатолик",
+        "error_delete": "Клиентни ўчиришда хатолик",
+        "error_generic": "Хатолик юз берди"
+    },
+    "search_placeholder": "Қидириш..."
+}

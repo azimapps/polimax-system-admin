@@ -1,0 +1,36 @@
+{
+    "list_title": "Список Клиентов",
+    "create_title": "Создать Нового Клиента",
+    "edit_title": "Редактировать Клиента",
+    "detail_title": "Подробности Клиента",
+    "new_client": "Новый Клиент",
+    "create": "Создать",
+    "update": "Обновить",
+    "cancel": "Отмена",
+    "form": {
+        "fullname": "Полное Имя",
+        "phone_number": "Номер Телефона",
+        "company": "Компания",
+        "profile_url": "URL Изображения Профиля",
+        "notes": "Примечания",
+        "image_urls": "URL Изображений"
+    },
+    "table": {
+        "id": "ID",
+        "fullname": "Имя",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "actions": "Действия",
+        "no_data": "Данные не найдены"
+    },
+    "messages": {
+        "success_create": "Клиент успешно создан",
+        "success_update": "Клиент успешно обновлен",
+        "success_delete": "Клиент успешно удален",
+        "error_create": "Ошибка при создании клиента",
+        "error_update": "Ошибка при обновлении клиента",
+        "error_delete": "Ошибка при удалении клиента",
+        "error_generic": "Произошла ошибка"
+    },
+    "search_placeholder": "Поиск..."
+}

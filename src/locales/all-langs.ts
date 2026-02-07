@@ -9,6 +9,20 @@ import { enUS as enUSDataGrid, ruRU as ruRUDataGrid } from '@mui/x-data-grid/loc
 
 export const allLangs = [
   {
+    value: 'en',
+    label: 'English',
+    countryCode: 'GB',
+    adapterLocale: 'en',
+    numberFormat: { code: 'en-US', currency: 'USD' },
+    systemValue: {
+      components: {
+        ...enUSCore.components,
+        ...enUSDate.components,
+        ...enUSDataGrid.components,
+      },
+    },
+  },
+  {
     value: 'ru',
     label: 'Русский',
     countryCode: 'RU',

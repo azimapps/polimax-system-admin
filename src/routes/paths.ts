@@ -4,15 +4,21 @@ export const paths = {
   page500: '/error/500',
   components: '/components',
   auth: {
-    signIn: `/auth/sign-in`,
-    signInPhone: `/auth/sign-in-phone`,
-    signUp: `/auth/sign-up`,
+    signIn: (method: string) => `/auth/${method}/sign-in`,
+    signUp: (method: string) => `/auth/${method}/sign-up`,
   },
   dashboard: {
     root: '/',
     user: {
       root: `/user`,
       list: `/user/list`,
+    },
+    klientlar: {
+      root: '/klientlar',
+      list: '/klientlar/list',
+      create: '/klientlar/create',
+      detail: (id: string) => `/klientlar/${id}`,
+      edit: (id: string) => `/klientlar/${id}/edit`,
     },
     games: {
       wordBattle: {

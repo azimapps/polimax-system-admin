@@ -5,5 +5,9 @@
   "game": "O'yinlar",
   "create": "Yaratish",
   "users": "Foydalanuvchilar",
-  "settings": "Sozlamalar"
+  "settings": "Sozlamalar",
+  "clients": "Klientlar",
+  "crm": "CRM",
+  "materials": "Davomat Materiallar",
+  "orders": "Buyurtma Kitobi"
 }

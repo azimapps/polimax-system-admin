@@ -15,10 +15,6 @@ type AuthGuardProps = {
   children: React.ReactNode;
 };
 
-const signInPaths = {
-  jwt: paths.auth.signIn,
-};
-
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,7 +36,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
     if (!authenticated) {
       const { method } = CONFIG.auth;
 
-      const signInPath = signInPaths[method];
+      const signInPath = paths.auth.signIn(method);
       const redirectPath = createRedirectPath(signInPath);
       router.replace(redirectPath);
 

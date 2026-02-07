@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { useColorScheme } from '@mui/material/styles';
 
+import { useTranslate } from 'src/locales';
 import { themeConfig } from 'src/theme/theme-config';
 import { primaryColorPresets } from 'src/theme/with-settings';
 
@@ -33,6 +34,7 @@ import type { SettingsState, SettingsDrawerProps } from '../types';
 
 export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
   const settings = useSettingsContext();
+  const { t } = useTranslate('settings');
 
   const { mode, setMode, systemMode } = useColorScheme();
 
@@ -70,7 +72,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
       }}
     >
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Settings
+        {t('title')}
       </Typography>
 
       <FullScreenButton />
@@ -93,7 +95,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
 
   const renderMode = () => (
     <BaseOption
-      label="Dark mode"
+      label={t('mode')}
       selected={settings.state.colorScheme === 'dark'}
       icon={<SvgIcon>{settingIcons.moon}</SvgIcon>}
       onChangeOption={() => {
@@ -105,7 +107,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
 
   const renderContrast = () => (
     <BaseOption
-      label="Contrast"
+      label={t('contrast')}
       selected={settings.state.contrast === 'hight'}
       icon={<SvgIcon>{settingIcons.contrast}</SvgIcon>}
       onChangeOption={() =>
@@ -118,7 +120,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
 
   const renderRtl = () => (
     <BaseOption
-      label="Right to left"
+      label={t('direction')}
       selected={settings.state.direction === 'rtl'}
       icon={<SvgIcon>{settingIcons.alignRight}</SvgIcon>}
       onChangeOption={() =>
@@ -130,7 +132,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
   const renderCompact = () => (
     <BaseOption
       tooltip="Dashboard only and available at large resolutions > 1600px (xl)"
-      label="Compact"
+      label={t('compact')}
       selected={!!settings.state.compactLayout}
       icon={<SvgIcon>{settingIcons.autofitWidth}</SvgIcon>}
       onChangeOption={() => settings.setState({ compactLayout: !settings.state.compactLayout })}
@@ -139,7 +141,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
 
   const renderPresets = () => (
     <LargeBlock
-      title="Presets"
+      title={t('presets')}
       canReset={settings.state.primaryColor !== defaultSettings.primaryColor}
       onReset={() => settings.setState({ primaryColor: defaultSettings.primaryColor })}
     >
@@ -158,10 +160,10 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
   );
 
   const renderNav = () => (
-    <LargeBlock title="Nav" tooltip="Dashboard only" sx={{ gap: 2.5 }}>
+    <LargeBlock title={t('nav')} tooltip="Dashboard only" sx={{ gap: 2.5 }}>
       {isNavLayoutVisible && (
         <SmallBlock
-          label="Layout"
+          label={t('layout')}
           canReset={settings.state.navLayout !== defaultSettings.navLayout}
           onReset={() => settings.setState({ navLayout: defaultSettings.navLayout })}
         >
@@ -191,7 +193,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
       )}
       {isNavColorVisible && (
         <SmallBlock
-          label="Color"
+          label={t('color')}
           canReset={settings.state.navColor !== defaultSettings.navColor}
           onReset={() => settings.setState({ navColor: defaultSettings.navColor })}
         >
@@ -200,12 +202,12 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
             onChangeOption={(newOption) => settings.setState({ navColor: newOption })}
             options={[
               {
-                label: 'Integrate',
+                label: t('integrate'),
                 value: 'integrate',
                 icon: <SvgIcon>{settingIcons.sidebarOutline}</SvgIcon>,
               },
               {
-                label: 'Apparent',
+                label: t('apparent'),
                 value: 'apparent',
                 icon: <SvgIcon>{settingIcons.sidebarFill}</SvgIcon>,
               },
@@ -217,10 +219,10 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
   );
 
   const renderFont = () => (
-    <LargeBlock title="Font" sx={{ gap: 2.5 }}>
+    <LargeBlock title={t('font')} sx={{ gap: 2.5 }}>
       {isFontFamilyVisible && (
         <SmallBlock
-          label="Family"
+          label={t('family')}
           canReset={settings.state.fontFamily !== defaultSettings.fontFamily}
           onReset={() => settings.setState({ fontFamily: defaultSettings.fontFamily })}
         >
@@ -239,7 +241,7 @@ export function SettingsDrawer({ sx, defaultSettings }: SettingsDrawerProps) {
       )}
       {isFontSizeVisible && (
         <SmallBlock
-          label="Size"
+          label={t('size')}
           canReset={settings.state.fontSize !== defaultSettings.fontSize}
           onReset={() => settings.setState({ fontSize: defaultSettings.fontSize })}
           sx={{ gap: 5 }}

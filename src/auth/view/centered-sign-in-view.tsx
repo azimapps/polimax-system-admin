@@ -5,13 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
+import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
@@ -25,8 +23,8 @@ import { FormHead } from '../components/form-head';
 export type SignInSchemaType = zod.infer<typeof SignInSchema>;
 
 export const SignInSchema = zod.object({
-  email: zod.string().email().min(1, { message: 'Email is required!' }),
-  password: zod.string().min(4, { message: 'Password must be at least 8 characters!' }),
+  login: zod.string().min(1, { message: 'Login is required!' }),
+  password: zod.string().min(1, { message: 'Password is required!' }),
 });
 
 // ----------------------------------------------------------------------
@@ -36,9 +34,11 @@ export function CenteredSignInView() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { isPending, mutateAsync } = useSignIn();
   const defaultValues: SignInSchemaType = {
-    email: '',
+    login: '',
     password: '',
   };
+
+  const { t } = useTranslate('auth');
 
   const methods = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
@@ -48,23 +48,34 @@ export function CenteredSignInView() {
   const { handleSubmit } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!executeRecaptcha) return null;
-    const token = await executeRecaptcha('form_submit');
-    return await mutateAsync({
-      ...data,
-      captchaToken: token,
-    });
+    try {
+      let token = '';
+      if (executeRecaptcha) {
+        token = await executeRecaptcha('form_submit');
+      }
+      return await mutateAsync({
+        ...data,
+        captchaToken: token,
+      });
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   });
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-      <Field.Text name="email" label="Email" slotProps={{ inputLabel: { shrink: true } }} />
+      <Field.Text
+        name="login"
+        label={t('login_label')}
+        slotProps={{ inputLabel: { shrink: true } }}
+      />
 
       <Box sx={{ gap: 1.5, display: 'flex', flexDirection: 'column' }}>
         <Field.Text
           name="password"
-          label="Password"
-          placeholder="8+ characters"
+          label={t('password_label')}
+          placeholder={t('password_placeholder')}
           type={showPassword.value ? 'text' : 'password'}
           slotProps={{
             inputLabel: { shrink: true },
@@ -90,9 +101,9 @@ export function CenteredSignInView() {
         type="submit"
         variant="contained"
         loading={isPending}
-        loadingIndicator="Sign in..."
+        loadingIndicator={t('loading_indicator')}
       >
-        Sign in
+        {t('sign_in_button')}
       </Button>
     </Box>
   );
@@ -101,17 +112,7 @@ export function CenteredSignInView() {
     <>
       <AnimateLogoRotate sx={{ mb: 3, mx: 'auto' }} />
 
-      <FormHead
-        title="Sign in to your account"
-        description={
-          <>
-            {`Sign in with `}
-            <Link component={RouterLink} href={paths.auth.signInPhone} variant="subtitle2">
-              Phone
-            </Link>
-          </>
-        }
-      />
+      <FormHead title={t('sign_in_title')} description={null} />
 
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}

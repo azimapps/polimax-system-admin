@@ -1,0 +1,36 @@
+{
+    "list_title": "Klientlar Ro'yxati",
+    "create_title": "Yangi Klient Yaratish",
+    "edit_title": "Klientni Tahrirlash",
+    "detail_title": "Klient Tafsilotlari",
+    "new_client": "Yangi Klient",
+    "create": "Yaratish",
+    "update": "Yangilash",
+    "cancel": "Bekor qilish",
+    "form": {
+        "fullname": "To'liq Ism",
+        "phone_number": "Telefon Raqam",
+        "company": "Kompaniya",
+        "profile_url": "Profil Rasmi URL",
+        "notes": "Izohlar",
+        "image_urls": "Rasmlar URL"
+    },
+    "table": {
+        "id": "ID",
+        "fullname": "Ism",
+        "phone_number": "Telefon",
+        "company": "Kompaniya",
+        "actions": "Harakatlar",
+        "no_data": "Ma'lumot topilmadi"
+    },
+    "messages": {
+        "success_create": "Klient muvaffaqiyatli yaratildi",
+        "success_update": "Klient muvaffaqiyatli yangilandi",
+        "success_delete": "Klient muvaffaqiyatli o'chirildi",
+        "error_create": "Klient yaratishda xatolik",
+        "error_update": "Klientni yangilashda xatolik",
+        "error_delete": "Klientni o'chirishda xatolik",
+        "error_generic": "Xatolik yuz berdi"
+    },
+    "search_placeholder": "Qidirish..."
+}

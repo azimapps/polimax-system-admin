@@ -1,0 +1,17 @@
+{
+    "title": "Settings",
+    "mode": "Dark mode",
+    "contrast": "Contrast",
+    "direction": "Right to left",
+    "compact": "Compact",
+    "presets": "Presets",
+    "nav": "Nav",
+    "layout": "Layout",
+    "color": "Color",
+    "integrate": "Integrate",
+    "apparent": "Apparent",
+    "font": "Font",
+    "family": "Family",
+    "size": "Size",
+    "logout": "Logout"
+}

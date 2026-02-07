@@ -1,7 +1,10 @@
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 
-import axiosInstance from 'src/lib/axios';
+import { useRouter, useSearchParams } from 'src/routes/hooks';
+
+import { CONFIG } from 'src/global-config';
+import { useTranslate } from 'src/locales';
 
 import { useAuthContext } from 'src/auth/hooks';
 
@@ -10,32 +13,38 @@ import { setSession } from './utils';
 // ----------------------------------------------------------------------
 
 export type SignInParams = {
-  email?: string;
+  login: string;
   password: string;
   captchaToken: string;
-  phone?: string;
 };
 
-interface CustomError extends Error {
-  error: {
-    code: string;
-  };
-}
+
 
 /** **************************************
  * Sign in
  *************************************** */
 
 export const useSignIn = () => {
-  const { checkUserSession } = useAuthContext();
+  const router = useRouter();
+  const { login } = useAuthContext();
+  const searchParams = useSearchParams();
+  const { t } = useTranslate();
+
+  const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (value: SignInParams) =>
-      axiosInstance.post('users/login', value).then(() => checkUserSession?.()),
+    mutationFn: async (value: SignInParams) => {
+      await login(value);
+    },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
+      router.replace(returnTo);
     },
-    onError: (err: CustomError) => {
-      toast.error(err.error.code, { position: 'top-center' });
+    onError: (err: any) => {
+      const errorMessage = err?.response?.data?.detail
+        ? (err.response.data.detail.includes('Invalid') ? t('auth.invalid_credentials') : t('auth.login_failed'))
+        : t('auth.login_failed');
+      toast.error(errorMessage, { position: 'top-center' });
     },
   });
 

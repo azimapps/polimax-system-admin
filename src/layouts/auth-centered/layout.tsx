@@ -5,6 +5,7 @@ import { merge } from 'es-toolkit';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 
+import { allLangs } from 'src/locales';
 import { CONFIG } from 'src/global-config';
 
 import { Logo } from 'src/components/logo';
@@ -14,6 +15,7 @@ import { MainSection } from '../core/main-section';
 import { LayoutSection } from '../core/layout-section';
 import { HeaderSection } from '../core/header-section';
 import { SettingsButton } from '../components/settings-button';
+import { LanguagePopover } from '../components/language-popover';
 
 import type { AuthCenteredContentProps } from './content';
 import type { MainSectionProps } from '../core/main-section';
@@ -58,7 +60,9 @@ export function AuthCenteredLayout({
       rightArea: (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
           {/** @slot Settings button */}
+          {/** @slot Settings button */}
           <SettingsButton />
+          <LanguagePopover data={allLangs} />
         </Box>
       ),
     };

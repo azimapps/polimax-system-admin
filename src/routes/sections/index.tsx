@@ -31,6 +31,10 @@ const CreateTopic = lazy(() => import('src/pages/dashboard/flash-card/create'));
 const EditTopic = lazy(() => import('src/pages/dashboard/flash-card/edit'));
 const FlashCardTopicView = lazy(() => import('src/pages/dashboard/flash-card/view'));
 const FlashCardCategoryList = lazy(() => import('src/pages/dashboard/flash-card/categoryList'));
+// Klientlar
+const KlientlarList = lazy(() => import('src/pages/klientlar/list'));
+const KlientlarCreate = lazy(() => import('src/pages/klientlar/create'));
+const KlientlarDetail = lazy(() => import('src/pages/klientlar/detail'));
 // Games - 4Pics 1Word
 const QuestionList = lazy(() => import('src/pages/dashboard/4pics-1word/list'));
 const CreateQuestions = lazy(() => import('src/pages/dashboard/4pics-1word/create'));
@@ -68,6 +72,15 @@ export const routesSection: RouteObject[] = [
       {
         path: 'user',
         children: [{ path: 'list', element: <UserListPage /> }],
+      },
+      {
+        path: 'klientlar',
+        children: [
+          { path: 'list', element: <KlientlarList /> },
+          { path: 'create', element: <KlientlarCreate /> },
+          { path: ':id', element: <KlientlarDetail /> },
+          { path: ':id/edit', element: <KlientlarDetail /> },
+        ],
       },
       {
         path: 'word-battle',

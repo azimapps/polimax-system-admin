@@ -140,7 +140,7 @@ export function CenteredSignUpView() {
         description={
           <>
             {`Already have an account? `}
-            <Link component={RouterLink} href={paths.auth.signIn} variant="subtitle2">
+            <Link component={RouterLink} href={paths.auth.signIn('jwt')} variant="subtitle2">
               Get started
             </Link>
           </>
@@ -156,9 +156,9 @@ export function CenteredSignUpView() {
       <FormDivider />
 
       <FormSocials
-        signInWithGoogle={() => {}}
-        singInWithGithub={() => {}}
-        signInWithTwitter={() => {}}
+        signInWithGoogle={() => { }}
+        singInWithGithub={() => { }}
+        signInWithTwitter={() => { }}
       />
     </>
   );

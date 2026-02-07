@@ -8,6 +8,18 @@ import { CONFIG } from 'src/global-config';
 
 const axiosInstance = axios.create({ baseURL: CONFIG.serverUrl, withCredentials: true });
 
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong!')
@@ -37,8 +49,9 @@ export const endpoints = {
   kanban: '/api/kanban',
   calendar: '/api/calendar',
   auth: {
-    me: (id: string) => `users/${id}`,
-    signIn: 'users/login',
+    me: '/users/me',
+    signIn: '/auth/login',
+    signOut: '/auth/logout',
     signUp: '/api/auth/sign-up',
   },
   mail: {

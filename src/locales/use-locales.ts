@@ -11,7 +11,7 @@ import type { LanguageValue } from './locales-config';
 
 // ----------------------------------------------------------------------
 
-export function useTranslate(ns?: string) {
+export function useTranslate(ns?: string | string[]) {
   const { t, i18n } = useTranslation(ns);
 
   const fallback = allLangs.filter((lang) => lang.value === fallbackLng)[0];
