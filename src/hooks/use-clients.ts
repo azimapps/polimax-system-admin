@@ -87,7 +87,7 @@ export function useGetClientHistory(id: number) {
     return useQuery({
         queryKey: QUERY_KEYS.history(id),
         queryFn: () => clientApi.getClientHistory(id),
-        enabled: !!id,
+        enabled: id > 0,
     });
 }
 

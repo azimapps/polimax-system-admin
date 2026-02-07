@@ -11,12 +11,20 @@
         "fullname": "Тўлиқ Исм",
         "phone_number": "Телефон Рақам",
         "company": "Компания",
-        "profile_url": "Профиль Расми URL",
+        "profile_url": "Профиль Расми",
         "notes": "Изоҳлар",
         "image_urls": "Расмлар URL"
     },
+    "upload_photo": "Расм юклаш",
+    "update_photo": "Расмни янгилаш",
+    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_error": "Телефон рақам формати нотўғри: +998 XX XXX-XX-XX",
+    "required": "Мажбурий",
+    "fullname_required": "Тўлиқ исм киритилиши шарт",
+    "phone_required": "Телефон рақам киритилиши шарт",
     "table": {
         "id": "ID",
+        "profile_image": "Расм",
         "fullname": "Исм",
         "phone_number": "Телефон",
         "company": "Компания",
@@ -32,5 +40,18 @@
         "error_delete": "Клиентни ўчиришда хатолик",
         "error_generic": "Хатолик юз берди"
     },
-    "search_placeholder": "Қидириш..."
+    "search_placeholder": "Қидириш...",
+    "delete_confirm_title": "Клиентни ўчириш",
+    "delete_confirm_message": "Ушбу клиентни ўчиришни хоҳлайсизми? Бу амални бекор қилиб бўлмайди.",
+    "delete_confirm_button": "Ўчириш",
+    "history_title": "Клиент тарихи",
+    "history_button": "Тарих",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "{{version}} версиягa қайтариш",
+    "revert_confirm_message": "Ушбу версиягa қайтаришни хоҳлайсизми? Бу эски маълумотлар билан янги версия яратади.",
+    "revert_success": "{{version}} версиягa муваффақиятли қайтарилди",
+    "revert_error": "Версиягa қайтаришда хатолик"
 }

@@ -3,8 +3,12 @@ import type { ClientListItem } from 'src/types/client';
 
 import { useMemo } from 'react';
 
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
+
+import { fPhoneNumber } from 'src/utils/format-phone';
 
 import { useTranslate } from 'src/locales';
 
@@ -15,15 +19,32 @@ import { Iconify } from 'src/components/iconify';
 type Props = {
     clients: ClientListItem[];
     loading: boolean;
-    onView: (id: number) => void;
+    onHistory: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
 };
 
-export function KlientlarTable({ clients, loading, onView, onEdit, onDelete }: Props) {
+export function KlientlarTable({ clients, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('client');
     const columns: GridColDef<ClientListItem>[] = useMemo(
         () => [
+            {
+                field: 'profile_url',
+                headerName: t('table.profile_image'),
+                width: 80,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box alignItems="center" display="flex" justifyContent="center">
+                        <Avatar
+                            alt={params.row.fullname}
+                            src={params.row.profile_url || undefined}
+                            sx={{ height: 40, width: 40 }}
+                        >
+                            {params.row.fullname?.charAt(0)?.toUpperCase()}
+                        </Avatar>
+                    </Box>
+                ),
+            },
             {
                 field: 'fullname',
                 headerName: t('table.fullname'),
@@ -36,63 +57,71 @@ export function KlientlarTable({ clients, loading, onView, onEdit, onDelete }: P
                 headerName: t('table.phone_number'),
                 width: 150,
                 sortable: false,
+                renderCell: (params) => fPhoneNumber(params.row.phone_number),
             },
             {
                 field: 'company',
                 headerName: t('table.company'),
                 flex: 1,
                 minWidth: 200,
-                valueGetter: (params) => params || '-',
                 sortable: false,
+                valueGetter: (params) => params || '-',
             },
             {
                 field: 'actions',
                 headerName: t('table.actions'),
                 width: 150,
                 sortable: false,
+                align: 'right',
+                headerAlign: 'right',
                 renderCell: (params) => (
-                    <>
+                    <Box display="flex" justifyContent="flex-end" width="100%">
                         <IconButton
-                            size="small"
-                            color="default"
-                            onClick={() => onView(params.row.id)}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onHistory(params.row.id);
+                            }}
                         >
-                            <Iconify icon="solar:eye-bold" />
+                            <Iconify icon="solar:clock-circle-bold" />
                         </IconButton>
                         <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => onEdit(params.row.id)}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onEdit(params.row.id);
+                            }}
                         >
                             <Iconify icon="solar:pen-bold" />
                         </IconButton>
                         <IconButton
-                            size="small"
                             color="error"
-                            onClick={() => onDelete(params.row.id)}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                onDelete(params.row.id);
+                            }}
                         >
                             <Iconify icon="solar:trash-bin-trash-bold" />
                         </IconButton>
-                    </>
+                    </Box>
                 ),
             },
         ],
-        [t, onView, onEdit, onDelete]
+        [onEdit, onDelete, onHistory, t]
     );
 
     return (
         <DataGrid
-            rows={clients}
             columns={columns}
-            loading={loading}
-            pageSizeOptions={[10, 25, 50]}
-            initialState={{
-                pagination: {
-                    paginationModel: { pageSize: 25 },
-                },
-            }}
+            disableColumnMenu
             disableRowSelectionOnClick
-            sx={{ border: 0 }}
+            hideFooterPagination={clients.length < 10}
+            loading={loading}
+            rows={clients}
+            sx={{
+                '& .MuiDataGrid-cell:focus': {
+                    outline: 'none',
+                },
+                height: clients.length > 0 ? 'auto' : 400,
+            }}
         />
     );
 }

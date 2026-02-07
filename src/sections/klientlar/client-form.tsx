@@ -1,6 +1,8 @@
 import type { Client, CreateClientRequest, UpdateClientRequest } from 'src/types/client';
 
 import { useForm } from 'react-hook-form';
+import { useState, useCallback } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -10,9 +12,12 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useCreateClient, useUpdateClient } from 'src/hooks/use-clients';
 
 import { useTranslate } from 'src/locales';
+import { uploadApi } from 'src/api/upload-api';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+
+import { ClientFormSchema } from './client-schema';
 
 // ----------------------------------------------------------------------
 
@@ -29,8 +34,10 @@ export function KlientlarForm({ client, onSuccess }: Props) {
     const { mutateAsync: updateClient, isPending: isUpdating } = useUpdateClient(client?.id || 0);
 
     const isPending = isCreating || isUpdating;
+    const [isUploading, setIsUploading] = useState(false);
 
     const methods = useForm<CreateClientRequest>({
+        resolver: zodResolver(ClientFormSchema),
         defaultValues: {
             fullname: client?.fullname || '',
             phone_number: client?.phone_number || '',
@@ -41,7 +48,27 @@ export function KlientlarForm({ client, onSuccess }: Props) {
         },
     });
 
-    const { handleSubmit } = methods;
+    const { handleSubmit, setValue, watch } = methods;
+
+    const profileUrl = watch('profile_url');
+
+    const handleFileUpload = useCallback(async (acceptedFiles: File[]) => {
+        if (acceptedFiles.length === 0) return;
+
+        const file = acceptedFiles[0];
+        setIsUploading(true);
+
+        try {
+            const { url } = await uploadApi.uploadFile(file);
+            setValue('profile_url', url, { shouldValidate: true });
+            toast.success('Image uploaded successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to upload image');
+        } finally {
+            setIsUploading(false);
+        }
+    }, [setValue]);
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -62,6 +89,21 @@ export function KlientlarForm({ client, onSuccess }: Props) {
     return (
         <Form methods={methods} onSubmit={onSubmit}>
             <Stack spacing={3}>
+                <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
+                    <Field.UploadAvatar
+                        name="profile_image"
+                        value={profileUrl || undefined}
+                        onDrop={handleFileUpload}
+                        disabled={isUploading}
+                        placeholder={profileUrl ? t('update_photo') : t('upload_photo')}
+                        helperText={
+                            <Box component="span" sx={{ typography: 'caption', color: 'text.disabled', mt: 2, display: 'block', textAlign: 'center' }}>
+                                {t('upload_photo')}
+                            </Box>
+                        }
+                    />
+                </Box>
+
                 <Box
                     rowGap={3}
                     columnGap={2}
@@ -70,11 +112,17 @@ export function KlientlarForm({ client, onSuccess }: Props) {
                         xs: 'repeat(1, 1fr)',
                         sm: 'repeat(2, 1fr)',
                     }}
+                    sx={{ mt: 2 }}
                 >
                     <Field.Text name="fullname" label={t('form.fullname')} required />
-                    <Field.Text name="phone_number" label={t('form.phone_number')} required />
+                    <Field.Phone
+                        name="phone_number"
+                        label={t('form.phone_number')}
+                        country="UZ"
+                        placeholder={t('phone_placeholder')}
+                        required
+                    />
                     <Field.Text name="company" label={t('form.company')} />
-                    <Field.Text name="profile_url" label={t('form.profile_url')} />
                     <Field.Text
                         name="notes"
                         label={t('form.notes')}
@@ -88,7 +136,7 @@ export function KlientlarForm({ client, onSuccess }: Props) {
                     <Button variant="outlined" color="inherit" onClick={() => onSuccess?.()}>
                         {t('cancel')}
                     </Button>
-                    <LoadingButton type="submit" variant="contained" loading={isPending}>
+                    <LoadingButton type="submit" variant="contained" loading={isPending || isUploading}>
                         {isEdit ? t('update') : t('create')}
                     </LoadingButton>
                 </Stack>

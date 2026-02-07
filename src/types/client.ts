@@ -19,6 +19,7 @@ export interface ClientListItem {
     fullname: string;
     phone_number: string;
     company: string | null;
+    profile_url: string | null;
 }
 
 export interface CreateClientRequest {

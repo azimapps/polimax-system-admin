@@ -11,12 +11,19 @@
         "fullname": "Полное Имя",
         "phone_number": "Номер Телефона",
         "company": "Компания",
-        "profile_url": "URL Изображения Профиля",
+        "profile_url": "Изображение Профиля",
         "notes": "Примечания",
         "image_urls": "URL Изображений"
     },
+    "update_photo": "Обновить фото",
+    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_error": "Номер телефона должен быть в формате: +998 XX XXX-XX-XX",
+    "required": "Обязательно",
+    "fullname_required": "Полное имя обязательно для заполнения",
+    "phone_required": "Номер телефона обязателен для заполнения",
     "table": {
         "id": "ID",
+        "profile_image": "Фото",
         "fullname": "Имя",
         "phone_number": "Телефон",
         "company": "Компания",
@@ -32,5 +39,18 @@
         "error_delete": "Ошибка при удалении клиента",
         "error_generic": "Произошла ошибка"
     },
-    "search_placeholder": "Поиск..."
+    "search_placeholder": "Поиск...",
+    "delete_confirm_title": "Удалить клиента",
+    "delete_confirm_message": "Вы уверены, что хотите удалить этого клиента? Это действие нельзя отменить.",
+    "delete_confirm_button": "Удалить",
+    "history_title": "История клиента",
+    "history_button": "История",
+    "version": "Версия",
+    "current_version": "Текущая",
+    "deleted": "Удалено",
+    "revert_button": "Восстановить",
+    "revert_confirm_title": "Восстановить версию {{version}}",
+    "revert_confirm_message": "Вы уверены, что хотите восстановить эту версию? Это создаст новую версию со старыми данными.",
+    "revert_success": "Успешно восстановлена версия {{version}}",
+    "revert_error": "Ошибка при восстановлении версии"
 }

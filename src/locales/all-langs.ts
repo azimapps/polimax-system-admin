@@ -5,6 +5,10 @@ import { enUS as enUSDate } from '@mui/x-date-pickers/locales';
 // data grid (MUI)
 import { enUS as enUSDataGrid, ruRU as ruRUDataGrid } from '@mui/x-data-grid/locales';
 
+// custom data grid locales
+import { uzUZ as uzUZDataGrid } from './data-grid/uzUZ';
+import { uzCyrlUZ as uzCyrlUZDataGrid } from './data-grid/uzCyrlUZ';
+
 // ----------------------------------------------------------------------
 
 export const allLangs = [
@@ -46,7 +50,7 @@ export const allLangs = [
       components: {
         ...enUSCore.components,
         ...enUSDate.components,
-        ...enUSDataGrid.components,
+        ...uzUZDataGrid.components,
       },
     },
   },
@@ -60,7 +64,7 @@ export const allLangs = [
       components: {
         ...enUSCore.components,
         ...enUSDate.components,
-        ...enUSDataGrid.components,
+        ...uzCyrlUZDataGrid.components,
       },
     },
   },

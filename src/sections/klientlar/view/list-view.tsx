@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import { useState, useCallback } from 'react';
 import { useBoolean } from 'minimal-shared/hooks';
 
@@ -15,16 +14,17 @@ import { useGetClients, useDeleteClient } from 'src/hooks/use-clients';
 import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { ClientDialog } from '../client-dialog';
 import { KlientlarTable } from '../client-table';
+import { ClientHistoryDialog } from '../client-history-dialog';
 
 // ----------------------------------------------------------------------
 
 export function KlientlarListView() {
     const { t } = useTranslate('client');
-    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
@@ -32,7 +32,11 @@ export function KlientlarListView() {
     const { mutateAsync: deleteClient } = useDeleteClient();
 
     const dialog = useBoolean();
+    const confirmDialog = useBoolean();
+    const historyDialog = useBoolean();
     const [selectedId, setSelectedId] = useState<number | undefined>();
+    const [deleteId, setDeleteId] = useState<number | undefined>();
+    const [historyClientId, setHistoryClientId] = useState<number>(0);
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
@@ -49,11 +53,12 @@ export function KlientlarListView() {
         dialog.onTrue();
     }, [dialog]);
 
-    const handleView = useCallback(
+    const handleHistory = useCallback(
         (id: number) => {
-            navigate(paths.dashboard.klientlar.detail(String(id)));
+            setHistoryClientId(id);
+            historyDialog.onTrue();
         },
-        [navigate]
+        [historyDialog]
     );
 
     const handleEdit = useCallback(
@@ -64,11 +69,23 @@ export function KlientlarListView() {
         [dialog]
     );
 
-    const handleDelete = useCallback(
-        async (id: number) => {
-            await deleteClient(id);
+    const handleDeleteClick = useCallback(
+        (id: number) => {
+            setDeleteId(id);
+            confirmDialog.onTrue();
         },
-        [deleteClient]
+        [confirmDialog]
+    );
+
+    const handleConfirmDelete = useCallback(
+        async () => {
+            if (deleteId) {
+                await deleteClient(deleteId);
+                confirmDialog.onFalse();
+                setDeleteId(undefined);
+            }
+        },
+        [deleteId, deleteClient, confirmDialog]
     );
 
     return (
@@ -111,9 +128,9 @@ export function KlientlarListView() {
                 <KlientlarTable
                     clients={clients}
                     loading={isLoading}
-                    onView={handleView}
+                    onHistory={handleHistory}
                     onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onDelete={handleDeleteClick}
                 />
             </Card>
 
@@ -121,6 +138,28 @@ export function KlientlarListView() {
                 open={dialog.value}
                 onClose={dialog.onFalse}
                 id={selectedId}
+            />
+
+            <ConfirmDialog
+                open={confirmDialog.value}
+                onClose={confirmDialog.onFalse}
+                title={t('delete_confirm_title')}
+                content={t('delete_confirm_message')}
+                action={
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleConfirmDelete}
+                    >
+                        {t('delete_confirm_button')}
+                    </Button>
+                }
+            />
+
+            <ClientHistoryDialog
+                open={historyDialog.value}
+                onClose={historyDialog.onFalse}
+                clientId={historyClientId}
             />
         </Container>
     );

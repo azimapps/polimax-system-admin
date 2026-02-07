@@ -20,6 +20,7 @@ export function UploadAvatar({
   value,
   disabled,
   helperText,
+  placeholder,
   className,
   ...other
 }: UploadProps) {
@@ -85,7 +86,9 @@ export function UploadAvatar({
     >
       <Iconify icon="solar:camera-add-bold" width={32} />
 
-      <Typography variant="caption">{hasFile ? 'Update photo' : 'Upload photo'}</Typography>
+      <Typography variant="caption">
+        {placeholder || (hasFile ? 'Update photo' : 'Upload photo')}
+      </Typography>
     </Box>
   );
 

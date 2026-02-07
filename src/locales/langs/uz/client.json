@@ -8,15 +8,22 @@
     "update": "Yangilash",
     "cancel": "Bekor qilish",
     "form": {
-        "fullname": "To'liq Ism",
-        "phone_number": "Telefon Raqam",
+        "fullname": "To'liq ism",
+        "phone_number": "Telefon raqam",
         "company": "Kompaniya",
-        "profile_url": "Profil Rasmi URL",
+        "profile_url": "Profil rasmi",
         "notes": "Izohlar",
-        "image_urls": "Rasmlar URL"
+        "image_urls": "Rasm URL'lar"
     },
+    "update_photo": "Rasmni yangilash",
+    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_error": "Telefon raqam formati noto'g'ri: +998 XX XXX-XX-XX",
+    "required": "Majburiy",
+    "fullname_required": "To'liq ism kiritilishi shart",
+    "phone_required": "Telefon raqam kiritilishi shart",
     "table": {
         "id": "ID",
+        "profile_image": "Rasm",
         "fullname": "Ism",
         "phone_number": "Telefon",
         "company": "Kompaniya",
@@ -32,5 +39,18 @@
         "error_delete": "Klientni o'chirishda xatolik",
         "error_generic": "Xatolik yuz berdi"
     },
-    "search_placeholder": "Qidirish..."
+    "search_placeholder": "Qidirish...",
+    "delete_confirm_title": "Klientni o'chirish",
+    "delete_confirm_message": "Ushbu klientni o'chirishni xohlaysizmi? Bu amalni bekor qilib bo'lmaydi.",
+    "delete_confirm_button": "O'chirish",
+    "history_title": "Klient tarixi",
+    "history_button": "Tarix",
+    "version": "Versiya",
+    "current_version": "Joriy",
+    "deleted": "O'chirilgan",
+    "revert_button": "Qaytarish",
+    "revert_confirm_title": "{{version}} versiyaga qaytarish",
+    "revert_confirm_message": "Ushbu versiyaga qaytarishni xohlaysizmi? Bu eski ma'lumotlar bilan yangi versiya yaratadi.",
+    "revert_success": "{{version}} versiyaga muvaffaqiyatli qaytarildi",
+    "revert_error": "Versiyaga qaytarishda xatolik"
 }

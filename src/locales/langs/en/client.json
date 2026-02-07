@@ -11,12 +11,20 @@
         "fullname": "Full Name",
         "phone_number": "Phone Number",
         "company": "Company",
-        "profile_url": "Profile Image URL",
+        "profile_url": "Profile Image",
         "notes": "Notes",
         "image_urls": "Image URLs"
     },
+    "upload_photo": "Upload photo",
+    "update_photo": "Update photo",
+    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_error": "Phone number must be in format: +998 XX XXX-XX-XX",
+    "required": "Required",
+    "fullname_required": "Full name is required",
+    "phone_required": "Phone number is required",
     "table": {
         "id": "ID",
+        "profile_image": "Image",
         "fullname": "Name",
         "phone_number": "Phone",
         "company": "Company",
@@ -32,5 +40,18 @@
         "error_delete": "Error deleting client",
         "error_generic": "An error occurred"
     },
-    "search_placeholder": "Search..."
+    "search_placeholder": "Search...",
+    "delete_confirm_title": "Delete Client",
+    "delete_confirm_message": "Are you sure you want to delete this client? This action cannot be undone.",
+    "delete_confirm_button": "Delete",
+    "history_title": "Client History",
+    "history_button": "History",
+    "version": "Version",
+    "current_version": "Current",
+    "deleted": "Deleted",
+    "revert_button": "Revert",
+    "revert_confirm_title": "Revert to Version {{version}}",
+    "revert_confirm_message": "Are you sure you want to revert to this version? This will create a new version with the old data.",
+    "revert_success": "Successfully reverted to version {{version}}",
+    "revert_error": "Error reverting to version"
 }
