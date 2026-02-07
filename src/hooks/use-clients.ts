@@ -97,6 +97,7 @@ export function useRevertClient(id: number) {
     return useMutation({
         mutationFn: (version: number) => clientApi.revertClient(id, version),
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.clients });
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.client(id) });
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(id) });
         },

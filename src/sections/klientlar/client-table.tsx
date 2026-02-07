@@ -1,7 +1,7 @@
 import type { GridColDef } from '@mui/x-data-grid';
 import type { ClientListItem } from 'src/types/client';
 
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -24,7 +24,7 @@ type Props = {
     onDelete: (id: number) => void;
 };
 
-export function KlientlarTable({ clients, loading, onHistory, onEdit, onDelete }: Props) {
+function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('client');
     const columns: GridColDef<ClientListItem>[] = useMemo(
         () => [
@@ -130,3 +130,5 @@ export function KlientlarTable({ clients, loading, onHistory, onEdit, onDelete }
         />
     );
 }
+
+export const KlientlarTable = memo(KlientlarTableComponent);
