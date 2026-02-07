@@ -44,9 +44,8 @@ export function SignOutButton({ onClose, sx, ...other }: Props) {
   return (
     <>
       <Button
-        fullWidth
         variant="soft"
-        size="large"
+        size="small"
         color="error"
         onClick={confirm.onTrue}
         sx={sx}

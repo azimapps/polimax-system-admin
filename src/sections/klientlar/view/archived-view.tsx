@@ -22,95 +22,88 @@ import { KlientlarTableArchived } from '../client-table-archived';
 // ----------------------------------------------------------------------
 
 export function KlientlarArchivedView() {
-    const { t } = useTranslate('client');
+  const { t } = useTranslate('client');
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    const { data: clients = [], isLoading } = useGetArchivedClients(debouncedQuery);
-    const { mutateAsync: restoreClient } = useRestoreClient();
+  const { data: clients = [], isLoading } = useGetArchivedClients(debouncedQuery);
+  const { mutateAsync: restoreClient } = useRestoreClient();
 
-    const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(event.target.value);
-        const timer = setTimeout(() => {
-            setDebouncedQuery(event.target.value);
-        }, 500);
-        return () => clearTimeout(timer);
-    }, []);
+  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    const timer = setTimeout(() => {
+      setDebouncedQuery(event.target.value);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
-    const confirmDialog = useBoolean();
-    const [selectedId, setSelectedId] = useState<number | undefined>();
+  const confirmDialog = useBoolean();
+  const [selectedId, setSelectedId] = useState<number | undefined>();
 
-    const handleRestoreClick = useCallback(
-        (id: number) => {
-            setSelectedId(id);
-            confirmDialog.onTrue();
-        },
-        [confirmDialog]
-    );
+  const handleRestoreClick = useCallback(
+    (id: number) => {
+      setSelectedId(id);
+      confirmDialog.onTrue();
+    },
+    [confirmDialog]
+  );
 
-    const handleConfirmRestore = useCallback(
-        async () => {
-            if (selectedId) {
-                await restoreClient(selectedId);
-                confirmDialog.onFalse();
-                setSelectedId(undefined);
-            }
-        },
-        [selectedId, restoreClient, confirmDialog]
-    );
+  const handleConfirmRestore = useCallback(async () => {
+    if (selectedId) {
+      await restoreClient(selectedId);
+      confirmDialog.onFalse();
+      setSelectedId(undefined);
+    }
+  }, [selectedId, restoreClient, confirmDialog]);
 
-    return (
-        <Container maxWidth="xl">
-            <CustomBreadcrumbs
-                heading={t('archived_clients')}
-                links={[
-                    { name: 'Dashboard', href: paths.dashboard.root },
-                    { name: t('list_title'), href: paths.dashboard.klientlar.list },
-                    { name: t('archived_clients') },
-                ]}
-                sx={{ mb: 3 }}
-            />
+  return (
+    <Container maxWidth="xl">
+      <CustomBreadcrumbs
+        heading={t('archived_clients')}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: t('list_title'), href: paths.dashboard.klientlar.list },
+          { name: t('archived_clients') },
+        ]}
+        sx={{ mb: 3 }}
+      />
 
-            <Card>
-                <Container sx={{ p: 2 }}>
-                    <TextField
-                        sx={{ maxWidth: 320 }}
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        placeholder={t('search_placeholder')}
-                        InputProps={{
-                            startAdornment: (
-                                <Box component="span" sx={{ color: 'text.disabled', mr: 1, display: 'flex' }}>
-                                    <Iconify icon="eva:search-fill" />
-                                </Box>
-                            ),
-                        }}
-                    />
-                </Container>
-
-                <KlientlarTableArchived
-                    clients={clients}
-                    loading={isLoading}
-                    onRestore={handleRestoreClick}
-                />
-            </Card>
-
-            <ConfirmDialog
-                open={confirmDialog.value}
-                onClose={confirmDialog.onFalse}
-                title={t('restore_confirm_title')}
-                content={t('restore_confirm_message')}
-                action={
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={handleConfirmRestore}
-                    >
-                        {t('restore_confirm_button')}
-                    </Button>
-                }
-            />
+      <Card>
+        <Container sx={{ p: 2 }}>
+          <TextField
+            sx={{ maxWidth: 320 }}
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder={t('search_placeholder')}
+            InputProps={{
+              startAdornment: (
+                <Box component="span" sx={{ color: 'text.disabled', mr: 1, display: 'flex' }}>
+                  <Iconify icon="eva:search-fill" />
+                </Box>
+              ),
+            }}
+          />
         </Container>
-    );
+
+        <KlientlarTableArchived
+          clients={clients}
+          loading={isLoading}
+          onRestore={handleRestoreClick}
+        />
+      </Card>
+
+      <ConfirmDialog
+        open={confirmDialog.value}
+        onClose={confirmDialog.onFalse}
+        title={t('restore_confirm_title')}
+        content={t('restore_confirm_message')}
+        action={
+          <Button variant="contained" color="success" onClick={handleConfirmRestore}>
+            {t('restore_confirm_button')}
+          </Button>
+        }
+      />
+    </Container>
+  );
 }

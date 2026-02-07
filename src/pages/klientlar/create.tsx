@@ -8,13 +8,13 @@ import { KlientlarCreateView } from 'src/sections/klientlar/view/create-view';
 const metadata = { title: `Create Client | ${CONFIG.appName}` };
 
 export default function Page() {
-    return (
-        <>
-            <Helmet>
-                <title>{metadata.title}</title>
-            </Helmet>
+  return (
+    <>
+      <Helmet>
+        <title>{metadata.title}</title>
+      </Helmet>
 
-            <KlientlarCreateView />
-        </>
-    );
+      <KlientlarCreateView />
+    </>
+  );
 }

@@ -13,4 +13,5 @@ export type AuthContextValue = {
   checkUserSession?: () => Promise<void>;
   login: (payload: Record<string, any>) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (user: UserType) => void;
 };

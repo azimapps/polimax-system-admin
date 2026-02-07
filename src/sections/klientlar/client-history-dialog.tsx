@@ -28,128 +28,114 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 // ----------------------------------------------------------------------
 
 type Props = {
-    open: boolean;
-    onClose: () => void;
-    clientId: number;
+  open: boolean;
+  onClose: () => void;
+  clientId: number;
 };
 
 export function ClientHistoryDialog({ open, onClose, clientId }: Props) {
-    const { t } = useTranslate('client');
-    const { data: history = [], isLoading } = useGetClientHistory(clientId);
-    const { mutateAsync: revertClient } = useRevertClient(clientId);
+  const { t } = useTranslate('client');
+  const { data: history = [], isLoading } = useGetClientHistory(clientId);
+  const { mutateAsync: revertClient } = useRevertClient(clientId);
 
-    const confirmDialog = useBoolean();
-    const [selectedVersion, setSelectedVersion] = useState<number | undefined>();
+  const confirmDialog = useBoolean();
+  const [selectedVersion, setSelectedVersion] = useState<number | undefined>();
 
-    const handleRevertClick = useCallback(
-        (version: number) => {
-            setSelectedVersion(version);
-            confirmDialog.onTrue();
-        },
-        [confirmDialog]
-    );
+  const handleRevertClick = useCallback(
+    (version: number) => {
+      setSelectedVersion(version);
+      confirmDialog.onTrue();
+    },
+    [confirmDialog]
+  );
 
-    const handleConfirmRevert = useCallback(async () => {
-        if (selectedVersion) {
-            await revertClient(selectedVersion);
-            confirmDialog.onFalse();
-            setSelectedVersion(undefined);
-            onClose();
-        }
-    }, [selectedVersion, revertClient, confirmDialog, onClose]);
+  const handleConfirmRevert = useCallback(async () => {
+    if (selectedVersion) {
+      await revertClient(selectedVersion);
+      confirmDialog.onFalse();
+      setSelectedVersion(undefined);
+      onClose();
+    }
+  }, [selectedVersion, revertClient, confirmDialog, onClose]);
 
-    return (
-        <>
-            <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-                <DialogTitle>{t('history_title')}</DialogTitle>
+  return (
+    <>
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogTitle>{t('history_title')}</DialogTitle>
 
-                <DialogContent sx={{ minHeight: 200, pb: 2, pt: 2, transition: 'all 0.3s ease-in-out' }}>
-                    {isLoading ? (
-                        <Box alignItems="center" display="flex" justifyContent="center" minHeight={200}>
-                            <CircularProgress />
+        <DialogContent sx={{ minHeight: 200, pb: 2, pt: 2, transition: 'all 0.3s ease-in-out' }}>
+          {isLoading ? (
+            <Box alignItems="center" display="flex" justifyContent="center" minHeight={200}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{t('version')}</TableCell>
+                    <TableCell>{t('form.fullname')}</TableCell>
+                    <TableCell>{t('form.phone_number')}</TableCell>
+                    <TableCell>{t('form.company')}</TableCell>
+                    <TableCell align="center">{t('table.actions')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {history.map((item, index) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <Box alignItems="center" display="flex" gap={1}>
+                          v{item.version}
+                          {index === 0 && (
+                            <Chip color="primary" label={t('current_version')} size="small" />
+                          )}
+                          {item.deleted_at && (
+                            <Chip color="error" label={t('deleted')} size="small" />
+                          )}
                         </Box>
-                    ) : (
-                        <TableContainer>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>{t('version')}</TableCell>
-                                        <TableCell>{t('form.fullname')}</TableCell>
-                                        <TableCell>{t('form.phone_number')}</TableCell>
-                                        <TableCell>{t('form.company')}</TableCell>
-                                        <TableCell align="center">{t('table.actions')}</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {history.map((item, index) => (
-                                        <TableRow key={item.id}>
-                                            <TableCell>
-                                                <Box alignItems="center" display="flex" gap={1}>
-                                                    v{item.version}
-                                                    {index === 0 && (
-                                                        <Chip
-                                                            color="primary"
-                                                            label={t('current_version')}
-                                                            size="small"
-                                                        />
-                                                    )}
-                                                    {item.deleted_at && (
-                                                        <Chip
-                                                            color="error"
-                                                            label={t('deleted')}
-                                                            size="small"
-                                                        />
-                                                    )}
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.fullname}
-                                            </TableCell>
-                                            <TableCell>
-                                                {fPhoneNumber(item.phone_number)}
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.company || '-'}
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                {index !== 0 && (
-                                                    <Button
-                                                        color="primary"
-                                                        onClick={() => handleRevertClick(item.version)}
-                                                        size="small"
-                                                        startIcon={<Iconify icon="solar:restart-bold" />}
-                                                        variant="outlined"
-                                                    >
-                                                        {t('revert_button')}
-                                                    </Button>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    )}
-                </DialogContent>
+                      </TableCell>
+                      <TableCell>{item.fullname}</TableCell>
+                      <TableCell>{fPhoneNumber(item.phone_number)}</TableCell>
+                      <TableCell>{item.company || '-'}</TableCell>
+                      <TableCell align="center">
+                        {index !== 0 && (
+                          <Button
+                            color="primary"
+                            onClick={() => handleRevertClick(item.version)}
+                            size="small"
+                            startIcon={<Iconify icon="solar:restart-bold" />}
+                            variant="outlined"
+                          >
+                            {t('revert_button')}
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
 
-                <DialogActions>
-                    <Button color="inherit" onClick={onClose} variant="outlined">
-                        {t('cancel')}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+        <DialogActions>
+          <Button color="inherit" onClick={onClose} variant="outlined">
+            {t('cancel')}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-            <ConfirmDialog
-                action={
-                    <Button color="primary" onClick={handleConfirmRevert} variant="contained">
-                        {t('revert_button')}
-                    </Button>
-                }
-                content={t('revert_confirm_message')}
-                onClose={confirmDialog.onFalse}
-                open={confirmDialog.value}
-                title={t('revert_confirm_title', { version: selectedVersion })}
-            />
-        </>
-    );
+      <ConfirmDialog
+        action={
+          <Button color="primary" onClick={handleConfirmRevert} variant="contained">
+            {t('revert_button')}
+          </Button>
+        }
+        content={t('revert_confirm_message')}
+        onClose={confirmDialog.onFalse}
+        open={confirmDialog.value}
+        title={t('revert_confirm_title', { version: selectedVersion })}
+      />
+    </>
+  );
 }

@@ -21,9 +21,7 @@ const authCentered = {
       <Outlet />
     </AuthCenteredLayout>
   ),
-  children: [
-    { path: ':method/sign-in', element: <CenteredLayout.SignInPage /> },
-  ],
+  children: [{ path: ':method/sign-in', element: <CenteredLayout.SignInPage /> }],
 };
 
 // ----------------------------------------------------------------------

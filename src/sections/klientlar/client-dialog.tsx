@@ -13,34 +13,29 @@ import { KlientlarForm } from './client-form';
 // ----------------------------------------------------------------------
 
 type Props = {
-    open: boolean;
-    onClose: () => void;
-    id?: number;
+  open: boolean;
+  onClose: () => void;
+  id?: number;
 };
 
 export function ClientDialog({ open, onClose, id }: Props) {
-    const { t } = useTranslate('client');
+  const { t } = useTranslate('client');
 
-    const { data: client, isLoading } = useGetClient(id || 0);
+  const { data: client, isLoading } = useGetClient(id || 0);
 
-    return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle>
-                {id ? t('edit_title') : t('create_title')}
-            </DialogTitle>
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>{id ? t('edit_title') : t('create_title')}</DialogTitle>
 
-            <DialogContent sx={{ pt: 2, pb: 2, minHeight: 200, transition: 'all 0.3s ease-in-out' }}>
-                {id && isLoading ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <KlientlarForm
-                        client={id ? client : undefined}
-                        onSuccess={onClose}
-                    />
-                )}
-            </DialogContent>
-        </Dialog>
-    );
+      <DialogContent sx={{ pt: 2, pb: 2, minHeight: 200, transition: 'all 0.3s ease-in-out' }}>
+        {id && isLoading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <KlientlarForm client={id ? client : undefined} onSuccess={onClose} />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }

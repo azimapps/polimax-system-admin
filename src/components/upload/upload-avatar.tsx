@@ -25,20 +25,19 @@ export function UploadAvatar({
   className,
   onDrop: onDropProp,
   ...other
-}: UploadProps & { onDrop?: (acceptedFiles: File[]) => void }) {
+}: UploadProps) {
   const [cropOpen, setCropOpen] = useState(false);
   const [cropImage, setCropImage] = useState<string>('');
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        setCropImage(URL.createObjectURL(file));
-        setCropOpen(true);
-      }
-    },
-    []
-  );
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      setCropImage(URL.createObjectURL(file));
+      setOriginalFile(file);
+      setCropOpen(true);
+    }
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     multiple: false,
@@ -67,7 +66,7 @@ export function UploadAvatar({
     setCropOpen(false);
     if (onDropProp) {
       // Call the original onDrop with the processed file
-      // We simulate the DropEvent structure expected by some handlers if necessary, 
+      // We simulate the DropEvent structure expected by some handlers if necessary,
       // but usually just passing the file array is enough for custom handlers.
       // However, react-dropzone's onDrop signature is (acceptedFiles, fileRejections, event).
       onDropProp([croppedFile], [], { type: 'drop' } as any);
@@ -181,6 +180,7 @@ export function UploadAvatar({
           open={cropOpen}
           onClose={handleCropClose}
           image={cropImage}
+          originalFile={originalFile}
           onCropComplete={handleCropComplete}
         />
       )}

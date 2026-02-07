@@ -10,7 +10,6 @@ import { CONFIG } from 'src/global-config';
 
 const axiosInstance = axios.create({ baseURL: CONFIG.serverUrl, withCredentials: true });
 
-
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

@@ -12,6 +12,7 @@ export const paths = {
     user: {
       root: `/user`,
       list: `/user/list`,
+      profile: `/user/profile`,
     },
     klientlar: {
       root: '/klientlar',

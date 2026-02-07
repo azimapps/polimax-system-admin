@@ -14,26 +14,26 @@ import { KlientlarForm } from '../client-form';
 // ----------------------------------------------------------------------
 
 export function KlientlarCreateView() {
-    const { t } = useTranslate('client');
-    const navigate = useNavigate();
+  const { t } = useTranslate('client');
+  const navigate = useNavigate();
 
-    const handleSuccess = useCallback(() => {
-        navigate(paths.dashboard.klientlar.list);
-    }, [navigate]);
+  const handleSuccess = useCallback(() => {
+    navigate(paths.dashboard.klientlar.list);
+  }, [navigate]);
 
-    return (
-        <Container maxWidth="lg">
-            <CustomBreadcrumbs
-                heading={t('create_title')}
-                links={[
-                    { name: 'Dashboard', href: paths.dashboard.root },
-                    { name: t('list_title'), href: paths.dashboard.klientlar.list },
-                    { name: t('new_client') },
-                ]}
-                sx={{ mb: 3 }}
-            />
+  return (
+    <Container maxWidth="lg">
+      <CustomBreadcrumbs
+        heading={t('create_title')}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: t('list_title'), href: paths.dashboard.klientlar.list },
+          { name: t('new_client') },
+        ]}
+        sx={{ mb: 3 }}
+      />
 
-            <KlientlarForm onSuccess={handleSuccess} />
-        </Container>
-    );
+      <KlientlarForm onSuccess={handleSuccess} />
+    </Container>
+  );
 }

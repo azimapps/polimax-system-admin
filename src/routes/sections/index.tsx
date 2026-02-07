@@ -19,6 +19,7 @@ import { authDemoRoutes } from './auth';
 const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
 // User
 const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
+const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
 // Games  - Word Battle
 const WordBattle = lazy(() => import('src/pages/dashboard/word-battle/list'));
 const CreateCategory = lazy(() => import('src/pages/dashboard/word-battle/create'));
@@ -72,7 +73,10 @@ export const routesSection: RouteObject[] = [
       { index: true, element: <OverviewAnalyticsPage /> },
       {
         path: 'user',
-        children: [{ path: 'list', element: <UserListPage /> }],
+        children: [
+          { path: 'list', element: <UserListPage /> },
+          { path: 'profile', element: <UserProfilePage /> },
+        ],
       },
       {
         path: 'klientlar',

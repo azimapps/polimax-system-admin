@@ -28,6 +28,7 @@ import { useNavData } from '../nav-config-dashboard';
 import { MenuButton } from '../components/menu-button';
 import { LayoutSection } from '../core/layout-section';
 import { HeaderSection } from '../core/header-section';
+import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
 import { LanguagePopover } from '../components/language-popover';
 import { dashboardLayoutVars, dashboardNavColorVars } from './css-vars';
@@ -159,7 +160,7 @@ export function DashboardLayout({
           <SettingsButton />
 
           {/** @slot Account drawer */}
-          {/* <AccountDrawer /> */}
+          <AccountDrawer />
         </Box>
       ),
     };

@@ -18,8 +18,6 @@ export type SignInParams = {
   captchaToken: string;
 };
 
-
-
 /** **************************************
  * Sign in
  *************************************** */
@@ -42,7 +40,9 @@ export const useSignIn = () => {
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
-        ? (err.response.data.detail.includes('Invalid') ? t('auth.invalid_credentials') : t('auth.login_failed'))
+        ? err.response.data.detail.includes('Invalid')
+          ? t('auth.invalid_credentials')
+          : t('auth.login_failed')
         : t('auth.login_failed');
       toast.error(errorMessage, { position: 'top-center' });
     },

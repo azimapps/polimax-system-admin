@@ -17,39 +17,39 @@ import { KlientlarForm } from '../client-form';
 // ----------------------------------------------------------------------
 
 type Props = {
-    id: number;
+  id: number;
 };
 
 export function KlientlarDetailView({ id }: Props) {
-    const { t } = useTranslate('client');
-    const navigate = useNavigate();
-    const { data: client, isLoading } = useGetClient(id);
+  const { t } = useTranslate('client');
+  const navigate = useNavigate();
+  const { data: client, isLoading } = useGetClient(id);
 
-    const handleSuccess = useCallback(() => {
-        navigate(paths.dashboard.klientlar.list);
-    }, [navigate]);
+  const handleSuccess = useCallback(() => {
+    navigate(paths.dashboard.klientlar.list);
+  }, [navigate]);
 
-    if (isLoading) {
-        return <CircularProgress />;
-    }
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
-    if (!client) {
-        return <div>Client not found</div>;
-    }
+  if (!client) {
+    return <div>Client not found</div>;
+  }
 
-    return (
-        <Container maxWidth="lg">
-            <CustomBreadcrumbs
-                heading={client ? client.fullname : t('detail_title')}
-                links={[
-                    { name: 'Dashboard', href: paths.dashboard.root },
-                    { name: t('list_title'), href: paths.dashboard.klientlar.list },
-                    { name: client.fullname },
-                ]}
-                sx={{ mb: 3 }}
-            />
+  return (
+    <Container maxWidth="lg">
+      <CustomBreadcrumbs
+        heading={client ? client.fullname : t('detail_title')}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: t('list_title'), href: paths.dashboard.klientlar.list },
+          { name: client.fullname },
+        ]}
+        sx={{ mb: 3 }}
+      />
 
-            <KlientlarForm client={client} onSuccess={handleSuccess} />
-        </Container>
-    );
+      <KlientlarForm client={client} onSuccess={handleSuccess} />
+    </Container>
+  );
 }
