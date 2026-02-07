@@ -12,6 +12,27 @@ export const settingIcons = {
       />
     </svg>
   ),
+  sun: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        opacity="0.4"
+        d="M12 18.5C15.5899 18.5 18.5 15.5899 18.5 12C18.5 8.41015 15.5899 5.5 12 5.5C8.41015 5.5 5.5 8.41015 5.5 12C5.5 15.5899 8.41015 18.5 12 18.5Z"
+        fill="currentColor"
+      />
+      <path
+        d="M19.2407 7.85482C19.5263 7.68632 19.9501 7.91793 19.8358 8.23407C19.454 9.29062 18.7225 10.2222 17.6935 10.8293C17.1107 11.1732 16.4876 11.3805 15.8594 11.4611C15.2562 11.2456 14.5943 11.1182 13.8899 11.0897C13.6225 8.86584 12.3722 7.13019 10.4449 6.39179C10.4833 4.70529 11.3562 3.07917 12.8903 2.17402C13.9194 1.56686 15.0745 1.38521 16.1608 1.57565C16.4858 1.63264 16.4702 2.12345 16.1846 2.29195C14.6805 3.17942 14.1651 5.14493 15.0335 6.68202C15.9019 8.21913 17.8252 8.74577 19.2407 7.85482Z"
+        fill="currentColor"
+      />
+      <path d="M12 2V3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M22 12H20.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M3.5 12H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M12 22V20.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M19.0713 4.92871L18.0106 5.98937" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.98926 18.0107L4.9286 19.0714" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M19.0713 19.0713L18.0106 18.0106" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5.98926 5.98926L4.9286 4.9286" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  ),
   contrast: (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
