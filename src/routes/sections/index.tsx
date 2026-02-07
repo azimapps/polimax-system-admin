@@ -42,6 +42,9 @@ const QuestionList = lazy(() => import('src/pages/dashboard/4pics-1word/list'));
 const CreateQuestions = lazy(() => import('src/pages/dashboard/4pics-1word/create'));
 const UpdateQuestion = lazy(() => import('src/pages/dashboard/4pics-1word/update'));
 const SettingsPicsWord = lazy(() => import('src/pages/dashboard/4pics-1word/setting'));
+// Partners
+const PartnersList = lazy(() => import('src/pages/partners/list'));
+const PartnersArchived = lazy(() => import('src/pages/partners/archived'));
 // Games - Odd One Out
 const OddOneOutQuestionsList = lazy(() => import('src/pages/dashboard/odd-one-out/list'));
 // ----------------------------------------------------------------------
@@ -86,6 +89,13 @@ export const routesSection: RouteObject[] = [
           { path: 'archived', element: <KlientlarArchived /> },
           { path: ':id', element: <KlientlarDetail /> },
           { path: ':id/edit', element: <KlientlarDetail /> },
+        ],
+      },
+      {
+        path: 'partners',
+        children: [
+          { path: 'list', element: <PartnersList /> },
+          { path: 'archived', element: <PartnersArchived /> },
         ],
       },
       {

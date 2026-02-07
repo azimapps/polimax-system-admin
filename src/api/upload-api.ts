@@ -15,4 +15,17 @@ export const uploadApi = {
 
     return response.data;
   },
+
+  uploadFiles: async (files: File[]): Promise<{ urls: string[] }> => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+
+    const response = await axiosInstance.post('/upload/multiple', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  },
 };

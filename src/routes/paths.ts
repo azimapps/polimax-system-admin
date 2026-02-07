@@ -22,6 +22,11 @@ export const paths = {
       detail: (id: string) => `/klientlar/${id}`,
       edit: (id: string) => `/klientlar/${id}/edit`,
     },
+    partners: {
+      root: '/partners',
+      list: '/partners/list',
+      archived: '/partners/archived',
+    },
     games: {
       wordBattle: {
         root: '/word-battle',

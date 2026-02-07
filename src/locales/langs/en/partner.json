@@ -1,0 +1,45 @@
+{
+    "list_title": "Partners",
+    "new_partner": "New Partner",
+    "edit_title": "Edit Partner",
+    "create_title": "Create Partner",
+    "fullname_required": "Full name is required",
+    "phone_required": "Phone number is required",
+    "phone_error": "Invalid phone number (must be Uzbekistan format)",
+    "company_required": "Company name is required",
+    "categories_required": "At least one category is required",
+    "search_placeholder": "Search partners...",
+    "delete_confirm_title": "Delete Partner",
+    "delete_confirm_message": "Are you sure you want to delete this partner?",
+    "delete_confirm_button": "Delete",
+    "archive": "Archive",
+    "form": {
+        "fullname": "Full Name",
+        "phone_number": "Phone Number",
+        "company": "Company",
+        "notes": "Notes",
+        "categories": "Categories",
+        "logo": "Logo",
+        "images": "Images"
+    },
+    "table": {
+        "fullname": "Full Name",
+        "phone_number": "Phone Number",
+        "company": "Company",
+        "categories": "Categories",
+        "actions": "Actions"
+    },
+    "messages": {
+        "success_create": "Partner created successfully",
+        "success_update": "Partner updated successfully",
+        "error_generic": "Something went wrong"
+    },
+    "upload_photo": "Upload Photo",
+    "update_photo": "Update Photo",
+    "allowed_formats_hint": "Allowed *.jpeg, *.jpg, *.png, *.webp",
+    "image_uploaded_success": "Image uploaded successfully",
+    "image_upload_failed": "Image upload failed",
+    "cancel": "Cancel",
+    "update": "Update",
+    "create": "Create"
+}
