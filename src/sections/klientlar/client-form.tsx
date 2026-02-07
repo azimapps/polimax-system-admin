@@ -17,7 +17,7 @@ import { uploadApi } from 'src/api/upload-api';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { ClientFormSchema } from './client-schema';
+import { getClientFormSchema } from './client-schema';
 
 // ----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ export function KlientlarForm({ client, onSuccess }: Props) {
     const [isUploading, setIsUploading] = useState(false);
 
     const methods = useForm<CreateClientRequest>({
-        resolver: zodResolver(ClientFormSchema),
+        resolver: zodResolver(getClientFormSchema(t)),
         defaultValues: {
             fullname: client?.fullname || '',
             phone_number: client?.phone_number || '',

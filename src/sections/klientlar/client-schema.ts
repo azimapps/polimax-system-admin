@@ -1,11 +1,11 @@
 import { z as zod } from 'zod';
 
 // Phone validation for Uzbekistan format: +998 XX XXX-XX-XX
-export const ClientFormSchema = zod.object({
-    fullname: zod.string().min(1, 'fullname_required'),
+export const getClientFormSchema = (t: (key: string) => string) => zod.object({
+    fullname: zod.string().min(1, t('fullname_required')),
     phone_number: zod
         .string()
-        .min(1, 'phone_required')
+        .min(1, t('phone_required'))
         .refine(
             (val) => {
                 // Remove all non-digit characters
@@ -13,7 +13,7 @@ export const ClientFormSchema = zod.object({
                 // Check if it starts with 998 and has exactly 12 digits (998 + 9 digits)
                 return digits.startsWith('998') && digits.length === 12;
             },
-            { message: 'phone_error' }
+            { message: t('phone_error') }
         ),
     company: zod.string().optional(),
     notes: zod.string().optional(),
@@ -21,4 +21,4 @@ export const ClientFormSchema = zod.object({
     image_urls: zod.array(zod.string()).optional(),
 });
 
-export type ClientFormValues = zod.infer<typeof ClientFormSchema>;
+export type ClientFormValues = zod.infer<ReturnType<typeof getClientFormSchema>>;
