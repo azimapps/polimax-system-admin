@@ -164,12 +164,16 @@ const uzCyrlUZGrid = {
     aggregationFunctionLabelMax: 'макс',
     aggregationFunctionLabelSize: 'ҳажми',
 
-    // Used core components translation keys
-    MuiTablePagination: {
-        labelRowsPerPage: 'Саҳифадаги қаторлар:',
-        labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
-            `${from}–${to} / ${count !== -1 ? count : `${to} дан кўп`}`,
-    },
 };
 
 export const uzCyrlUZ = getGridLocalization(uzCyrlUZGrid, {});
+
+export const uzCyrlUZPagination = {
+    MuiTablePagination: {
+        defaultProps: {
+            labelRowsPerPage: 'Саҳифадаги қаторлар сони:',
+            labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
+                `${from}–${to} дан ${count !== -1 ? count : `${to} дан кўп`}`,
+        },
+    },
+};

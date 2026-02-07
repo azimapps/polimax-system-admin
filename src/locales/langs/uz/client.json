@@ -16,7 +16,7 @@
         "image_urls": "Rasm URL'lar"
     },
     "update_photo": "Rasmni yangilash",
-    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Telefon raqam formati noto'g'ri: +998 XX XXX-XX-XX",
     "required": "Majburiy",
     "fullname_required": "To'liq ism kiritilishi shart",

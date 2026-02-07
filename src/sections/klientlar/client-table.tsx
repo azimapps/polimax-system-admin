@@ -113,9 +113,14 @@ export function KlientlarTable({ clients, loading, onHistory, onEdit, onDelete }
             columns={columns}
             disableColumnMenu
             disableRowSelectionOnClick
-            hideFooterPagination={clients.length < 10}
             loading={loading}
             rows={clients}
+            pageSizeOptions={[5, 10, 25]}
+            initialState={{
+                pagination: {
+                    paginationModel: { pageSize: 10 },
+                },
+            }}
             sx={{
                 '& .MuiDataGrid-cell:focus': {
                     outline: 'none',

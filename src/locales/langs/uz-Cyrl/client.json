@@ -17,7 +17,7 @@
     },
     "upload_photo": "Расм юклаш",
     "update_photo": "Расмни янгилаш",
-    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Телефон рақам формати нотўғри: +998 XX XXX-XX-XX",
     "required": "Мажбурий",
     "fullname_required": "Тўлиқ исм киритилиши шарт",

@@ -16,7 +16,7 @@
         "image_urls": "URL Изображений"
     },
     "update_photo": "Обновить фото",
-    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Номер телефона должен быть в формате: +998 XX XXX-XX-XX",
     "required": "Обязательно",
     "fullname_required": "Полное имя обязательно для заполнения",

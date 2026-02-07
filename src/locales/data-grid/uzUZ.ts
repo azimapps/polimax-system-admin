@@ -164,12 +164,16 @@ const uzUZGrid = {
     aggregationFunctionLabelMax: 'maks',
     aggregationFunctionLabelSize: 'hajmi',
 
-    // Used core components translation keys
-    MuiTablePagination: {
-        labelRowsPerPage: 'Sahifadagi qatorlar:',
-        labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
-            `${from}–${to} / ${count !== -1 ? count : `${to} dan ko'p`}`,
-    },
 };
 
 export const uzUZ = getGridLocalization(uzUZGrid, {});
+
+export const uzUZPagination = {
+    MuiTablePagination: {
+        defaultProps: {
+            labelRowsPerPage: 'Sahifadagi qatorlar soni:',
+            labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
+                `${from}–${to} dan ${count !== -1 ? count : `${to} dan ko'p`}`,
+        },
+    },
+};

@@ -17,7 +17,7 @@
     },
     "upload_photo": "Upload photo",
     "update_photo": "Update photo",
-    "phone_placeholder": "+998 XX XXX-XX-XX",
+    "phone_placeholder": "XX XXX XX XX",
     "phone_error": "Phone number must be in format: +998 XX XXX-XX-XX",
     "required": "Required",
     "fullname_required": "Full name is required",
