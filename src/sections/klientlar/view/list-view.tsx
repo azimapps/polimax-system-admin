@@ -3,6 +3,7 @@ import { useBoolean } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
@@ -97,13 +98,22 @@ export function KlientlarListView() {
                     { name: t('list_title') },
                 ]}
                 action={
-                    <Button
-                        variant="contained"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        onClick={handleCreate}
-                    >
-                        {t('new_client')}
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            variant="outlined"
+                            startIcon={<Iconify icon="solar:inbox-bold" />}
+                            href={paths.dashboard.klientlar.archived}
+                        >
+                            {t('archive')}
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<Iconify icon="mingcute:add-line" />}
+                            onClick={handleCreate}
+                        >
+                            {t('new_client')}
+                        </Button>
+                    </Stack>
                 }
                 sx={{ mb: 3 }}
             />
@@ -111,7 +121,7 @@ export function KlientlarListView() {
             <Card>
                 <Container sx={{ p: 2 }}>
                     <TextField
-                        fullWidth
+                        sx={{ maxWidth: 320 }}
                         value={searchQuery}
                         onChange={handleSearch}
                         placeholder={t('search_placeholder')}

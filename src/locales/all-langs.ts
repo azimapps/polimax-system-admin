@@ -6,8 +6,8 @@ import { enUS as enUSDate } from '@mui/x-date-pickers/locales';
 import { enUS as enUSDataGrid, ruRU as ruRUDataGrid } from '@mui/x-data-grid/locales';
 
 // custom data grid locales
-import { uzUZ as uzUZDataGrid, uzUZPagination } from './data-grid/uzUZ';
-import { uzCyrlUZ as uzCyrlUZDataGrid, uzCyrlUZPagination } from './data-grid/uzCyrlUZ';
+import { uzUZPagination, uzUZ as uzUZDataGrid } from './data-grid/uzUZ';
+import { uzCyrlUZPagination, uzCyrlUZ as uzCyrlUZDataGrid } from './data-grid/uzCyrlUZ';
 
 // ----------------------------------------------------------------------
 

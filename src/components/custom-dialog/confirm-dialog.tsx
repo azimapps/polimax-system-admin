@@ -16,9 +16,10 @@ export function ConfirmDialog({
   action,
   content,
   onClose,
+  cancelLabel,
   ...other
 }: ConfirmDialogProps) {
-  const { t } = useTranslate('word-battle');
+  const { t } = useTranslate();
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} {...other}>
       <DialogTitle sx={{ pb: 2 }}>{title}</DialogTitle>
@@ -27,7 +28,7 @@ export function ConfirmDialog({
 
       <DialogActions>
         <Button variant="outlined" color="inherit" onClick={onClose}>
-          {t('editDialog.cancel')}
+          {cancelLabel || t('cancel')}
         </Button>
         {action}
       </DialogActions>

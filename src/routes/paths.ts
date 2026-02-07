@@ -17,6 +17,7 @@ export const paths = {
       root: '/klientlar',
       list: '/klientlar/list',
       create: '/klientlar/create',
+      archived: '/klientlar/archived',
       detail: (id: string) => `/klientlar/${id}`,
       edit: (id: string) => `/klientlar/${id}/edit`,
     },

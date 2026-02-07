@@ -35,6 +35,7 @@ const FlashCardCategoryList = lazy(() => import('src/pages/dashboard/flash-card/
 const KlientlarList = lazy(() => import('src/pages/klientlar/list'));
 const KlientlarCreate = lazy(() => import('src/pages/klientlar/create'));
 const KlientlarDetail = lazy(() => import('src/pages/klientlar/detail'));
+const KlientlarArchived = lazy(() => import('src/pages/klientlar/archived'));
 // Games - 4Pics 1Word
 const QuestionList = lazy(() => import('src/pages/dashboard/4pics-1word/list'));
 const CreateQuestions = lazy(() => import('src/pages/dashboard/4pics-1word/create'));
@@ -78,6 +79,7 @@ export const routesSection: RouteObject[] = [
         children: [
           { path: 'list', element: <KlientlarList /> },
           { path: 'create', element: <KlientlarCreate /> },
+          { path: 'archived', element: <KlientlarArchived /> },
           { path: ':id', element: <KlientlarDetail /> },
           { path: ':id/edit', element: <KlientlarDetail /> },
         ],

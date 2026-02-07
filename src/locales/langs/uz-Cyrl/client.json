@@ -22,6 +22,12 @@
     "required": "Мажбурий",
     "fullname_required": "Тўлиқ исм киритилиши шарт",
     "phone_required": "Телефон рақам киритилиши шарт",
+    "archive": "Архив",
+    "archived_clients": "Архивланган мижозлар",
+    "restore": "Тиклаш",
+    "restore_confirm_title": "Мижозни тиклаш",
+    "restore_confirm_message": "Ҳақиқатан ҳам ушбу мижозни тикламоқчимисиз?",
+    "restore_confirm_button": "Тиклаш",
     "table": {
         "id": "ID",
         "profile_image": "Расм",

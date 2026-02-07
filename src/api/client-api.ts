@@ -35,8 +35,8 @@ export const clientApi = {
     },
 
     // Get archived clients
-    getArchivedClients: async (): Promise<ClientListItem[]> => {
-        const response = await axiosInstance.get('/clients/archived');
+    getArchivedClients: async (q?: string): Promise<ClientListItem[]> => {
+        const response = await axiosInstance.get('/clients/archived', { params: { q } });
         return response.data;
     },
 

@@ -64,10 +64,10 @@ export function useDeleteClient() {
     });
 }
 
-export function useGetArchivedClients() {
+export function useGetArchivedClients(q?: string) {
     return useQuery({
-        queryKey: QUERY_KEYS.archived,
-        queryFn: clientApi.getArchivedClients,
+        queryKey: [...QUERY_KEYS.archived, { q }],
+        queryFn: () => clientApi.getArchivedClients(q),
     });
 }
 

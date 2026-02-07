@@ -22,6 +22,12 @@
     "required": "Required",
     "fullname_required": "Full name is required",
     "phone_required": "Phone number is required",
+    "archive": "Archive",
+    "archived_clients": "Archived Clients",
+    "restore": "Restore",
+    "restore_confirm_title": "Restore Client",
+    "restore_confirm_message": "Are you sure you want to restore this client?",
+    "restore_confirm_button": "Restore",
     "table": {
         "id": "ID",
         "profile_image": "Image",
