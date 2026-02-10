@@ -154,27 +154,53 @@ export function PartnerForm({ partner, onSuccess }: Props) {
                                 sm: 'repeat(2, 1fr)',
                             }}
                         >
-                            <Field.Text name="fullname" label={t('form.fullname')} required />
+                            <Field.Text
+                                name="fullname"
+                                label={t('form.fullname')}
+                                placeholder={t('form.fullname')}
+                                InputLabelProps={{ shrink: true }}
+                                required
+                            />
                             <Field.Phone
                                 name="phone_number"
                                 label={t('form.phone_number')}
                                 country="UZ"
                                 placeholder="99 XXX XX XX"
+                                InputLabelProps={{ shrink: true }}
                                 required
                             />
-                            <Field.Text name="company" label={t('form.company')} required />
+                            <Field.Text
+                                name="company"
+                                label={t('form.company')}
+                                placeholder={t('form.company')}
+                                InputLabelProps={{ shrink: true }}
+                                required
+                            />
                             <Field.Autocomplete
                                 name="categories"
                                 label={t('form.categories')}
                                 multiple
-                                freeSolo
-                                options={[]}
+                                placeholder={t('form.select_categories')}
+                                options={['Plyonka', 'Kraska', 'Rastvaritel', 'Silindir', 'Kley']}
+                                getOptionLabel={(option) => option}
+                                slotProps={{
+                                    textfield: {
+                                        InputLabelProps: { shrink: true }
+                                    }
+                                }}
                             />
                         </Box>
                     </Box>
                 </Stack>
 
-                <Field.Text name="notes" label={t('form.notes')} multiline rows={4} />
+                <Field.Text
+                    name="notes"
+                    label={t('form.notes')}
+                    placeholder={t('form.notes')}
+                    InputLabelProps={{ shrink: true }}
+                    multiline
+                    rows={4}
+                />
 
                 <Box>
                     <Field.Upload

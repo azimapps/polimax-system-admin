@@ -1,0 +1,26 @@
+{
+    "list_title": "Список Склада",
+    "new_item": "Новый Материал",
+    "cancel": "Отмена",
+    "create": "Создать",
+    "update": "Сохранить",
+    "required": "Это поле обязательно",
+    "form": {
+        "category": "Категории",
+        "select_category": "Выберите категории",
+        "name": "Название Материала",
+        "quantity": "Количество",
+        "unit": "Единица (кг, шт, м2)",
+        "price": "Цена",
+        "currency": "Валюта",
+        "batch_number": "Номер партии",
+        "notes": "Заметки",
+        "categories": {
+            "plyonka": "Plyonka",
+            "kraska": "Kraska",
+            "rastvaritel": "Rastvaritel",
+            "silindir": "Silindir",
+            "kley": "Kley"
+        }
+    }
+}

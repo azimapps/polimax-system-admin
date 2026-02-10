@@ -1,0 +1,46 @@
+{
+    "list_title": "Ҳамкорлар Рўйхати",
+    "new_partner": "Янги Ҳамкор",
+    "edit_title": "Ҳамкорни Таҳрирлаш",
+    "create_title": "Ҳамкор Яратиш",
+    "fullname_required": "Тўлиқ исм киритилиши шарт",
+    "phone_required": "Телефон рақам киритилиши шарт",
+    "phone_error": "Телефон рақам формати нотўғри: +998 XX XXX-XX-XX",
+    "company_required": "Компания номи киритилиши шарт",
+    "categories_required": "Камида битта категория танланиши шарт",
+    "search_placeholder": "Қидириш...",
+    "delete_confirm_title": "Ҳамкорни ўчириш",
+    "delete_confirm_message": "Ушбу ҳамкорни ўчиришни хоҳлайсизми?",
+    "delete_confirm_button": "Ўчириш",
+    "archive": "Архив",
+    "form": {
+        "fullname": "Тўлиқ исм",
+        "phone_number": "Телефон рақам",
+        "company": "Компания",
+        "notes": "Изоҳлар",
+        "categories": "Категориялар",
+        "logo": "Логотип",
+        "images": "Расмлар",
+        "select_categories": "Категорияларни танланг"
+    },
+    "table": {
+        "fullname": "Исм",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "categories": "Категориялар",
+        "actions": "Ҳаракатлар"
+    },
+    "messages": {
+        "success_create": "Ҳамкор муваффақиятли яратилди",
+        "success_update": "Ҳамкор муваффақиятли янгиланди",
+        "error_generic": "Хатолик юз берди"
+    },
+    "upload_photo": "Расм юклаш",
+    "update_photo": "Расмни янгилаш",
+    "allowed_formats_hint": "Рухсат этилган *.jpeg, *.jpg, *.png, *.webp",
+    "image_uploaded_success": "Расм муваффақиятли юкланди",
+    "image_upload_failed": "Расм юклашда хатолик",
+    "cancel": "Бекор қилиш",
+    "update": "Янгилаш",
+    "create": "Яратиш"
+}

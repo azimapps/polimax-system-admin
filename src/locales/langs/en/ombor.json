@@ -1,0 +1,26 @@
+{
+    "list_title": "Warehouse List",
+    "new_item": "New Material",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "required": "This field is required",
+    "form": {
+        "category": "Categories",
+        "select_category": "Select categories",
+        "name": "Material Name",
+        "quantity": "Quantity",
+        "unit": "Unit (kg, pcs, m2)",
+        "price": "Price",
+        "currency": "Currency",
+        "batch_number": "Batch Number",
+        "notes": "Notes",
+        "categories": {
+            "plyonka": "Plyonka",
+            "kraska": "Kraska",
+            "rastvaritel": "Rastvaritel",
+            "silindir": "Silindir",
+            "kley": "Kley"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "list_title": "Омбор Рўйхати",
+    "new_item": "Янги Материал",
+    "cancel": "Бекор қилиш",
+    "create": "Қўшиш",
+    "update": "Сақлаш",
+    "required": "Бу майдон талаб қилинади",
+    "form": {
+        "category": "Категориялар",
+        "select_category": "Категорияларни танланг",
+        "name": "Материал Номи",
+        "quantity": "Миқдор",
+        "unit": "Бирлик (кг, дона, м2)",
+        "price": "Нархи",
+        "currency": "Валюта",
+        "batch_number": "Партия рақами",
+        "notes": "Изоҳ",
+        "categories": {
+            "plyonka": "Plyonka",
+            "kraska": "Kraska",
+            "rastvaritel": "Rastvaritel",
+            "silindir": "Silindir",
+            "kley": "Kley"
+        }
+    }
+}

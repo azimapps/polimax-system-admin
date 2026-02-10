@@ -1,0 +1,38 @@
+{
+    "list_title": "Список партнеров",
+    "new_partner": "Новый партнер",
+    "edit_title": "Редактировать партнера",
+    "create_title": "Добавить партнера",
+    "fullname_required": "Полное имя обязательно",
+    "phone_required": "Номер телефона обязателен",
+    "phone_error": "Неверный формат номера телефона: +998 XX XXX-XX-XX",
+    "company_required": "Название компании обязательно",
+    "categories_required": "Выберите хотя бы одну категорию",
+    "search_placeholder": "Поиск...",
+    "delete_confirm_title": "Удалить партнера",
+    "delete_confirm_message": "Вы уверены, что хотите удалить этого партнера?",
+    "delete_confirm_button": "Удалить",
+    "archive": "Архив",
+    "form": {
+        "fullname": "Полное имя",
+        "phone_number": "Номер телефона",
+        "company": "Компания",
+        "notes": "Примечания",
+        "categories": "Категории"
+    },
+    "table": {
+        "fullname": "Имя",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "categories": "Категории",
+        "actions": "Действия"
+    },
+    "messages": {
+        "success_create": "Партнер успешно создан",
+        "success_update": "Партнер успешно обновлен",
+        "error_generic": "Произошла ошибка"
+    },
+    "cancel": "Отмена",
+    "update": "Обновить",
+    "create": "Сохранить"
+}

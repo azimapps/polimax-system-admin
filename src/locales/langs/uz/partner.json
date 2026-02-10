@@ -20,7 +20,8 @@
         "notes": "Izohlar",
         "categories": "Kategoriyalar",
         "logo": "Logotip",
-        "images": "Rasmlar"
+        "images": "Rasmlar",
+        "select_categories": "Kategoriyalarni tanlang"
     },
     "table": {
         "fullname": "Ism",

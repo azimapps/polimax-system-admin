@@ -2,7 +2,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { useTranslate } from 'src/locales';
-import { ComingSoonView } from 'src/sections/coming-soon/view/coming-soon-view';
+import { OmborListView } from 'src/sections/ombor/view/ombor-list-view';
 
 export default function OmborPage() {
     const { t } = useTranslate('navbar');
@@ -11,7 +11,7 @@ export default function OmborPage() {
             <Helmet>
                 <title> Dashboard: {t('ombor')}</title>
             </Helmet>
-            <ComingSoonView title={t('ombor')} />
+            <OmborListView />
         </>
     );
 }
