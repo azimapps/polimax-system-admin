@@ -151,10 +151,16 @@ export function StaffListView() {
                     onHistory={handleHistory}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
+                    hideType={!!currentType}
                 />
             </Card>
 
-            <StaffDialog open={dialog.value} onClose={dialog.onFalse} id={selectedId} />
+            <StaffDialog
+                open={dialog.value}
+                onClose={dialog.onFalse}
+                id={selectedId}
+                fixedType={currentType}
+            />
 
             <ConfirmDialog
                 open={confirmDialog.value}

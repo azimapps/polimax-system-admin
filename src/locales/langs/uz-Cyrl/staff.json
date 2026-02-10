@@ -1,0 +1,73 @@
+{
+    "list_title": "Ходимлар Рўйхати",
+    "create_title": "Янги Ходим Қўшиш",
+    "edit_title": "Ходимни Таҳрирлаш",
+    "new_staff": "Янги Ходим",
+    "archive": "Архив",
+    "search_placeholder": "Қидириш...",
+    "form": {
+        "fullname": "Тўлиқ исм",
+        "phone_number": "Телефон рақами",
+        "type": "Тури",
+        "worker_type": "Категория",
+        "accountant_type": "Ҳисобчи Тури",
+        "notes": "Тавсиф",
+        "fixed_salary": "Ойлик Маош (Fixed)",
+        "fixed_salary_simple": "Белгиланган Ойлик",
+        "worker_fixed_salary": "Ишчи Ойлик (Fixed)",
+        "starting_salary": "Бошланғич Ойлик",
+        "kpi_salary": "KPI Ойлик",
+        "kpi_asosiy_kursatkich": "KPI (Асосий Кўрсаткич)",
+        "kpi_tayyor_mahsulotlar_reskasi": "KPI Tayyor Mahsulotlar Reskasi",
+        "kpi_tayyor_mahsulot_peremotkasi": "KPI Tayyor Mahsulot Peremotkasi",
+        "kpi_plyonka_peremotkasi": "KPI Plyonka Peremotkasi",
+        "kpi_3_5_sm_reska": "KPI 3-5 sm Reska",
+        "kpi_asobiy_tarif": "KPI Asosiy Tarif",
+        "salary_details": "Маош Тафсилотлари"
+    },
+    "type": {
+        "crm": "CRM",
+        "accountant": "Ҳисобчи",
+        "planner": "Планлаштирувчи",
+        "worker": "Ишчи"
+    },
+    "role": {
+        "laminatsiya": "Laminatsiya",
+        "pechat": "Pechat",
+        "reska": "Rezka",
+        "kirim_chiqim": "Кирим-Чиқим",
+        "oylik": "Ойлик",
+        "ishlab_chiqarish": "Ишлаб Чиқариш",
+        "ombor": "Омбор"
+    },
+    "table": {
+        "avatar": "Аватар",
+        "fullname": "Тўлиқ исм",
+        "phone_number": "Телефон",
+        "type": "Тури",
+        "role": "Вазифаси",
+        "actions": "Ҳаракатлар"
+    },
+    "messages": {
+        "success_create": "Ходим муваффақиятли қўшилди",
+        "success_update": "Ходим муваффақиятли янгиланди",
+        "error_generic": "Хатолик юз берди",
+        "success_revert": "Версия қайтарилди"
+    },
+    "delete_confirm_title": "Ходимни ўчириш",
+    "delete_confirm_message": "Ҳақиқатан ҳам ўчирмоқчимисиз?",
+    "delete_confirm_button": "Ўчириш",
+    "history_title": "Тарих",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "Қайтариш",
+    "revert_confirm_message": "Ишончингиз комилми?",
+    "cancel": "Бекор қилиш",
+    "upload_photo": "Расм Юклаш",
+    "update_photo": "Расмни Янгилаш",
+    "allowed_formats_hint": "*.jpeg, *.jpg, *.png, *.gif",
+    "create": "Қўшиш",
+    "update": "Сақлаш"
+}

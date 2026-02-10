@@ -9,6 +9,8 @@ import { useGetStaffMember } from 'src/hooks/use-staff';
 
 import { useTranslate } from 'src/locales';
 
+import { StaffType } from 'src/types/staff';
+
 import { StaffForm } from './staff-form';
 
 // ----------------------------------------------------------------------
@@ -17,9 +19,10 @@ type Props = {
     open: boolean;
     onClose: () => void;
     id?: number;
+    fixedType?: StaffType;
 };
 
-export function StaffDialog({ open, onClose, id }: Props) {
+export function StaffDialog({ open, onClose, id, fixedType }: Props) {
     const { t } = useTranslate('staff');
 
     const { data: staff, isLoading } = useGetStaffMember(id || 0);
@@ -34,7 +37,7 @@ export function StaffDialog({ open, onClose, id }: Props) {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <StaffForm staff={id ? staff : undefined} onSuccess={onClose} onCancel={onClose} />
+                    <StaffForm staff={id ? staff : undefined} onSuccess={onClose} onCancel={onClose} fixedType={fixedType} />
                 )}
             </DialogContent>
         </Dialog>

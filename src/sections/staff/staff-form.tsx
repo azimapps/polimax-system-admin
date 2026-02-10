@@ -31,9 +31,10 @@ type Props = {
     staff?: Staff;
     onSuccess?: () => void;
     onCancel?: () => void;
+    fixedType?: StaffType;
 };
 
-export function StaffForm({ staff, onSuccess, onCancel }: Props) {
+export function StaffForm({ staff, onSuccess, onCancel, fixedType }: Props) {
     const { t } = useTranslate('staff');
     const isEdit = !!staff;
 
@@ -50,7 +51,7 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
             phone_number: staff?.phone_number || '',
             notes: staff?.notes || '',
             avatar_url: staff?.avatar_url || '',
-            type: staff?.type || StaffType.CRM,
+            type: staff?.type || fixedType || StaffType.CRM,
             accountant_type: staff?.accountant_type || null,
             worker_type: staff?.worker_type || null,
             fixed_salary: staff?.fixed_salary || 0,
@@ -68,6 +69,7 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
     const { handleSubmit, setValue, watch, reset } = methods;
 
     const currentType = watch('type');
+    const currentWorkerType = watch('worker_type');
     const avatarUrl = watch('avatar_url');
 
     useEffect(() => {
@@ -183,18 +185,20 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                         disableSelect
                     />
 
-                    <Field.Select
-                        name="type"
-                        label={t('form.type')}
-                        InputLabelProps={{ shrink: true }}
-                        required
-                    >
-                        {Object.values(StaffType).map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {t(`type.${option}`)}
-                            </MenuItem>
-                        ))}
-                    </Field.Select>
+                    {!fixedType && (
+                        <Field.Select
+                            name="type"
+                            label={t('form.type')}
+                            InputLabelProps={{ shrink: true }}
+                            required
+                        >
+                            {Object.values(StaffType).map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {t(`type.${option}`)}
+                                </MenuItem>
+                            ))}
+                        </Field.Select>
+                    )}
 
                     {currentType === StaffType.WORKER && (
                         <Field.Select
@@ -252,12 +256,26 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                         sm: 'repeat(2, 1fr)',
                     }}
                 >
-                    <Field.Text name="fixed_salary" label={t('form.fixed_salary')} InputLabelProps={{ shrink: true }} type="number" />
-                    <Field.Text name="worker_fixed_salary" label={t('form.worker_fixed_salary')} InputLabelProps={{ shrink: true }} type="number" />
-                    <Field.Text name="starting_salary" label={t('form.starting_salary')} InputLabelProps={{ shrink: true }} type="number" />
-                    <Field.Text name="kpi_salary" label={t('form.kpi_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    <Field.Text
+                        name="fixed_salary"
+                        label={currentWorkerType === WorkerType.RESKA ? t('form.fixed_salary') : t('form.fixed_salary_simple')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                    />
 
-                    {currentType === StaffType.WORKER && (
+                    {currentWorkerType === WorkerType.RESKA && (
+                        <Field.Text name="worker_fixed_salary" label={t('form.worker_fixed_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    )}
+
+                    <Field.Text name="starting_salary" label={t('form.starting_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    <Field.Text
+                        name="kpi_salary"
+                        label={currentWorkerType === WorkerType.RESKA ? t('form.kpi_salary') : t('form.kpi_asosiy_kursatkich')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                    />
+
+                    {currentType === StaffType.WORKER && currentWorkerType === WorkerType.RESKA && (
                         <>
                             <Field.Text name="kpi_tayyor_mahsulotlar_reskasi" label={t('form.kpi_tayyor_mahsulotlar_reskasi')} InputLabelProps={{ shrink: true }} type="number" />
                             <Field.Text name="kpi_tayyor_mahsulot_peremotkasi" label={t('form.kpi_tayyor_mahsulot_peremotkasi')} InputLabelProps={{ shrink: true }} type="number" />
