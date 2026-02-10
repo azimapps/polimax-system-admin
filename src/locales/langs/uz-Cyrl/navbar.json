@@ -9,5 +9,15 @@
   "clients": "Клиентлар",
   "crm": "CRM",
   "materials": "Давомат Материаллар",
-  "orders": "Буюртма Китоби"
+  "orders": "Буюртма Китоби",
+  "partners": "Хамкорлар",
+  "management": "Бошқарув",
+  "staff": "Ходимлар",
+  "stanoklar": "Станоклар",
+  "workers": "Ишчилар",
+  "accountants": "Бухгалтерлар",
+  "planners": "Режалаштирувчилар",
+  "pechat": "Печат",
+  "reska": "Реска",
+  "laminatsiya": "Ламинация"
 }

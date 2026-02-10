@@ -27,6 +27,25 @@ export const paths = {
       list: '/partners/list',
       archived: '/partners/archived',
     },
+    staff: {
+      root: '/staff',
+      list: '/staff/list',
+      archived: '/staff/archived',
+      crm: '/staff/crm',
+      workers: '/staff/workers',
+      accountants: '/staff/accountants',
+      planners: '/staff/planners',
+    },
+    stanoklar: {
+      root: '/stanoklar',
+      list: '/stanoklar/list',
+      archived: '/stanoklar/archived',
+      pechat: '/stanoklar/pechat',
+      reska: '/stanoklar/reska',
+      laminatsiya: '/stanoklar/laminatsiya',
+      brigades: (id: number) => `/stanoklar/${id}/brigades`,
+      products: (id: number) => `/stanoklar/${id}/products`,
+    },
     games: {
       wordBattle: {
         root: '/word-battle',

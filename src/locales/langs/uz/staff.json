@@ -1,0 +1,71 @@
+{
+    "list_title": "Xodimlar Ro'yxati",
+    "create_title": "Yangi Xodim Qo'shish",
+    "edit_title": "Xodimni Tahrirlash",
+    "new_staff": "Yangi Xodim",
+    "archive": "Arxiv",
+    "search_placeholder": "Qidirish...",
+    "form": {
+        "fullname": "F.I.SH",
+        "phone_number": "Telefon raqami",
+        "type": "Turi",
+        "worker_type": "Ishchi Turi",
+        "accountant_type": "Hisobchi Turi",
+        "notes": "Izohlar",
+        "fixed_salary": "Oylik Maosh (Fixed)",
+        "worker_fixed_salary": "Ishchi Oylik (Fixed)",
+        "starting_salary": "Boshlang'ich Oylik",
+        "kpi_salary": "KPI Oylik",
+        "kpi_tayyor_mahsulotlar_reskasi": "KPI Tayyor Mahsulotlar Reskasi",
+        "kpi_tayyor_mahsulot_peremotkasi": "KPI Tayyor Mahsulot Peremotkasi",
+        "kpi_plyonka_peremotkasi": "KPI Plyonka Peremotkasi",
+        "kpi_3_5_sm_reska": "KPI 3-5 sm Reska",
+        "kpi_asobiy_tarif": "KPI Asosiy Tarif",
+        "salary_details": "Maosh Tafsilotlari"
+    },
+    "type": {
+        "crm": "CRM",
+        "accountant": "Hisobchi",
+        "planner": "Planlashtiruvchi",
+        "worker": "Ishchi"
+    },
+    "role": {
+        "laminatsiya": "Laminatsiya",
+        "pechat": "Pechat",
+        "reska": "Reska",
+        "kirim_chiqim": "Kirim-Chiqim",
+        "oylik": "Oylik",
+        "ishlab_chiqarish": "Ishlab Chiqarish",
+        "ombor": "Ombor"
+    },
+    "table": {
+        "avatar": "Avatar",
+        "fullname": "F.I.SH",
+        "phone_number": "Telefon",
+        "type": "Turi",
+        "role": "Vazifasi",
+        "actions": "Harakatlar"
+    },
+    "messages": {
+        "success_create": "Xodim muvaffaqiyatli qo'shildi",
+        "success_update": "Xodim muvaffaqiyatli yangilandi",
+        "error_generic": "Xatolik yuz berdi",
+        "success_revert": "Versiya qaytarildi"
+    },
+    "delete_confirm_title": "Xodimni o'chirish",
+    "delete_confirm_message": "Haqiqatan ham o'chirmoqchimisiz?",
+    "delete_confirm_button": "O'chirish",
+    "history_title": "Tarix",
+    "version": "Versiya",
+    "current_version": "Joriy",
+    "deleted": "O'chirilgan",
+    "revert_button": "Qaytarish",
+    "revert_confirm_title": "Qaytarish",
+    "revert_confirm_message": "Ishonchingiz komilmi?",
+    "cancel": "Bekor qilish",
+    "upload_photo": "Rasm Yuklash",
+    "update_photo": "Rasmni Yangilash",
+    "allowed_formats_hint": "*.jpeg, *.jpg, *.png, *.gif",
+    "create": "Qo'shish",
+    "update": "Saqlash"
+}

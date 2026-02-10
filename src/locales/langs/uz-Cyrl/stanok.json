@@ -1,0 +1,57 @@
+{
+    "list_title": "Станоклар Рўйхати",
+    "create_title": "Янги Станок Қўшиш",
+    "edit_title": "Станокни Таҳрирлаш",
+    "new_stanok": "Янги Станок",
+    "archive": "Архив",
+    "search_placeholder": "Қидириш...",
+    "coming_soon": "Тез орада...",
+    "form": {
+        "name": "Номи",
+        "country_code": "Давлат",
+        "type": "Тури"
+    },
+    "type": {
+        "pechat": "Печат",
+        "reska": "Реска",
+        "laminatsiya": "Ламинация"
+    },
+    "table": {
+        "name": "Номи",
+        "country_code": "Давлат код",
+        "type": "Тури",
+        "actions": "Ҳаракатлар"
+    },
+    "country": {
+        "cn": "Хитой",
+        "de": "Немис",
+        "uz": "Ўзбекистон",
+        "ru": "Россия",
+        "gb": "Англия",
+        "in": "Ҳиндистон"
+    },
+    "messages": {
+        "success_create": "Станок муваффақиятли қўшилди",
+        "success_update": "Станок муваффақиятли янгиланди",
+        "error_generic": "Хатолик юз берди"
+    },
+    "delete_confirm_title": "Станокни ўчириш",
+    "delete_confirm_message": "Ҳақиқатан ҳам ўчирмоқчимисиз?",
+    "delete_confirm_button": "Ўчириш",
+    "history_title": "Тарих",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "Қайтариш",
+    "revert_confirm_message": "Ишончингиз комилми?",
+    "cancel": "Бекор қилиш",
+    "create": "Қўшиш",
+    "update": "Сақлаш",
+    "actions_menu": {
+        "brigades": "Бригада / гуруҳлар",
+        "products": "Маҳсулотлар",
+        "edit": "Станокни таҳрирлаш",
+        "delete": "Ўчириш"
+    }
+}

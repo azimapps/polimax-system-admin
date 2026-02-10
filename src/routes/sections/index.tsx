@@ -45,6 +45,14 @@ const SettingsPicsWord = lazy(() => import('src/pages/dashboard/4pics-1word/sett
 // Partners
 const PartnersList = lazy(() => import('src/pages/partners/list'));
 const PartnersArchived = lazy(() => import('src/pages/partners/archived'));
+// Staff
+const StaffList = lazy(() => import('src/pages/staff/list'));
+const StaffArchived = lazy(() => import('src/pages/staff/archived'));
+// Stanoklar
+const StanokList = lazy(() => import('src/pages/stanok/list'));
+const StanokArchived = lazy(() => import('src/pages/stanok/archived'));
+const StanokBrigades = lazy(() => import('src/pages/stanok/brigades'));
+const StanokProducts = lazy(() => import('src/pages/stanok/products'));
 // Games - Odd One Out
 const OddOneOutQuestionsList = lazy(() => import('src/pages/dashboard/odd-one-out/list'));
 // ----------------------------------------------------------------------
@@ -96,6 +104,29 @@ export const routesSection: RouteObject[] = [
         children: [
           { path: 'list', element: <PartnersList /> },
           { path: 'archived', element: <PartnersArchived /> },
+        ],
+      },
+      {
+        path: 'staff',
+        children: [
+          { path: 'list', element: <StaffList /> },
+          { path: 'crm', element: <StaffList /> },
+          { path: 'workers', element: <StaffList /> },
+          { path: 'accountants', element: <StaffList /> },
+          { path: 'planners', element: <StaffList /> },
+          { path: 'archived', element: <StaffArchived /> },
+        ],
+      },
+      {
+        path: 'stanoklar',
+        children: [
+          { path: 'list', element: <StanokList /> },
+          { path: 'pechat', element: <StanokList /> },
+          { path: 'reska', element: <StanokList /> },
+          { path: 'laminatsiya', element: <StanokList /> },
+          { path: ':id/brigades', element: <StanokBrigades /> },
+          { path: ':id/products', element: <StanokProducts /> },
+          { path: 'archived', element: <StanokArchived /> },
         ],
       },
       {
