@@ -55,6 +55,13 @@ const StanokBrigades = lazy(() => import('src/pages/stanok/brigades'));
 const StanokProducts = lazy(() => import('src/pages/stanok/products'));
 // Games - Odd One Out
 const OddOneOutQuestionsList = lazy(() => import('src/pages/dashboard/odd-one-out/list'));
+// New Sections
+const OmborPage = lazy(() => import('src/pages/ombor/page'));
+const FinancePage = lazy(() => import('src/pages/finance/page'));
+const ProductionPage = lazy(() => import('src/pages/production/page'));
+const OrderPlanningPage = lazy(() => import('src/pages/order-planning/page'));
+const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
+const SushkaPaneliPage = lazy(() => import('src/pages/sushka-paneli/page'));
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -128,6 +135,55 @@ export const routesSection: RouteObject[] = [
           { path: ':id/products', element: <StanokProducts /> },
           { path: 'archived', element: <StanokArchived /> },
         ],
+      },
+      {
+        path: 'ombor',
+        children: [
+          { index: true, element: <OmborPage /> },
+          { path: 'analytics', element: <OmborPage /> },
+          { path: 'plyonka', element: <OmborPage /> },
+          { path: 'kraska', element: <OmborPage /> },
+          { path: 'suyuq-kraska', element: <OmborPage /> },
+          { path: 'rastvaritel', element: <OmborPage /> },
+          { path: 'rastvaritel-mix', element: <OmborPage /> },
+          { path: 'cilindr', element: <OmborPage /> },
+          { path: 'kley', element: <OmborPage /> },
+          { path: 'zapchastlar', element: <OmborPage /> },
+          { path: 'otxod', element: <OmborPage /> },
+          { path: 'finished-products-toshkent', element: <OmborPage /> },
+          { path: 'finished-products-angren', element: <OmborPage /> },
+        ],
+      },
+      {
+        path: 'sushka-paneli',
+        element: <SushkaPaneliPage />,
+      },
+      {
+        path: 'finance',
+        children: [
+          { index: true, element: <FinancePage /> },
+          { path: 'cash', element: <FinancePage /> },
+          { path: 'transfer', element: <FinancePage /> },
+        ],
+      },
+      {
+        path: 'production',
+        children: [
+          { index: true, element: <ProductionPage /> },
+          { path: 'reports', element: <ProductionPage /> },
+        ],
+      },
+      {
+        path: 'order-planning',
+        children: [
+          { index: true, element: <OrderPlanningPage /> },
+          { path: 'in-progress', element: <OrderPlanningPage /> },
+          { path: 'finished', element: <OrderPlanningPage /> },
+        ],
+      },
+      {
+        path: 'mixing-station',
+        element: <MixingStationPage />,
       },
       {
         path: 'word-battle',

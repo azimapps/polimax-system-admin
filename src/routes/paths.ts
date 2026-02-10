@@ -14,6 +14,21 @@ export const paths = {
       list: `/user/list`,
       profile: `/user/profile`,
     },
+    ombor: {
+      root: '/ombor',
+      analytics: '/ombor/analytics',
+      plyonka: '/ombor/plyonka',
+      kraska: '/ombor/kraska',
+      suyuqKraska: '/ombor/suyuq-kraska',
+      rastvaritel: '/ombor/rastvaritel',
+      rastvaritelMix: '/ombor/rastvaritel-mix',
+      cilindr: '/ombor/cilindr',
+      kley: '/ombor/kley',
+      zapchastlar: '/ombor/zapchastlar',
+      otxod: '/ombor/otxod',
+      finishedProductsToshkent: '/ombor/finished-products-toshkent',
+      finishedProductsAngren: '/ombor/finished-products-angren',
+    },
     klientlar: {
       root: '/klientlar',
       list: '/klientlar/list',
@@ -21,6 +36,9 @@ export const paths = {
       archived: '/klientlar/archived',
       detail: (id: string) => `/klientlar/${id}`,
       edit: (id: string) => `/klientlar/${id}/edit`,
+      crm: '/klientlar/crm',
+      materials: '/klientlar/materials',
+      orders: '/klientlar/orders',
     },
     partners: {
       root: '/partners',
@@ -45,6 +63,26 @@ export const paths = {
       laminatsiya: '/stanoklar/laminatsiya',
       brigades: (id: number) => `/stanoklar/${id}/brigades`,
       products: (id: number) => `/stanoklar/${id}/products`,
+    },
+    sushkaPaneli: {
+      root: '/sushka-paneli',
+    },
+    finance: {
+      root: '/finance',
+      cash: '/finance/cash',
+      transfer: '/finance/transfer',
+    },
+    production: {
+      root: '/production',
+      reports: '/production/reports',
+    },
+    orderPlanning: {
+      root: '/order-planning',
+      inProgress: '/order-planning/in-progress',
+      finished: '/order-planning/finished',
+    },
+    mixingStation: {
+      root: '/mixing-station',
     },
     games: {
       wordBattle: {
