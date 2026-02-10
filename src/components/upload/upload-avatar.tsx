@@ -80,7 +80,7 @@ export function UploadAvatar({
 
   const renderPreview = () =>
     hasFile && (
-      <Image alt="Avatar" src={preview} sx={{ width: 1, height: 1, borderRadius: '50%' }} />
+      <Image alt="Avatar" src={preview} visibleByDefault sx={{ width: 1, height: 1, borderRadius: '50%' }} />
     );
 
   const renderPlaceholder = () => (
@@ -97,14 +97,17 @@ export function UploadAvatar({
         borderRadius: '50%',
         position: 'absolute',
         alignItems: 'center',
-        color: 'text.disabled',
         flexDirection: 'column',
         justifyContent: 'center',
-        bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-        transition: theme.transitions.create(['opacity'], {
+        color: 'primary.main',
+        bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
+        transition: theme.transitions.create(['opacity', 'background-color'], {
           duration: theme.transitions.duration.shorter,
         }),
-        '&:hover': { opacity: 0.72 },
+        '&:hover': {
+          opacity: 0.85,
+          bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.12),
+        },
         ...(hasError && {
           color: 'error.main',
           bgcolor: varAlpha(theme.vars.palette.error.mainChannel, 0.08),
@@ -119,8 +122,8 @@ export function UploadAvatar({
     >
       <Iconify icon="solar:camera-add-bold" width={32} />
 
-      <Typography variant="caption">
-        {placeholder || (hasFile ? 'Update photo' : 'Upload photo')}
+      <Typography variant="caption" sx={{ fontWeight: 'fontWeightSemiBold' }}>
+        {placeholder || (hasFile ? 'Update' : 'Upload')}
       </Typography>
     </Box>
   );
@@ -133,9 +136,19 @@ export function UploadAvatar({
         overflow: 'hidden',
         borderRadius: '50%',
         position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       {renderPreview()}
+      {!hasFile && !preview && (
+        <Iconify
+          icon="solar:user-rounded-bold"
+          width={64}
+          sx={{ color: 'primary.main', opacity: 0.24, position: 'absolute' }}
+        />
+      )}
       {renderPlaceholder()}
     </Box>
   );
@@ -154,7 +167,14 @@ export function UploadAvatar({
             cursor: 'pointer',
             overflow: 'hidden',
             borderRadius: '50%',
-            border: `1px dashed ${varAlpha(theme.vars.palette.grey['500Channel'], 0.2)}`,
+            border: `1px dashed ${varAlpha(theme.vars.palette.primary.mainChannel, 0.2)}`,
+            transition: theme.transitions.create(['border-color', 'box-shadow'], {
+              duration: theme.transitions.duration.shorter,
+            }),
+            '&:hover': {
+              borderColor: 'primary.main',
+              boxShadow: `0 0 0 4px ${varAlpha(theme.vars.palette.primary.mainChannel, 0.08)}`,
+            },
             ...(isDragActive && { opacity: 0.72 }),
             ...(disabled && { opacity: 0.48, pointerEvents: 'none' }),
             ...(hasError && { borderColor: 'error.main' }),

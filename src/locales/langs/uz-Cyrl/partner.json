@@ -18,7 +18,14 @@
         "phone_number": "Телефон рақам",
         "company": "Компания",
         "notes": "Изоҳлар",
-        "categories": "Категориялар",
+        "category": "Категориялар",
+        "categories": {
+            "plyonka": "Плёнка",
+            "kraska": "Бўёқ",
+            "rastvaritel": "Эритувчи",
+            "silindir": "Цилиндр",
+            "kley": "Елим"
+        },
         "logo": "Логотип",
         "images": "Расмлар",
         "select_categories": "Категорияларни танланг"
@@ -28,6 +35,7 @@
         "phone_number": "Телефон",
         "company": "Компания",
         "categories": "Категориялар",
+        "documents": "Ҳужжатлар",
         "actions": "Ҳаракатлар"
     },
     "messages": {
@@ -37,7 +45,7 @@
     },
     "upload_photo": "Расм юклаш",
     "update_photo": "Расмни янгилаш",
-    "allowed_formats_hint": "Рухсат этилган *.jpeg, *.jpg, *.png, *.webp",
+    "allowed_formats_hint": "Рухсат этилган *.jpeg, *.jpg, *.png, *.webp, *.pdf",
     "image_uploaded_success": "Расм муваффақиятли юкланди",
     "image_upload_failed": "Расм юклашда хатолик",
     "cancel": "Бекор қилиш",

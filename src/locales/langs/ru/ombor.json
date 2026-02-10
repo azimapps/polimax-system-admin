@@ -16,11 +16,11 @@
         "batch_number": "Номер партии",
         "notes": "Заметки",
         "categories": {
-            "plyonka": "Plyonka",
-            "kraska": "Kraska",
-            "rastvaritel": "Rastvaritel",
-            "silindir": "Silindir",
-            "kley": "Kley"
+            "plyonka": "Пленка",
+            "kraska": "Краска",
+            "rastvaritel": "Растворитель",
+            "silindir": "Цилиндр",
+            "kley": "Клей"
         }
     }
 }

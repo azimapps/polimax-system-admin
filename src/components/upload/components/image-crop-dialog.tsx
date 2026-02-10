@@ -1,9 +1,9 @@
-import type { Area, Point } from 'react-easy-crop';
-
-import Cropper from 'react-easy-crop';
 import { useState, useCallback } from 'react';
+import { varAlpha } from 'minimal-shared/utils';
+import Cropper, { type Area, type Point } from 'react-easy-crop';
 
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -102,8 +102,8 @@ export function ImageCropDialog({ open, onClose, image, originalFile, onCropComp
 
     // As Blob
     return new Promise((resolve, reject) => {
-      // Start with high quality
-      let quality = 0.9;
+      // Start with moderate quality
+      let quality = 0.7;
 
       const compress = () => {
         canvas.toBlob(
@@ -113,8 +113,8 @@ export function ImageCropDialog({ open, onClose, image, originalFile, onCropComp
               return;
             }
 
-            // Check if file size is > 300KB (307200 bytes)
-            if (blob.size > 307200 && quality > 0.1) {
+            // Check if file size is > 150KB (153600 bytes)
+            if (blob.size > 153600 && quality > 0.1) {
               quality -= 0.1;
               compress();
             } else {
@@ -215,41 +215,67 @@ export function ImageCropDialog({ open, onClose, image, originalFile, onCropComp
 
     return (
       <>
-        <DialogContent sx={{ textAlign: 'center' }}>
+        <DialogContent sx={{ textAlign: 'center', py: 5 }}>
           <Box
             component="img"
             src={compressedFile ? URL.createObjectURL(compressedFile) : ''}
-            sx={{ width: 200, height: 200, borderRadius: '50%', objectFit: 'cover', mb: 3 }}
+            sx={{
+              width: 180,
+              height: 180,
+              borderRadius: '50%',
+              objectFit: 'cover',
+              mb: 4,
+              boxShadow: (theme) => theme.customShadows.z24,
+              border: (theme) => `solid 4px ${theme.vars.palette.background.paper}`
+            }}
           />
 
-          <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-              {t('original_size')}:{' '}
-              <Box component="span" sx={{ color: 'text.primary', fontWeight: 'bold' }}>
-                {fData(originalSize)}
+          <Box
+            sx={{
+              p: 3,
+              mx: 'auto',
+              maxWidth: 400,
+              bgcolor: (theme) => varAlpha(theme.vars.palette.grey['800Channel'], 0.12),
+              borderRadius: 2,
+              border: (theme) => `1px solid ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {t('original_size')}
+                </Typography>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'fontWeightBold' }}>
+                  {fData(originalSize)}
+                </Typography>
               </Box>
-            </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-              {t('optimized_size')}:{' '}
-              <Box component="span" sx={{ color: 'success.main', fontWeight: 'bold' }}>
-                {fData(compressedSize)}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {t('optimized_size')}
+                </Typography>
+                <Typography variant="subtitle2" sx={{ color: 'success.main', fontWeight: 'fontWeightBold' }}>
+                  {fData(compressedSize)}
+                </Typography>
               </Box>
-            </Typography>
 
-            {savings > 0 && (
-              <Typography variant="subtitle2" sx={{ color: 'success.main' }}>
-                {t('savings')}: {fPercent(savings)}
-              </Typography>
-            )}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: (theme) => `dashed 1px ${theme.vars.palette.divider}` }}>
+                <Typography variant="subtitle2" sx={{ color: 'success.main', fontWeight: 'fontWeightBold' }}>
+                  {t('savings')}
+                </Typography>
+                <Typography variant="h6" sx={{ color: 'success.main', fontWeight: 'fontWeightBold' }}>
+                  {fPercent(savings)}
+                </Typography>
+              </Box>
+            </Stack>
           </Box>
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleBack} variant="outlined" color="inherit">
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button onClick={handleBack} variant="outlined" color="inherit" sx={{ minWidth: 100 }}>
             {t('back')}
           </Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
+          <Button onClick={handleSave} variant="contained" color="success" sx={{ minWidth: 100 }}>
             {t('save')}
           </Button>
         </DialogActions>

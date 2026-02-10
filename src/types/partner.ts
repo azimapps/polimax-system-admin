@@ -17,7 +17,7 @@ export type Partner = {
     previous_id: number | null;
 };
 
-export type PartnerListItem = Pick<Partner, 'id' | 'version' | 'fullname' | 'company' | 'categories' | 'phone_number'>;
+export type PartnerListItem = Pick<Partner, 'id' | 'version' | 'fullname' | 'company' | 'categories' | 'phone_number' | 'logo_url' | 'image_urls'>;
 
 export type CreatePartnerRequest = {
     fullname: string;

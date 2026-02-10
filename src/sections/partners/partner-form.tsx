@@ -17,6 +17,8 @@ import { uploadApi } from 'src/api/upload-api';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { OmborCategory } from 'src/types/ombor';
+
 import { getPartnerFormSchema } from './partner-schema';
 
 // ----------------------------------------------------------------------
@@ -167,6 +169,7 @@ export function PartnerForm({ partner, onSuccess }: Props) {
                                 country="UZ"
                                 placeholder="99 XXX XX XX"
                                 InputLabelProps={{ shrink: true }}
+                                disableSelect
                                 required
                             />
                             <Field.Text
@@ -178,11 +181,11 @@ export function PartnerForm({ partner, onSuccess }: Props) {
                             />
                             <Field.Autocomplete
                                 name="categories"
-                                label={t('form.categories')}
+                                label={t('form.category')}
                                 multiple
                                 placeholder={t('form.select_categories')}
-                                options={['Plyonka', 'Kraska', 'Rastvaritel', 'Silindir', 'Kley']}
-                                getOptionLabel={(option) => option}
+                                options={Object.values(OmborCategory)}
+                                getOptionLabel={(option) => t(`form.categories.${option as string}`)}
                                 slotProps={{
                                     textfield: {
                                         InputLabelProps: { shrink: true }

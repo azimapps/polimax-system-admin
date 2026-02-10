@@ -110,22 +110,21 @@ export function PartnerListView() {
                 sx={{ mb: 3 }}
             />
 
-            <Card>
-                <Container sx={{ p: 2 }}>
+            <Card sx={{ borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
+                <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center' }}>
                     <TextField
-                        sx={{ maxWidth: 320 }}
+                        fullWidth
+                        sx={{ maxWidth: 360 }}
                         value={searchQuery}
                         onChange={handleSearch}
                         placeholder={t('search_placeholder')}
                         InputProps={{
                             startAdornment: (
-                                <Box component="span" sx={{ color: 'text.disabled', mr: 1, display: 'flex' }}>
-                                    <Iconify icon="eva:search-fill" />
-                                </Box>
+                                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', mr: 1, width: 20, height: 20 }} />
                             ),
                         }}
                     />
-                </Container>
+                </Box>
 
                 <PartnerTable
                     partners={partners}

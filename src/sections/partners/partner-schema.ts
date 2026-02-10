@@ -9,7 +9,7 @@ export const getPartnerFormSchema = (t: (key: string) => string) =>
             .refine(
                 (val) => {
                     const digits = val.replace(/\D/g, '');
-                    return digits.startsWith('998') && digits.length === 12;
+                    return digits.length === 12;
                 },
                 { message: t('phone_error') }
             ),

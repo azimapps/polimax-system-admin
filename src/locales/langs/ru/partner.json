@@ -18,13 +18,21 @@
         "phone_number": "Номер телефона",
         "company": "Компания",
         "notes": "Примечания",
-        "categories": "Категории"
+        "category": "Категории",
+        "categories": {
+            "plyonka": "Пленка",
+            "kraska": "Краска",
+            "rastvaritel": "Растворитель",
+            "silindir": "Цилиндр",
+            "kley": "Клей"
+        }
     },
     "table": {
         "fullname": "Имя",
         "phone_number": "Телефон",
         "company": "Компания",
         "categories": "Категории",
+        "documents": "Документы",
         "actions": "Действия"
     },
     "messages": {
@@ -32,6 +40,11 @@
         "success_update": "Партнер успешно обновлен",
         "error_generic": "Произошла ошибка"
     },
+    "upload_photo": "Загрузить фото",
+    "update_photo": "Обновить фото",
+    "allowed_formats_hint": "Разрешенные форматы: *.jpeg, *.jpg, *.png, *.webp, *.pdf",
+    "image_uploaded_success": "Изображение успешно загружено",
+    "image_upload_failed": "Ошибка при загрузке изображения",
     "cancel": "Отмена",
     "update": "Обновить",
     "create": "Сохранить"

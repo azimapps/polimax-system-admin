@@ -18,7 +18,14 @@
         "phone_number": "Telefon raqam",
         "company": "Kompaniya",
         "notes": "Izohlar",
-        "categories": "Kategoriyalar",
+        "category": "Kategoriyalar",
+        "categories": {
+            "plyonka": "Plyonka",
+            "kraska": "Bo'yoq",
+            "rastvaritel": "Erituvchi",
+            "silindir": "Silindr",
+            "kley": "Yelim"
+        },
         "logo": "Logotip",
         "images": "Rasmlar",
         "select_categories": "Kategoriyalarni tanlang"
@@ -28,6 +35,7 @@
         "phone_number": "Telefon",
         "company": "Kompaniya",
         "categories": "Kategoriyalar",
+        "documents": "Hujjatlar",
         "actions": "Harakatlar"
     },
     "messages": {
@@ -37,7 +45,7 @@
     },
     "upload_photo": "Rasm yuklash",
     "update_photo": "Rasmni yangilash",
-    "allowed_formats_hint": "Ruxsat etilgan *.jpeg, *.jpg, *.png, *.webp",
+    "allowed_formats_hint": "Ruxsat etilgan *.jpeg, *.jpg, *.png, *.webp, *.pdf",
     "image_uploaded_success": "Rasm muvaffaqiyatli yuklandi",
     "image_upload_failed": "Rasm yuklashda xatolik",
     "cancel": "Bekor qilish",

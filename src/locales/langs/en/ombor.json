@@ -16,11 +16,11 @@
         "batch_number": "Batch Number",
         "notes": "Notes",
         "categories": {
-            "plyonka": "Plyonka",
-            "kraska": "Kraska",
-            "rastvaritel": "Rastvaritel",
-            "silindir": "Silindir",
-            "kley": "Kley"
+            "plyonka": "Film",
+            "kraska": "Paint",
+            "rastvaritel": "Solvent",
+            "silindir": "Cylinder",
+            "kley": "Glue"
         }
     }
 }

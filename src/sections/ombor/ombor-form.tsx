@@ -72,11 +72,6 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
         }
     });
 
-    const CATEGORY_OPTIONS = Object.values(OmborCategory).map((val) => ({
-        label: t(`form.categories.${val}`),
-        value: val,
-    }));
-
     return (
         <Form methods={methods} onSubmit={onSubmit}>
             <Stack spacing={3} sx={{ pt: 2 }}>
@@ -102,9 +97,8 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                         label={t('form.category')}
                         placeholder={t('form.select_category')}
                         multiple
-                        options={CATEGORY_OPTIONS}
-                        getOptionLabel={(option: any) => option.label}
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        options={Object.values(OmborCategory)}
+                        getOptionLabel={(option) => t(`form.categories.${option as string}`)}
                         sx={{ gridColumn: 'span 2' }}
                         slotProps={{
                             textfield: {

@@ -13,11 +13,9 @@ export const getStaffFormSchema = (t: (key: string) => string) =>
             .nullable()
             .refine(
                 (val) => {
-                    if (!val) return true; // Optional
-                    // Remove all non-digit characters
+                    if (!val) return true;
                     const digits = val.replace(/\D/g, '');
-                    // Check if it starts with 998 and has exactly 12 digits (998 + 9 digits)
-                    return digits.startsWith('998') && digits.length === 12;
+                    return digits.length === 12;
                 },
                 { message: t('phone_error') }
             ),

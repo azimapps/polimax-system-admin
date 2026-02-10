@@ -101,7 +101,20 @@ export function PhoneInput({
         label={label}
         value={cleanValue}
         variant={variant}
-        onChange={onChange}
+        onChange={(newValue) => {
+          if (disableSelect && selectedCountry === 'UZ' && newValue) {
+            const localPart = newValue.replace('+998', '');
+            if (localPart.length > 9) {
+              onChange(`+998${localPart.slice(0, 9)}` as Value);
+              return;
+            }
+          }
+          if (newValue) {
+            onChange(newValue);
+          } else {
+            onChange('' as Value);
+          }
+        }}
         hiddenLabel={!label}
         country={selectedCountry}
         inputComponent={CustomInput}
@@ -109,6 +122,26 @@ export function PhoneInput({
         slotProps={{
           inputLabel: { shrink: true },
           input: {
+            inputProps: {
+              maxLength: selectedCountry === 'UZ' ? 12 : undefined,
+            },
+            startAdornment: disableSelect && (
+              <InputAdornment position="start">
+                <Box component="span" sx={{ color: 'text.primary', typography: 'subtitle2', ml: 0.5 }}>
+                  {countries.find((c) => c.code === selectedCountry)?.phone ? `+${countries.find((c) => c.code === selectedCountry)?.phone}` : ''}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    ml: 1,
+                    mr: 0.5,
+                    width: '1px',
+                    height: '24px',
+                    bgcolor: 'divider',
+                  }}
+                />
+              </InputAdornment>
+            ),
             endAdornment: cleanValue && (
               <InputAdornment position="end">
                 <IconButton size="small" edge="end" onClick={handleClear}>
@@ -127,7 +160,17 @@ export function PhoneInput({
 // ----------------------------------------------------------------------
 
 function CustomInput({ ref, ...other }: TextFieldProps) {
-  return <TextField inputRef={ref} {...other} />;
+  return (
+    <TextField
+      inputRef={ref}
+      slotProps={{
+        htmlInput: {
+          maxLength: (other as any).maxLength,
+        },
+      }}
+      {...other}
+    />
+  );
 }
 
 // ----------------------------------------------------------------------

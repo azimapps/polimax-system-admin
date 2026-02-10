@@ -132,12 +132,21 @@ export function KlientlarForm({ client, onSuccess }: Props) {
             label={t('form.phone_number')}
             country="UZ"
             placeholder={t('phone_placeholder')}
+            InputLabelProps={{ shrink: true }}
+            disableSelect
             required
           />
-          <Field.Text name="company" label={t('form.company')} />
+          <Field.Text
+            name="company"
+            label={t('form.company')}
+            placeholder={t('form.company')}
+            InputLabelProps={{ shrink: true }}
+          />
           <Field.Text
             name="notes"
             label={t('form.notes')}
+            placeholder={t('form.notes')}
+            InputLabelProps={{ shrink: true }}
             multiline
             rows={4}
             sx={{ gridColumn: '1 / -1' }}

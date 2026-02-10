@@ -167,15 +167,28 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                     }}
                     sx={{ mt: 2 }}
                 >
-                    <Field.Text name="fullname" label={t('form.fullname')} required />
+                    <Field.Text
+                        name="fullname"
+                        label={t('form.fullname')}
+                        placeholder={t('form.fullname')}
+                        InputLabelProps={{ shrink: true }}
+                        required
+                    />
                     <Field.Phone
                         name="phone_number"
                         label={t('form.phone_number')}
                         country="UZ"
                         placeholder={t('phone_placeholder')}
+                        InputLabelProps={{ shrink: true }}
+                        disableSelect
                     />
 
-                    <Field.Select name="type" label={t('form.type')} required>
+                    <Field.Select
+                        name="type"
+                        label={t('form.type')}
+                        InputLabelProps={{ shrink: true }}
+                        required
+                    >
                         {Object.values(StaffType).map((option) => (
                             <MenuItem key={option} value={option}>
                                 {t(`type.${option}`)}
@@ -184,7 +197,12 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                     </Field.Select>
 
                     {currentType === StaffType.WORKER && (
-                        <Field.Select name="worker_type" label={t('form.worker_type')} required>
+                        <Field.Select
+                            name="worker_type"
+                            label={t('form.worker_type')}
+                            InputLabelProps={{ shrink: true }}
+                            required
+                        >
                             {Object.values(WorkerType).map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {t(`role.${option}`)}
@@ -194,7 +212,12 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                     )}
 
                     {currentType === StaffType.ACCOUNTANT && (
-                        <Field.Select name="accountant_type" label={t('form.accountant_type')} required>
+                        <Field.Select
+                            name="accountant_type"
+                            label={t('form.accountant_type')}
+                            InputLabelProps={{ shrink: true }}
+                            required
+                        >
                             {Object.values(AccountantType).map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {t(`role.${option}`)}
@@ -206,6 +229,8 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                     <Field.Text
                         name="notes"
                         label={t('form.notes')}
+                        placeholder={t('form.notes')}
+                        InputLabelProps={{ shrink: true }}
                         multiline
                         rows={4}
                         sx={{ gridColumn: '1 / -1' }}
@@ -227,18 +252,18 @@ export function StaffForm({ staff, onSuccess, onCancel }: Props) {
                         sm: 'repeat(2, 1fr)',
                     }}
                 >
-                    <Field.Text name="fixed_salary" label={t('form.fixed_salary')} type="number" />
-                    <Field.Text name="worker_fixed_salary" label={t('form.worker_fixed_salary')} type="number" />
-                    <Field.Text name="starting_salary" label={t('form.starting_salary')} type="number" />
-                    <Field.Text name="kpi_salary" label={t('form.kpi_salary')} type="number" />
+                    <Field.Text name="fixed_salary" label={t('form.fixed_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    <Field.Text name="worker_fixed_salary" label={t('form.worker_fixed_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    <Field.Text name="starting_salary" label={t('form.starting_salary')} InputLabelProps={{ shrink: true }} type="number" />
+                    <Field.Text name="kpi_salary" label={t('form.kpi_salary')} InputLabelProps={{ shrink: true }} type="number" />
 
                     {currentType === StaffType.WORKER && (
                         <>
-                            <Field.Text name="kpi_tayyor_mahsulotlar_reskasi" label={t('form.kpi_tayyor_mahsulotlar_reskasi')} type="number" />
-                            <Field.Text name="kpi_tayyor_mahsulot_peremotkasi" label={t('form.kpi_tayyor_mahsulot_peremotkasi')} type="number" />
-                            <Field.Text name="kpi_plyonka_peremotkasi" label={t('form.kpi_plyonka_peremotkasi')} type="number" />
-                            <Field.Text name="kpi_3_5_sm_reska" label={t('form.kpi_3_5_sm_reska')} type="number" />
-                            <Field.Text name="kpi_asobiy_tarif" label={t('form.kpi_asobiy_tarif')} type="number" />
+                            <Field.Text name="kpi_tayyor_mahsulotlar_reskasi" label={t('form.kpi_tayyor_mahsulotlar_reskasi')} InputLabelProps={{ shrink: true }} type="number" />
+                            <Field.Text name="kpi_tayyor_mahsulot_peremotkasi" label={t('form.kpi_tayyor_mahsulot_peremotkasi')} InputLabelProps={{ shrink: true }} type="number" />
+                            <Field.Text name="kpi_plyonka_peremotkasi" label={t('form.kpi_plyonka_peremotkasi')} InputLabelProps={{ shrink: true }} type="number" />
+                            <Field.Text name="kpi_3_5_sm_reska" label={t('form.kpi_3_5_sm_reska')} InputLabelProps={{ shrink: true }} type="number" />
+                            <Field.Text name="kpi_asobiy_tarif" label={t('form.kpi_asobiy_tarif')} InputLabelProps={{ shrink: true }} type="number" />
                         </>
                     )}
                 </Box>
