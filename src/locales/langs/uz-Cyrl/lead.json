@@ -1,0 +1,60 @@
+{
+    "list_title": "Лидлар Рўйхати",
+    "create_title": "Янги Лид Яратиш",
+    "edit_title": "Лидни Таҳрирлаш",
+    "detail_title": "Лид Тафсилотлари",
+    "new_lead": "Янги Лид",
+    "create": "Яратиш",
+    "update": "Янгилаш",
+    "cancel": "Бекор қилиш",
+    "close": "Ёпиш",
+    "send": "Юбориш",
+    "conversations": "Суҳбатлар",
+    "history": "Тарих",
+    "edit": "Таҳрирлаш",
+    "delete": "Ўчириш",
+    "form": {
+        "fullname": "Тўлиқ исм",
+        "phone_number": "Телефон рақам",
+        "company": "Компания",
+        "status": "Ҳолат",
+        "notes": "Изоҳлар"
+    },
+    "status": {
+        "all": "Барчаси",
+        "yangi": "Янги",
+        "qiziqishi_bor": "Қизиқиши бор",
+        "juda_qiziqdi": "Жуда қизиқди",
+        "rad_etildi": "Рад этилди",
+        "mijozga_aylandi": "Мижозга айланди"
+    },
+    "table": {
+        "fullname": "Исм",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "status": "Ҳолат",
+        "actions": "Ҳаракатлар"
+    },
+    "messages": {
+        "success_create": "Лид муваффақиятли яратилди",
+        "success_update": "Лид муваффақиятли янгиланди",
+        "success_delete": "Лид муваффақиятли ўчирилди",
+        "success_conversation_add": "Изоҳ муваффақиятли қўшилди",
+        "success_conversation_delete": "Изоҳ муваффақиятли ўчирилди",
+        "error_generic": "Хатолик юз берди"
+    },
+    "search_placeholder": "Қидириш...",
+    "delete_confirm_title": "Лидни ўчириш",
+    "delete_confirm_message": "Ушбу лидни ўчиришни хоҳлайсизми?",
+    "delete_confirm_button": "Ўчириш",
+    "history_title": "Лид тарихи",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "v{{version}} версияга қайтариш",
+    "revert_confirm_message": "Ушбу версияга қайтаришни хоҳлайсизми?",
+    "conversations_title": "Суҳбатлар / Изоҳлар",
+    "conversation_placeholder": "Хабар киритинг...",
+    "no_conversations": "Ҳеч қандай суҳбат топилмади"
+}
