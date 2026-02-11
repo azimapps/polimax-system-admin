@@ -21,10 +21,10 @@
         "category": "Категориялар",
         "categories": {
             "plyonka": "Плёнка",
-            "kraska": "Бўёқ",
-            "rastvaritel": "Эритувчи",
-            "silindir": "Цилиндр",
-            "kley": "Елим"
+            "boyoq": "Бўёқ",
+            "erituvchi": "Эритувчи",
+            "silindr": "Цилиндр",
+            "yelim": "Елим"
         },
         "logo": "Логотип",
         "images": "Расмлар",

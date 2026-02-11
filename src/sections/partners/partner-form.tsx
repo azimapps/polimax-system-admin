@@ -17,7 +17,7 @@ import { uploadApi } from 'src/api/upload-api';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { OmborCategory } from 'src/types/ombor';
+import { PartnerCategory } from 'src/types/partner';
 
 import { getPartnerFormSchema } from './partner-schema';
 
@@ -102,7 +102,7 @@ export function PartnerForm({ partner, onSuccess }: Props) {
         [imageUrls, setValue]
     );
 
-    const onSubmit = handleSubmit(async (data: CreatePartnerRequest) => {
+    const onSubmit = handleSubmit(async (data) => {
         try {
             if (isEdit) {
                 await updatePartner(data as UpdatePartnerRequest);
@@ -184,7 +184,7 @@ export function PartnerForm({ partner, onSuccess }: Props) {
                                 label={t('form.category')}
                                 multiple
                                 placeholder={t('form.select_categories')}
-                                options={Object.values(OmborCategory)}
+                                options={Object.values(PartnerCategory)}
                                 getOptionLabel={(option) => t(`form.categories.${option as string}`)}
                                 slotProps={{
                                     textfield: {

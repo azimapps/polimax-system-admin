@@ -1,5 +1,7 @@
 import { z as zod } from 'zod';
 
+import { PartnerCategory } from 'src/types/partner';
+
 export const getPartnerFormSchema = (t: (key: string) => string) =>
     zod.object({
         fullname: zod.string().min(1, t('fullname_required')),
@@ -15,7 +17,7 @@ export const getPartnerFormSchema = (t: (key: string) => string) =>
             ),
         company: zod.string().min(1, t('company_required')),
         notes: zod.string().optional(),
-        categories: zod.array(zod.string()).min(1, t('categories_required')),
+        categories: zod.array(zod.nativeEnum(PartnerCategory)).min(1, t('categories_required')),
         logo_url: zod.string().optional(),
         image_urls: zod.array(zod.string()).optional(),
     });

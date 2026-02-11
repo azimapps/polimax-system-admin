@@ -21,10 +21,10 @@
         "category": "Категории",
         "categories": {
             "plyonka": "Пленка",
-            "kraska": "Краска",
-            "rastvaritel": "Растворитель",
-            "silindir": "Цилиндр",
-            "kley": "Клей"
+            "boyoq": "Краска",
+            "erituvchi": "Растворитель",
+            "silindr": "Цилиндр",
+            "yelim": "Клей"
         }
     },
     "table": {

@@ -1,3 +1,11 @@
+export enum PartnerCategory {
+    PLYONKA = 'plyonka',
+    BOYOQ = 'boyoq',
+    ERITUVCHI = 'erituvchi',
+    SILINDR = 'silindr',
+    YELIM = 'yelim',
+}
+
 export type Partner = {
     id: number;
     version: number;
@@ -5,7 +13,7 @@ export type Partner = {
     phone_number: string;
     company: string;
     notes: string;
-    categories: string[];
+    categories: PartnerCategory[];
     logo_url: string;
     image_urls: string[];
     created_at: string;
@@ -24,7 +32,7 @@ export type CreatePartnerRequest = {
     phone_number: string;
     company: string;
     notes?: string;
-    categories: string[];
+    categories: PartnerCategory[];
     logo_url?: string;
     image_urls?: string[];
 };

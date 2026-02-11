@@ -21,10 +21,10 @@
         "category": "Kategoriyalar",
         "categories": {
             "plyonka": "Plyonka",
-            "kraska": "Bo'yoq",
-            "rastvaritel": "Erituvchi",
-            "silindir": "Silindr",
-            "kley": "Yelim"
+            "boyoq": "Bo'yoq",
+            "erituvchi": "Erituvchi",
+            "silindr": "Silindr",
+            "yelim": "Yelim"
         },
         "logo": "Logotip",
         "images": "Rasmlar",
