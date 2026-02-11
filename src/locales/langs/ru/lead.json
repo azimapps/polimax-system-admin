@@ -1,0 +1,60 @@
+{
+    "list_title": "Список лидов",
+    "create_title": "Создать новый лид",
+    "edit_title": "Редактировать лид",
+    "detail_title": "Детали лида",
+    "new_lead": "Новый лид",
+    "create": "Создать",
+    "update": "Обновить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "send": "Отправить",
+    "conversations": "Беседы",
+    "history": "История",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "form": {
+        "fullname": "Полное имя",
+        "phone_number": "Номер телефона",
+        "company": "Компания",
+        "status": "Статус",
+        "notes": "Заметки"
+    },
+    "status": {
+        "all": "Все",
+        "yangi": "Новый",
+        "qiziqishi_bor": "Есть интерес",
+        "juda_qiziqdi": "Очень заинтересован",
+        "rad_etildi": "Отклонено",
+        "mijozga_aylandi": "Стал клиентом"
+    },
+    "table": {
+        "fullname": "Имя",
+        "phone_number": "Телефон",
+        "company": "Компания",
+        "status": "Статус",
+        "actions": "Действия"
+    },
+    "messages": {
+        "success_create": "Лид успешно создан",
+        "success_update": "Лид успешно обновлен",
+        "success_delete": "Лид успешно удален",
+        "success_conversation_add": "Заметка успешно добавлена",
+        "success_conversation_delete": "Заметка успешно удалена",
+        "error_generic": "Произошла ошибка"
+    },
+    "search_placeholder": "Поиск...",
+    "delete_confirm_title": "Удалить лид",
+    "delete_confirm_message": "Вы уверены, что хотите удалить этот лид?",
+    "delete_confirm_button": "Удалить",
+    "history_title": "История лида",
+    "version": "Версия",
+    "current_version": "Текущая",
+    "deleted": "Удалено",
+    "revert_button": "Восстановить",
+    "revert_confirm_title": "Восстановить до v{{version}}",
+    "revert_confirm_message": "Вы уверены, что хотите вернуться к этой версии?",
+    "conversations_title": "Беседы / Заметки",
+    "conversation_placeholder": "Введите сообщение...",
+    "no_conversations": "Беседы не найдены"
+}

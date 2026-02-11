@@ -1,16 +1,14 @@
-import type { StaffType } from 'src/types/staff';
-
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { useGetStaffMember } from 'src/hooks/use-staff';
+import { useGetLead } from 'src/hooks/use-leads';
 
 import { useTranslate } from 'src/locales';
 
-import { StaffForm } from './staff-form';
+import { LeadForm } from './lead-form';
 
 // ----------------------------------------------------------------------
 
@@ -18,13 +16,12 @@ type Props = {
     open: boolean;
     onClose: () => void;
     id?: number;
-    fixedType?: StaffType;
 };
 
-export function StaffDialog({ open, onClose, id, fixedType }: Props) {
-    const { t } = useTranslate('staff');
+export function LeadDialog({ open, onClose, id }: Props) {
+    const { t } = useTranslate('lead');
 
-    const { data: staff, isLoading } = useGetStaffMember(id || 0);
+    const { data: lead, isLoading } = useGetLead(id || 0);
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -36,7 +33,7 @@ export function StaffDialog({ open, onClose, id, fixedType }: Props) {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <StaffForm staff={id ? staff : undefined} onSuccess={onClose} onCancel={onClose} fixedType={fixedType} />
+                    <LeadForm lead={id ? lead : undefined} onSuccess={onClose} />
                 )}
             </DialogContent>
         </Dialog>

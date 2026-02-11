@@ -1,0 +1,60 @@
+{
+    "list_title": "Leadlar Ro'yxati",
+    "create_title": "Yangi Lead Yaratish",
+    "edit_title": "Leadni Tahrirlash",
+    "detail_title": "Lead Tafsilotlari",
+    "new_lead": "Yangi Lead",
+    "create": "Yaratish",
+    "update": "Yangilash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish",
+    "send": "Yuborish",
+    "conversations": "Suhbatlar",
+    "history": "Tarix",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "form": {
+        "fullname": "To'liq ism",
+        "phone_number": "Telefon raqam",
+        "company": "Kompaniya",
+        "status": "Holat",
+        "notes": "Izohlar"
+    },
+    "status": {
+        "all": "Barchasi",
+        "yangi": "Yangi",
+        "qiziqishi_bor": "Qiziqishi bor",
+        "juda_qiziqdi": "Juda qiziqdi",
+        "rad_etildi": "Rad etildi",
+        "mijozga_aylandi": "Mijozga aylandi"
+    },
+    "table": {
+        "fullname": "Ism",
+        "phone_number": "Telefon",
+        "company": "Kompaniya",
+        "status": "Holat",
+        "actions": "Harakatlar"
+    },
+    "messages": {
+        "success_create": "Lead muvaffaqiyatli yaratildi",
+        "success_update": "Lead muvaffaqiyatli yangilandi",
+        "success_delete": "Lead muvaffaqiyatli o'chirildi",
+        "success_conversation_add": "Izoh muvaffaqiyatli qo'shildi",
+        "success_conversation_delete": "Izoh muvaffaqiyatli o'chirildi",
+        "error_generic": "Xatolik yuz berdi"
+    },
+    "search_placeholder": "Qidirish...",
+    "delete_confirm_title": "Leadni o'chirish",
+    "delete_confirm_message": "Ushbu leadni o'chirishni xohlaysizmi?",
+    "delete_confirm_button": "O'chirish",
+    "history_title": "Lead tarixi",
+    "version": "Versiya",
+    "current_version": "Joriy",
+    "deleted": "O'chirilgan",
+    "revert_button": "Qaytarish",
+    "revert_confirm_title": "v{{version}} versiyaga qaytarish",
+    "revert_confirm_message": "Ushbu versiyaga qaytarishni xohlaysizmi?",
+    "conversations_title": "Suhbatlar / Izohlar",
+    "conversation_placeholder": "Xabar kiriting...",
+    "no_conversations": "Hech qanday suhbat topilmadi"
+}

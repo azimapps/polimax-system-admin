@@ -1,0 +1,60 @@
+{
+    "list_title": "Leads List",
+    "create_title": "Create New Lead",
+    "edit_title": "Edit Lead",
+    "detail_title": "Lead Details",
+    "new_lead": "New Lead",
+    "create": "Create",
+    "update": "Update",
+    "cancel": "Cancel",
+    "close": "Close",
+    "send": "Send",
+    "conversations": "Conversations",
+    "history": "History",
+    "edit": "Edit",
+    "delete": "Delete",
+    "form": {
+        "fullname": "Full Name",
+        "phone_number": "Phone Number",
+        "company": "Company",
+        "status": "Status",
+        "notes": "Notes"
+    },
+    "status": {
+        "all": "All",
+        "yangi": "New",
+        "qiziqishi_bor": "Interested",
+        "juda_qiziqdi": "Very Interested",
+        "rad_etildi": "Rejected",
+        "mijozga_aylandi": "Converted to Client"
+    },
+    "table": {
+        "fullname": "Name",
+        "phone_number": "Phone",
+        "company": "Company",
+        "status": "Status",
+        "actions": "Actions"
+    },
+    "messages": {
+        "success_create": "Lead created successfully",
+        "success_update": "Lead updated successfully",
+        "success_delete": "Lead deleted successfully",
+        "success_conversation_add": "Note added successfully",
+        "success_conversation_delete": "Note deleted successfully",
+        "error_generic": "An error occurred"
+    },
+    "search_placeholder": "Search...",
+    "delete_confirm_title": "Delete Lead",
+    "delete_confirm_message": "Are you sure you want to delete this lead?",
+    "delete_confirm_button": "Delete",
+    "history_title": "Lead History",
+    "version": "Version",
+    "current_version": "Current",
+    "deleted": "Deleted",
+    "revert_button": "Revert",
+    "revert_confirm_title": "Revert to v{{version}}",
+    "revert_confirm_message": "Are you sure you want to revert to this version?",
+    "conversations_title": "Conversations / Notes",
+    "conversation_placeholder": "Type a message...",
+    "no_conversations": "No conversations found"
+}

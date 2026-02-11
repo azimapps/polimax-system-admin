@@ -5,6 +5,7 @@ import { memo, useMemo } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 
@@ -76,31 +77,39 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
         headerAlign: 'right',
         renderCell: (params) => (
           <Box display="flex" justifyContent="flex-end" width="100%">
-            <IconButton
-              onClick={(event) => {
-                event.stopPropagation();
-                onHistory(params.row.id);
-              }}
-            >
-              <Iconify icon="solar:clock-circle-bold" />
-            </IconButton>
-            <IconButton
-              onClick={(event) => {
-                event.stopPropagation();
-                onEdit(params.row.id);
-              }}
-            >
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-            <IconButton
-              color="error"
-              onClick={(event) => {
-                event.stopPropagation();
-                onDelete(params.row.id);
-              }}
-            >
-              <Iconify icon="solar:trash-bin-trash-bold" />
-            </IconButton>
+            <Tooltip title={t('history')} arrow>
+              <IconButton
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                  onHistory(params.row.id);
+                }}
+              >
+                <Iconify icon="solar:clock-circle-bold" sx={{ pointerEvents: 'none' }} />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={t('edit')} arrow>
+              <IconButton
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                  onEdit(params.row.id);
+                }}
+              >
+                <Iconify icon="solar:pen-bold" sx={{ pointerEvents: 'none' }} />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={t('delete')} arrow>
+              <IconButton
+                color="error"
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                  onDelete(params.row.id);
+                }}
+              >
+                <Iconify icon="solar:trash-bin-trash-bold" sx={{ pointerEvents: 'none' }} />
+              </IconButton>
+            </Tooltip>
           </Box>
         ),
       },
@@ -123,6 +132,9 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
       }}
       sx={{
         '& .MuiDataGrid-cell:focus': {
+          outline: 'none',
+        },
+        '& .MuiDataGrid-cell:focus-within': {
           outline: 'none',
         },
         height: clients.length > 0 ? 'auto' : 400,
