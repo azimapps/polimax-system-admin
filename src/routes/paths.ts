@@ -71,6 +71,7 @@ export const paths = {
       root: '/finance',
       cash: '/finance/cash',
       transfer: '/finance/transfer',
+      archived: '/finance/archived',
     },
     production: {
       root: '/production',

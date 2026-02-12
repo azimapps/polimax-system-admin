@@ -59,7 +59,9 @@ const StanokProducts = lazy(() => import('src/pages/stanok/products'));
 const OddOneOutQuestionsList = lazy(() => import('src/pages/dashboard/odd-one-out/list'));
 // New Sections
 const OmborPage = lazy(() => import('src/pages/ombor/page'));
-const FinancePage = lazy(() => import('src/pages/finance/page'));
+const FinanceCashPage = lazy(() => import('src/pages/finance/cash'));
+const FinanceTransferPage = lazy(() => import('src/pages/finance/transfer'));
+const FinanceArchivedPage = lazy(() => import('src/pages/finance/archived'));
 const ProductionPage = lazy(() => import('src/pages/production/page'));
 const OrderPlanningPage = lazy(() => import('src/pages/order-planning/page'));
 const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
@@ -165,9 +167,10 @@ export const routesSection: RouteObject[] = [
       {
         path: 'finance',
         children: [
-          { index: true, element: <FinancePage /> },
-          { path: 'cash', element: <FinancePage /> },
-          { path: 'transfer', element: <FinancePage /> },
+          { index: true, element: <FinanceCashPage /> },
+          { path: 'cash', element: <FinanceCashPage /> },
+          { path: 'transfer', element: <FinanceTransferPage /> },
+          { path: 'archived', element: <FinanceArchivedPage /> },
         ],
       },
       {

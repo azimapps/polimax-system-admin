@@ -1,0 +1,80 @@
+{
+    "finance": "Молия",
+    "cash": "Нақд пул",
+    "bank": "Перечисления",
+    "cash_title": "Нақд пул операциялари",
+    "bank_title": "Банк ўтказмалари",
+    "archived_title": "Архивланган операциялар",
+    "new_finance": "Янги операция",
+    "edit_title": "Операцияни таҳрирлаш",
+    "create_title": "Янги операция яратиш",
+    "payment_method_required": "Тўлов усулини танланг",
+    "finance_type_required": "Операция турини танланг",
+    "client_required": "Мижозни танланг",
+    "value_required": "Суммани киритинг",
+    "currency_required": "Валютани танланг",
+    "date_required": "Санани киритинг",
+    "exchange_rate_required": "USD учун курсни киритинг",
+    "search_placeholder": "Қидириш...",
+    "delete_confirm_title": "Операцияни ўчириш",
+    "delete_confirm_message": "Ушбу операцияни ўчиришни хоҳлайсизми?",
+    "delete_confirm_button": "Ўчириш",
+    "restore_confirm_title": "Операцияни тиклаш",
+    "restore_confirm_message": "Ушбу операцияни тикламоқчимисиз?",
+    "restore": "Тиклаш",
+    "archive": "Архив",
+    "back_to_list": "Рўйхатга қайтиш",
+    "history_title": "Операция тарихи",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "v{{version}} версиясига қайтариш",
+    "revert_confirm_message": "Ушбу версияга қайтаришни хоҳлайсизми?",
+    "tabs": {
+        "all": "Барчаси",
+        "kirim": "Киримлар",
+        "chiqim": "Чиқимлар"
+    },
+    "form": {
+        "finance_type": "Операция тури",
+        "payment_method": "Тўлов усули",
+        "client": "Мижоз",
+        "value": "Сумма",
+        "currency": "Валюта",
+        "exchange_rate": "Валюта курси",
+        "date": "Сана",
+        "notes": "Изоҳлар",
+        "notes_placeholder": "Изоҳ ёзинг...",
+        "types": {
+            "kirim": "Кирим",
+            "chiqim": "Чиқим"
+        },
+        "methods": {
+            "naqd": "Нақд пул",
+            "bank": "Банк ўтказма"
+        },
+        "currencies": {
+            "uzs": "UZS",
+            "usd": "USD"
+        }
+    },
+    "table": {
+        "type": "Тури",
+        "payment_method": "Тўлов усули",
+        "value": "Сумма",
+        "currency": "Валюта",
+        "exchange_rate": "Курс",
+        "date": "Сана",
+        "notes": "Изоҳлар",
+        "actions": "Ҳаракатлар"
+    },
+    "messages": {
+        "success_create": "Операция муваффақиятли яратилди",
+        "success_update": "Операция муваффақиятли янгиланди",
+        "error_generic": "Хатолик юз берди"
+    },
+    "cancel": "Бекор қилиш",
+    "update": "Янгилаш",
+    "create": "Яратиш"
+}

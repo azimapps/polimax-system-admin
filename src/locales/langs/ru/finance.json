@@ -1,0 +1,80 @@
+{
+    "finance": "Финансы",
+    "cash": "Наличные",
+    "bank": "Перечисления",
+    "cash_title": "Операции с наличными",
+    "bank_title": "Банковские переводы",
+    "archived_title": "Архивированные операции",
+    "new_finance": "Новая операция",
+    "edit_title": "Редактировать операцию",
+    "create_title": "Создать новую операцию",
+    "payment_method_required": "Выберите способ оплаты",
+    "finance_type_required": "Выберите тип операции",
+    "client_required": "Выберите клиента",
+    "value_required": "Введите сумму",
+    "currency_required": "Выберите валюту",
+    "date_required": "Введите дату",
+    "exchange_rate_required": "Введите курс для USD",
+    "search_placeholder": "Поиск...",
+    "delete_confirm_title": "Удалить операцию",
+    "delete_confirm_message": "Вы уверены, что хотите удалить эту операцию?",
+    "delete_confirm_button": "Удалить",
+    "restore_confirm_title": "Восстановить операцию",
+    "restore_confirm_message": "Вы хотите восстановить эту операцию?",
+    "restore": "Восстановить",
+    "archive": "Архив",
+    "back_to_list": "Вернуться к списку",
+    "history_title": "История операции",
+    "version": "Версия",
+    "current_version": "Текущая",
+    "deleted": "Удалено",
+    "revert_button": "Вернуть",
+    "revert_confirm_title": "Вернуть к v{{version}}",
+    "revert_confirm_message": "Вы уверены, что хотите вернуться к этой версии?",
+    "tabs": {
+        "all": "Все",
+        "kirim": "Приход",
+        "chiqim": "Расход"
+    },
+    "form": {
+        "finance_type": "Тип операции",
+        "payment_method": "Способ оплаты",
+        "client": "Клиент",
+        "value": "Сумма",
+        "currency": "Валюта",
+        "exchange_rate": "Курс валюты",
+        "date": "Дата",
+        "notes": "Примечания",
+        "notes_placeholder": "Введите примечание...",
+        "types": {
+            "kirim": "Приход",
+            "chiqim": "Расход"
+        },
+        "methods": {
+            "naqd": "Наличные",
+            "bank": "Банковский перевод"
+        },
+        "currencies": {
+            "uzs": "UZS",
+            "usd": "USD"
+        }
+    },
+    "table": {
+        "type": "Тип",
+        "payment_method": "Способ оплаты",
+        "value": "Сумма",
+        "currency": "Валюта",
+        "exchange_rate": "Курс",
+        "date": "Дата",
+        "notes": "Примечания",
+        "actions": "Действия"
+    },
+    "messages": {
+        "success_create": "Операция успешно создана",
+        "success_update": "Операция успешно обновлена",
+        "error_generic": "Произошла ошибка"
+    },
+    "cancel": "Отмена",
+    "update": "Обновить",
+    "create": "Создать"
+}

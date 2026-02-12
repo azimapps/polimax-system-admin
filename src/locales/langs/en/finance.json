@@ -1,0 +1,80 @@
+{
+    "finance": "Finance",
+    "cash": "Cash",
+    "bank": "Bank Transfer",
+    "cash_title": "Cash Operations",
+    "bank_title": "Bank Transfers",
+    "archived_title": "Archived Operations",
+    "new_finance": "New Transaction",
+    "edit_title": "Edit Transaction",
+    "create_title": "Create New Transaction",
+    "payment_method_required": "Select payment method",
+    "finance_type_required": "Select transaction type",
+    "client_required": "Select client",
+    "value_required": "Enter amount",
+    "currency_required": "Select currency",
+    "date_required": "Enter date",
+    "exchange_rate_required": "Enter exchange rate for USD",
+    "search_placeholder": "Search...",
+    "delete_confirm_title": "Delete Transaction",
+    "delete_confirm_message": "Are you sure you want to delete this transaction?",
+    "delete_confirm_button": "Delete",
+    "restore_confirm_title": "Restore Transaction",
+    "restore_confirm_message": "Do you want to restore this transaction?",
+    "restore": "Restore",
+    "archive": "Archive",
+    "back_to_list": "Back to List",
+    "history_title": "Transaction History",
+    "version": "Version",
+    "current_version": "Current",
+    "deleted": "Deleted",
+    "revert_button": "Revert",
+    "revert_confirm_title": "Revert to v{{version}}",
+    "revert_confirm_message": "Are you sure you want to revert to this version?",
+    "tabs": {
+        "all": "All",
+        "kirim": "Income",
+        "chiqim": "Expense"
+    },
+    "form": {
+        "finance_type": "Transaction Type",
+        "payment_method": "Payment Method",
+        "client": "Client",
+        "value": "Amount",
+        "currency": "Currency",
+        "exchange_rate": "Exchange Rate",
+        "date": "Date",
+        "notes": "Notes",
+        "notes_placeholder": "Enter notes...",
+        "types": {
+            "kirim": "Income",
+            "chiqim": "Expense"
+        },
+        "methods": {
+            "naqd": "Cash",
+            "bank": "Bank Transfer"
+        },
+        "currencies": {
+            "uzs": "UZS",
+            "usd": "USD"
+        }
+    },
+    "table": {
+        "type": "Type",
+        "payment_method": "Payment Method",
+        "value": "Amount",
+        "currency": "Currency",
+        "exchange_rate": "Rate",
+        "date": "Date",
+        "notes": "Notes",
+        "actions": "Actions"
+    },
+    "messages": {
+        "success_create": "Transaction created successfully",
+        "success_update": "Transaction updated successfully",
+        "error_generic": "An error occurred"
+    },
+    "cancel": "Cancel",
+    "update": "Update",
+    "create": "Create"
+}
