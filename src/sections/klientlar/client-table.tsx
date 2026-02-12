@@ -9,6 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 
+import { fCurrency } from 'src/utils/format-number';
 import { fPhoneNumber } from 'src/utils/format-phone';
 
 import { useTranslate } from 'src/locales';
@@ -23,9 +24,10 @@ type Props = {
   onHistory: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
+  onTransactions: (id: number) => void;
 };
 
-function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete }: Props) {
+function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete, onTransactions }: Props) {
   const { t } = useTranslate('client');
   const columns: GridColDef<ClientListItem>[] = useMemo(
     () => [
@@ -61,6 +63,13 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
         renderCell: (params) => fPhoneNumber(params.row.phone_number),
       },
       {
+        field: 'transactions_total',
+        headerName: t('table.transactions_total'),
+        width: 150,
+        sortable: false,
+        renderCell: (params) => fCurrency(params.row.transactions_total),
+      },
+      {
         field: 'company',
         headerName: t('table.company'),
         flex: 1,
@@ -71,13 +80,25 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
       {
         field: 'actions',
         headerName: t('table.actions'),
-        width: 150,
+        width: 180,
         sortable: false,
         align: 'right',
         headerAlign: 'right',
         renderCell: (params) => (
           <Box display="flex" justifyContent="flex-end" width="100%">
-            <Tooltip title={t('history')} arrow>
+            <Tooltip title={t('transaction.transactions')} arrow>
+              <IconButton
+                color="success"
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                  onTransactions(params.row.id);
+                }}
+              >
+                <Iconify icon="solar:wad-of-money-bold" sx={{ pointerEvents: 'none' }} />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title={t('history_button')} arrow>
               <IconButton
                 onMouseDown={(event) => {
                   event.stopPropagation();
@@ -88,7 +109,7 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={t('edit')} arrow>
+            <Tooltip title={t('update')} arrow>
               <IconButton
                 onMouseDown={(event) => {
                   event.stopPropagation();
@@ -99,7 +120,7 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={t('delete')} arrow>
+            <Tooltip title={t('delete_confirm_button')} arrow>
               <IconButton
                 color="error"
                 onMouseDown={(event) => {
@@ -114,7 +135,7 @@ function KlientlarTableComponent({ clients, loading, onHistory, onEdit, onDelete
         ),
       },
     ],
-    [onEdit, onDelete, onHistory, t]
+    [onEdit, onDelete, onHistory, onTransactions, t]
   );
 
   return (

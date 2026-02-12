@@ -47,6 +47,20 @@ export type FinanceListItem = Pick<
     | 'notes'
 >;
 
+export type ArchivedFinanceListItem = {
+    id: number;
+    payment_method: PaymentMethod;
+    finance_type: FinanceType;
+    value: number;
+    currency: Currency;
+    deleted_at: string;
+    archived_at: string;
+    created_by: number;
+    archived_by: number;
+    notes?: string; // Optional as per example
+    date?: string; // Optional as per example
+};
+
 export type CreateFinanceRequest = {
     payment_method: PaymentMethod;
     finance_type: FinanceType;

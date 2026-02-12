@@ -65,5 +65,51 @@
     "revert_confirm_title": "Revert to Version {{version}}",
     "revert_confirm_message": "Are you sure you want to revert to this version? This will create a new version with the old data.",
     "revert_success": "Successfully reverted to version {{version}}",
-    "revert_error": "Error reverting to version"
+    "revert_error": "Error reverting to version",
+    "clients": "Clients",
+    "transaction": {
+        "transactions": "Transactions",
+        "list_title": "Client Transactions",
+        "new_transaction": "New Transaction",
+        "create_title": "Create New Transaction",
+        "edit_title": "Edit Transaction",
+        "total_label": "Total Amount (UZS)",
+        "search_placeholder": "Search by notes...",
+        "date_from": "Date (from)",
+        "date_to": "Date (to)",
+        "clear_filters": "Clear",
+        "value_required": "Enter amount",
+        "exchange_rate_required": "Enter exchange rate",
+        "date_required": "Enter date",
+        "form": {
+            "value": "Amount (USD)",
+            "exchange_rate": "Exchange Rate",
+            "date": "Date",
+            "notes": "Notes",
+            "notes_placeholder": "Enter notes..."
+        },
+        "table": {
+            "value": "Amount (USD)",
+            "exchange_rate": "Rate",
+            "total_uzs": "Total (UZS)",
+            "date": "Date",
+            "notes": "Notes",
+            "actions": "Actions"
+        },
+        "messages": {
+            "success_create": "Transaction created successfully",
+            "success_update": "Transaction updated successfully",
+            "error_generic": "An error occurred"
+        },
+        "delete_confirm_title": "Delete Transaction",
+        "delete_confirm_message": "Are you sure you want to delete this transaction?",
+        "delete_confirm_button": "Delete",
+        "history_title": "Transaction History",
+        "version": "Version",
+        "current_version": "Current",
+        "deleted": "Deleted",
+        "revert_button": "Revert",
+        "revert_confirm_title": "Revert to v{{version}}",
+        "revert_confirm_message": "Are you sure you want to revert to this version?"
+    }
 }

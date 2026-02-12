@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 
 import { useGetClients, useDeleteClient } from 'src/hooks/use-clients';
 
@@ -26,6 +27,7 @@ import { ClientHistoryDialog } from '../client-history-dialog';
 
 export function KlientlarListView() {
   const { t } = useTranslate('client');
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
 
@@ -84,6 +86,13 @@ export function KlientlarListView() {
     }
   }, [deleteId, deleteClient, confirmDialog]);
 
+  const handleTransactions = useCallback(
+    (id: number) => {
+      router.push(paths.dashboard.klientlar.transactions(String(id)));
+    },
+    [router]
+  );
+
   return (
     <Container maxWidth="xl">
       <CustomBreadcrumbs
@@ -133,6 +142,7 @@ export function KlientlarListView() {
           onHistory={handleHistory}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
+          onTransactions={handleTransactions}
         />
       </Card>
 

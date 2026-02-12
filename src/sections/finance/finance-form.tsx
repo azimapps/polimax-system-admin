@@ -126,16 +126,6 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
                         <MenuItem value={FinanceType.CHIQIM}>{t('form.types.chiqim')}</MenuItem>
                     </Field.Select>
 
-                    <Field.Select
-                        name="payment_method"
-                        label={t('form.payment_method')}
-                        InputLabelProps={{ shrink: true }}
-                        required
-                    >
-                        <MenuItem value={PaymentMethod.NAQD}>{t('form.methods.naqd')}</MenuItem>
-                        <MenuItem value={PaymentMethod.BANK}>{t('form.methods.bank')}</MenuItem>
-                    </Field.Select>
-
                     <Field.Autocomplete
                         name="client_id"
                         label={t('form.client')}

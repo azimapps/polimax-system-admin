@@ -65,5 +65,51 @@
     "revert_confirm_title": "{{version}} версиягa қайтариш",
     "revert_confirm_message": "Ушбу версиягa қайтаришни хоҳлайсизми? Бу эски маълумотлар билан янги версия яратади.",
     "revert_success": "{{version}} версиягa муваффақиятли қайтарилди",
-    "revert_error": "Версиягa қайтаришда хатолик"
+    "revert_error": "Версиягa қайтаришда хатолик",
+    "clients": "Клиентлар",
+    "transaction": {
+        "transactions": "Транзакциялар",
+        "list_title": "Клиент Транзакциялари",
+        "new_transaction": "Янги Транзакция",
+        "create_title": "Янги Транзакция Яратиш",
+        "edit_title": "Транзакцияни Таҳрирлаш",
+        "total_label": "Жами сумма (UZS)",
+        "search_placeholder": "Изоҳлар бўйича қидириш...",
+        "date_from": "Сана (дан)",
+        "date_to": "Сана (гача)",
+        "clear_filters": "Тозалаш",
+        "value_required": "Суммани киритинг",
+        "exchange_rate_required": "Валюта курсини киритинг",
+        "date_required": "Санани киритинг",
+        "form": {
+            "value": "Сумма (USD)",
+            "exchange_rate": "Валюта курси",
+            "date": "Сана",
+            "notes": "Изоҳлар",
+            "notes_placeholder": "Изоҳ ёзинг..."
+        },
+        "table": {
+            "value": "Сумма (USD)",
+            "exchange_rate": "Курс",
+            "total_uzs": "Жами (UZS)",
+            "date": "Сана",
+            "notes": "Изоҳлар",
+            "actions": "Ҳаракатлар"
+        },
+        "messages": {
+            "success_create": "Транзакция муваффақиятли яратилди",
+            "success_update": "Транзакция муваффақиятли янгиланди",
+            "error_generic": "Хатолик юз берди"
+        },
+        "delete_confirm_title": "Транзакцияни ўчириш",
+        "delete_confirm_message": "Ушбу транзакцияни ўчиришни хоҳлайсизми?",
+        "delete_confirm_button": "Ўчириш",
+        "history_title": "Транзакция тарихи",
+        "version": "Версия",
+        "current_version": "Жорий",
+        "deleted": "Ўчирилган",
+        "revert_button": "Қайтариш",
+        "revert_confirm_title": "v{{version}} версиясига қайтариш",
+        "revert_confirm_message": "Ушбу версияга қайтаришни хоҳлайсизми?"
+    }
 }

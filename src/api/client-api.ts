@@ -1,6 +1,7 @@
 import type {
   Client,
   ClientListItem,
+  ArchivedClientListItem,
   CreateClientRequest,
   UpdateClientRequest,
 } from 'src/types/client';
@@ -40,7 +41,7 @@ export const clientApi = {
   },
 
   // Get archived clients
-  getArchivedClients: async (q?: string): Promise<ClientListItem[]> => {
+  getArchivedClients: async (q?: string): Promise<ArchivedClientListItem[]> => {
     const response = await axiosInstance.get('/clients/archived', { params: { q } });
     return response.data;
   },

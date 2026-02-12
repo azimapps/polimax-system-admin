@@ -36,6 +36,7 @@ export const paths = {
       archived: '/klientlar/archived',
       detail: (id: string) => `/klientlar/${id}`,
       edit: (id: string) => `/klientlar/${id}/edit`,
+      transactions: (id: string) => `/klientlar/${id}/transactions`,
       crm: '/klientlar/crm',
       materials: '/klientlar/materials',
       orders: '/klientlar/orders',

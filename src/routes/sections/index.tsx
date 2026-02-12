@@ -39,6 +39,7 @@ const KlientlarDetail = lazy(() => import('src/pages/klientlar/detail'));
 const KlientlarArchived = lazy(() => import('src/pages/klientlar/archived'));
 const KlientlarCRM = lazy(() => import('src/pages/klientlar/crm'));
 const KlientlarMaterials = lazy(() => import('src/pages/klientlar/materials-page'));
+const KlientlarTransactions = lazy(() => import('src/pages/klientlar/transactions'));
 // Games - 4Pics 1Word
 const QuestionList = lazy(() => import('src/pages/dashboard/4pics-1word/list'));
 const CreateQuestions = lazy(() => import('src/pages/dashboard/4pics-1word/create'));
@@ -110,6 +111,7 @@ export const routesSection: RouteObject[] = [
           { path: 'materials', element: <KlientlarMaterials /> },
           { path: ':id', element: <KlientlarDetail /> },
           { path: ':id/edit', element: <KlientlarDetail /> },
+          { path: ':id/transactions', element: <KlientlarTransactions /> },
         ],
       },
       {

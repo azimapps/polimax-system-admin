@@ -1,6 +1,7 @@
 import type {
     Finance,
     FinanceListItem,
+    ArchivedFinanceListItem,
     FinanceQueryParams,
     CreateFinanceRequest,
     UpdateFinanceRequest,
@@ -41,7 +42,7 @@ export const financeApi = {
     },
 
     // Get archived finances
-    getArchivedFinances: async (q?: string): Promise<FinanceListItem[]> => {
+    getArchivedFinances: async (q?: string): Promise<ArchivedFinanceListItem[]> => {
         const response = await axiosInstance.get('/finances/archived', { params: { q } });
         return response.data;
     },

@@ -1,5 +1,5 @@
 import type { GridColDef } from '@mui/x-data-grid';
-import type { ClientListItem } from 'src/types/client';
+import type { ArchivedClientListItem } from 'src/types/client';
 
 import { memo, useMemo } from 'react';
 
@@ -15,14 +15,14 @@ import { Iconify } from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 type Props = {
-  clients: ClientListItem[];
+  clients: ArchivedClientListItem[];
   loading: boolean;
   onRestore: (id: number) => void;
 };
 
 function KlientlarTableArchivedComponent({ clients, loading, onRestore }: Props) {
   const { t } = useTranslate('client');
-  const columns: GridColDef<ClientListItem>[] = useMemo(
+  const columns: GridColDef<ArchivedClientListItem>[] = useMemo(
     () => [
       {
         field: 'profile_url',

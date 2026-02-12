@@ -65,5 +65,51 @@
     "revert_confirm_title": "Восстановить версию {{version}}",
     "revert_confirm_message": "Вы уверены, что хотите восстановить эту версию? Это создаст новую версию со старыми данными.",
     "revert_success": "Успешно восстановлена версия {{version}}",
-    "revert_error": "Ошибка при восстановлении версии"
+    "revert_error": "Ошибка при восстановлении версии",
+    "clients": "Клиенты",
+    "transaction": {
+        "transactions": "Транзакции",
+        "list_title": "Транзакции клиента",
+        "new_transaction": "Новая транзакция",
+        "create_title": "Создать новую транзакцию",
+        "edit_title": "Редактировать транзакцию",
+        "total_label": "Общая сумма (UZS)",
+        "search_placeholder": "Поиск по примечаниям...",
+        "date_from": "Дата (с)",
+        "date_to": "Дата (по)",
+        "clear_filters": "Очистить",
+        "value_required": "Введите сумму",
+        "exchange_rate_required": "Введите курс валюты",
+        "date_required": "Введите дату",
+        "form": {
+            "value": "Сумма (USD)",
+            "exchange_rate": "Курс валюты",
+            "date": "Дата",
+            "notes": "Примечания",
+            "notes_placeholder": "Введите примечание..."
+        },
+        "table": {
+            "value": "Сумма (USD)",
+            "exchange_rate": "Курс",
+            "total_uzs": "Итого (UZS)",
+            "date": "Дата",
+            "notes": "Примечания",
+            "actions": "Действия"
+        },
+        "messages": {
+            "success_create": "Транзакция успешно создана",
+            "success_update": "Транзакция успешно обновлена",
+            "error_generic": "Произошла ошибка"
+        },
+        "delete_confirm_title": "Удалить транзакцию",
+        "delete_confirm_message": "Вы уверены, что хотите удалить эту транзакцию?",
+        "delete_confirm_button": "Удалить",
+        "history_title": "История транзакции",
+        "version": "Версия",
+        "current_version": "Текущая",
+        "deleted": "Удалено",
+        "revert_button": "Восстановить",
+        "revert_confirm_title": "Восстановить v{{version}}",
+        "revert_confirm_message": "Вы уверены, что хотите восстановить эту версию?"
+    }
 }
