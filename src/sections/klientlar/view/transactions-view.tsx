@@ -1,32 +1,35 @@
-import { useState, useCallback } from 'react';
+import type { FinanceListItem, FinanceQueryParams } from 'src/types/finance';
+import type { GridColDef } from '@mui/x-data-grid';
+
+import { useState, useMemo, useCallback } from 'react';
 import { useBoolean } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
 
 import { paths } from 'src/routes/paths';
 
 import { useGetClient } from 'src/hooks/use-clients';
-import {
-    useGetClientTransactions,
-    useDeleteClientTransaction,
-} from 'src/hooks/use-client-transactions';
+import { useGetFinances, useGetFinanceHistory } from 'src/hooks/use-finance';
 
+import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { ClientTransactionTable } from '../client-transaction-table';
-import { ClientTransactionDialog } from '../client-transaction-dialog';
+import { FinanceType, PaymentMethod, Currency } from 'src/types/finance';
+
 import { ClientTransactionHistoryDialog } from '../client-transaction-history-dialog';
 
 // ----------------------------------------------------------------------
@@ -39,28 +42,49 @@ export function ClientTransactionsView({ clientId }: Props) {
     const { t } = useTranslate('client');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
-    const [dateFrom, setDateFrom] = useState('');
-    const [dateTo, setDateTo] = useState('');
+    const [financeType, setFinanceType] = useState<FinanceType | ''>('');
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('');
+    const [currency, setCurrency] = useState<Currency | ''>('');
 
-    const queryParams = {
+    const queryParams: FinanceQueryParams = {
+        client_id: clientId,
         q: debouncedQuery || undefined,
-        date_from: dateFrom || undefined,
-        date_to: dateTo || undefined,
+        finance_type: financeType || undefined,
+        payment_method: paymentMethod || undefined,
+        currency: currency || undefined,
     };
 
     const { data: client } = useGetClient(clientId);
-    const { data: transactionsData, isLoading } = useGetClientTransactions(clientId, queryParams);
-    const { mutateAsync: deleteTransaction } = useDeleteClientTransaction(clientId);
+    const { data: finances = [], isLoading } = useGetFinances(queryParams);
 
-    const transactions = transactionsData?.items || [];
-    const total = transactionsData?.total || 0;
-
-    const dialog = useBoolean();
-    const confirmDialog = useBoolean();
     const historyDialog = useBoolean();
-    const [selectedId, setSelectedId] = useState<number | undefined>();
-    const [deleteId, setDeleteId] = useState<number | undefined>();
-    const [historyTransactionId, setHistoryTransactionId] = useState<number>(0);
+    const [historyFinanceId, setHistoryFinanceId] = useState<number>(0);
+
+    // Calculate totals
+    const totals = useMemo(() => {
+        let kirimUzs = 0;
+        let kirimUsd = 0;
+        let chiqimUzs = 0;
+        let chiqimUsd = 0;
+
+        finances.forEach((finance) => {
+            if (finance.finance_type === FinanceType.KIRIM) {
+                if (finance.currency === Currency.UZS) {
+                    kirimUzs += finance.value;
+                } else {
+                    kirimUsd += finance.value;
+                }
+            } else {
+                if (finance.currency === Currency.UZS) {
+                    chiqimUzs += finance.value;
+                } else {
+                    chiqimUsd += finance.value;
+                }
+            }
+        });
+
+        return { kirimUzs, kirimUsd, chiqimUzs, chiqimUsd };
+    }, [finances]);
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
@@ -70,42 +94,152 @@ export function ClientTransactionsView({ clientId }: Props) {
         return () => clearTimeout(timer);
     }, []);
 
-    const handleCreate = useCallback(() => {
-        setSelectedId(undefined);
-        dialog.onTrue();
-    }, [dialog]);
-
     const handleHistory = useCallback(
         (id: number) => {
-            setHistoryTransactionId(id);
+            setHistoryFinanceId(id);
             historyDialog.onTrue();
         },
         [historyDialog]
     );
 
-    const handleEdit = useCallback(
-        (id: number) => {
-            setSelectedId(id);
-            dialog.onTrue();
-        },
-        [dialog]
-    );
+    const handleClearFilters = useCallback(() => {
+        setSearchQuery('');
+        setDebouncedQuery('');
+        setFinanceType('');
+        setPaymentMethod('');
+        setCurrency('');
+    }, []);
 
-    const handleDeleteClick = useCallback(
-        (id: number) => {
-            setDeleteId(id);
-            confirmDialog.onTrue();
-        },
-        [confirmDialog]
-    );
+    const hasFilters = searchQuery || financeType || paymentMethod || currency;
 
-    const handleConfirmDelete = useCallback(async () => {
-        if (deleteId) {
-            await deleteTransaction(deleteId);
-            confirmDialog.onFalse();
-            setDeleteId(undefined);
-        }
-    }, [deleteId, deleteTransaction, confirmDialog]);
+    const columns: GridColDef<FinanceListItem>[] = useMemo(
+        () => [
+            {
+                field: 'finance_type',
+                headerName: t('transaction.table.type'),
+                width: 120,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '100%',
+                            fontWeight: 'fontWeightSemiBold',
+                            color: params.row.finance_type === FinanceType.KIRIM ? 'success.main' : 'error.main',
+                        }}
+                    >
+                        {params.row.finance_type === FinanceType.KIRIM ? 'Kirim' : 'Chiqim'}
+                    </Box>
+                ),
+            },
+            {
+                field: 'value',
+                headerName: t('transaction.table.value'),
+                width: 150,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '100%',
+                            fontWeight: 'fontWeightSemiBold',
+                        }}
+                    >
+                        {params.row.currency === Currency.USD ? '$' : ''}
+                        {params.row.value.toLocaleString()}
+                        {params.row.currency === Currency.UZS ? " so'm" : ''}
+                    </Box>
+                ),
+            },
+            {
+                field: 'payment_method',
+                headerName: t('transaction.table.payment_method'),
+                width: 120,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                        {params.row.payment_method === PaymentMethod.NAQD ? 'Naqd' : 'Bank'}
+                    </Box>
+                ),
+            },
+            {
+                field: 'currency_exchange_rate',
+                headerName: t('transaction.table.exchange_rate'),
+                width: 150,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                        {params.row.currency_exchange_rate
+                            ? fCurrency(params.row.currency_exchange_rate)
+                            : '-'}
+                    </Box>
+                ),
+            },
+            {
+                field: 'date',
+                headerName: t('transaction.table.date'),
+                width: 180,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                        {fDateTime(params.row.date)}
+                    </Box>
+                ),
+            },
+            {
+                field: 'notes',
+                headerName: t('transaction.table.notes'),
+                flex: 1,
+                minWidth: 200,
+                sortable: false,
+                renderCell: (params) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '100%',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
+                    >
+                        {params.row.notes || '-'}
+                    </Box>
+                ),
+            },
+            {
+                field: 'actions',
+                headerName: '',
+                width: 60,
+                sortable: false,
+                align: 'right',
+                headerAlign: 'right',
+                renderCell: (params) => (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: 1,
+                            alignItems: 'center',
+                            height: '100%',
+                        }}
+                    >
+                        <IconButton
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                handleHistory(params.row.id);
+                            }}
+                            title="Tarix"
+                        >
+                            <Iconify icon="solar:clock-circle-bold" />
+                        </IconButton>
+                    </Box>
+                ),
+            },
+        ],
+        [handleHistory, t]
+    );
 
     return (
         <Container maxWidth="xl">
@@ -117,44 +251,115 @@ export function ClientTransactionsView({ clientId }: Props) {
                     { name: client?.fullname || '...', href: paths.dashboard.klientlar.detail(String(clientId)) },
                     { name: t('transaction.transactions') },
                 ]}
-                action={
-                    <Button
-                        variant="contained"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                        onClick={handleCreate}
-                    >
-                        {t('transaction.new_transaction')}
-                    </Button>
-                }
                 sx={{ mb: 3 }}
             />
 
-            {/* Total Summary Card */}
-            <Card sx={{ p: 3, mb: 3, borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                    <Box>
-                        <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                            {t('transaction.total_label')}
-                        </Typography>
-                        <Typography variant="h3" sx={{ color: 'success.main' }}>
-                            {fCurrency(total)}
-                        </Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            width: 64,
-                            height: 64,
-                            borderRadius: '50%',
-                            bgcolor: 'success.lighter',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Iconify icon="solar:wad-of-money-bold" width={32} sx={{ color: 'success.main' }} />
-                    </Box>
-                </Stack>
-            </Card>
+            {/* Summary Cards */}
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
+                <Card sx={{ p: 3, flex: 1, borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Box>
+                            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                                Kirim (UZS)
+                            </Typography>
+                            <Typography variant="h4" sx={{ color: 'success.main' }}>
+                                {fCurrency(totals.kirimUzs)}
+                            </Typography>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: '50%',
+                                bgcolor: 'success.lighter',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Iconify icon="solar:import-bold" width={24} sx={{ color: 'success.main' }} />
+                        </Box>
+                    </Stack>
+                </Card>
+
+                <Card sx={{ p: 3, flex: 1, borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Box>
+                            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                                Kirim (USD)
+                            </Typography>
+                            <Typography variant="h4" sx={{ color: 'success.main' }}>
+                                ${totals.kirimUsd.toLocaleString()}
+                            </Typography>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: '50%',
+                                bgcolor: 'success.lighter',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Iconify icon="solar:import-bold" width={24} sx={{ color: 'success.main' }} />
+                        </Box>
+                    </Stack>
+                </Card>
+
+                <Card sx={{ p: 3, flex: 1, borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Box>
+                            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                                Chiqim (UZS)
+                            </Typography>
+                            <Typography variant="h4" sx={{ color: 'error.main' }}>
+                                {fCurrency(totals.chiqimUzs)}
+                            </Typography>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: '50%',
+                                bgcolor: 'error.lighter',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Iconify icon="solar:export-bold" width={24} sx={{ color: 'error.main' }} />
+                        </Box>
+                    </Stack>
+                </Card>
+
+                <Card sx={{ p: 3, flex: 1, borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Box>
+                            <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                                Chiqim (USD)
+                            </Typography>
+                            <Typography variant="h4" sx={{ color: 'error.main' }}>
+                                ${totals.chiqimUsd.toLocaleString()}
+                            </Typography>
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: '50%',
+                                bgcolor: 'error.lighter',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Iconify icon="solar:export-bold" width={24} sx={{ color: 'error.main' }} />
+                        </Box>
+                    </Stack>
+                </Card>
+            </Stack>
 
             <Card sx={{ borderRadius: 2, boxShadow: (theme) => theme.customShadows.card }}>
                 <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
@@ -173,70 +378,92 @@ export function ClientTransactionsView({ clientId }: Props) {
                         }}
                     />
                     <TextField
-                        type="date"
-                        label={t('transaction.date_from')}
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ width: 180 }}
-                    />
+                        select
+                        label="Turi"
+                        value={financeType}
+                        onChange={(e) => setFinanceType(e.target.value as FinanceType | '')}
+                        sx={{ width: 150 }}
+                    >
+                        <MenuItem value="">Barchasi</MenuItem>
+                        <MenuItem value={FinanceType.KIRIM}>Kirim</MenuItem>
+                        <MenuItem value={FinanceType.CHIQIM}>Chiqim</MenuItem>
+                    </TextField>
                     <TextField
-                        type="date"
-                        label={t('transaction.date_to')}
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ width: 180 }}
-                    />
-                    {(dateFrom || dateTo || searchQuery) && (
+                        select
+                        label="To'lov usuli"
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod | '')}
+                        sx={{ width: 150 }}
+                    >
+                        <MenuItem value="">Barchasi</MenuItem>
+                        <MenuItem value={PaymentMethod.NAQD}>Naqd</MenuItem>
+                        <MenuItem value={PaymentMethod.BANK}>Bank</MenuItem>
+                    </TextField>
+                    <TextField
+                        select
+                        label="Valyuta"
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value as Currency | '')}
+                        sx={{ width: 150 }}
+                    >
+                        <MenuItem value="">Barchasi</MenuItem>
+                        <MenuItem value={Currency.UZS}>UZS</MenuItem>
+                        <MenuItem value={Currency.USD}>USD</MenuItem>
+                    </TextField>
+                    {hasFilters && (
                         <Button
                             variant="outlined"
                             color="inherit"
-                            onClick={() => {
-                                setSearchQuery('');
-                                setDebouncedQuery('');
-                                setDateFrom('');
-                                setDateTo('');
-                            }}
+                            onClick={handleClearFilters}
                         >
                             {t('transaction.clear_filters')}
                         </Button>
                     )}
                 </Box>
 
-                <ClientTransactionTable
-                    transactions={transactions}
+                <DataGrid
+                    columns={columns}
+                    disableColumnMenu
+                    disableRowSelectionOnClick
                     loading={isLoading}
-                    onHistory={handleHistory}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteClick}
+                    rows={finances}
+                    pageSizeOptions={[10, 25, 50]}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 10 },
+                        },
+                    }}
+                    sx={{
+                        border: 'none',
+                        '& .MuiDataGrid-cell:focus': {
+                            outline: 'none',
+                        },
+                        '& .MuiDataGrid-columnSeparator': {
+                            display: 'none',
+                        },
+                        '& .MuiDataGrid-columnHeader': {
+                            bgcolor: 'background.neutral',
+                            color: 'text.secondary',
+                            fontWeight: 'fontWeightSemiBold',
+                            textTransform: 'uppercase',
+                            fontSize: 12,
+                        },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 600,
+                        },
+                        '& .MuiDataGrid-row:hover': {
+                            bgcolor: 'action.hover',
+                        },
+                        height: finances.length > 0 ? 'auto' : 400,
+                    }}
                 />
             </Card>
-
-            <ClientTransactionDialog
-                open={dialog.value}
-                onClose={dialog.onFalse}
-                clientId={clientId}
-                transactionId={selectedId}
-            />
-
-            <ConfirmDialog
-                open={confirmDialog.value}
-                onClose={confirmDialog.onFalse}
-                title={t('transaction.delete_confirm_title')}
-                content={t('transaction.delete_confirm_message')}
-                action={
-                    <Button variant="contained" color="error" onClick={handleConfirmDelete}>
-                        {t('transaction.delete_confirm_button')}
-                    </Button>
-                }
-            />
 
             <ClientTransactionHistoryDialog
                 open={historyDialog.value}
                 onClose={historyDialog.onFalse}
                 clientId={clientId}
-                transactionId={historyTransactionId}
+                transactionId={historyFinanceId}
             />
         </Container>
     );
