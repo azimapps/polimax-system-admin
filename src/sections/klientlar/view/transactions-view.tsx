@@ -1,24 +1,24 @@
-import type { FinanceListItem, FinanceQueryParams } from 'src/types/finance';
 import type { GridColDef } from '@mui/x-data-grid';
+import type { FinanceListItem, FinanceQueryParams } from 'src/types/finance';
 
-import { useState, useMemo, useCallback } from 'react';
 import { useBoolean } from 'minimal-shared/hooks';
+import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid';
+import MenuItem from '@mui/material/MenuItem';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 
 import { useGetClient } from 'src/hooks/use-clients';
-import { useGetFinances, useGetFinanceHistory } from 'src/hooks/use-finance';
+import { useGetFinances } from 'src/hooks/use-finance';
 
 import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
@@ -28,7 +28,7 @@ import { useTranslate } from 'src/locales';
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { FinanceType, PaymentMethod, Currency } from 'src/types/finance';
+import { Currency, FinanceType, PaymentMethod } from 'src/types/finance';
 
 import { ClientTransactionHistoryDialog } from '../client-transaction-history-dialog';
 

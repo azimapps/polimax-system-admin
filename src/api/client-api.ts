@@ -1,9 +1,9 @@
 import type {
   Client,
   ClientListItem,
-  ArchivedClientListItem,
   CreateClientRequest,
   UpdateClientRequest,
+  ArchivedClientListItem,
 } from 'src/types/client';
 
 import axiosInstance from 'src/lib/axios';

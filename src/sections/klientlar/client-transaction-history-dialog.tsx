@@ -20,7 +20,7 @@ import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
-import { FinanceType, PaymentMethod, Currency } from 'src/types/finance';
+import { Currency, FinanceType, PaymentMethod } from 'src/types/finance';
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ export function ClientTransactionHistoryDialog({
                                     <TableCell>Turi</TableCell>
                                     <TableCell>{t('transaction.form.value')}</TableCell>
                                     <TableCell>Valyuta</TableCell>
-                                    <TableCell>To'lov usuli</TableCell>
+                                    <TableCell>To&apos;lov usuli</TableCell>
                                     <TableCell>{t('transaction.form.exchange_rate')}</TableCell>
                                     <TableCell>{t('transaction.form.date')}</TableCell>
                                 </TableRow>
