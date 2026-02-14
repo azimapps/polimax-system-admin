@@ -1,0 +1,70 @@
+{
+    "expense": "Харажатлар",
+    "expense_title": "Харажатлар",
+    "list": "Рўйхат",
+    "archived_title": "Архивланган харажатлар",
+    "new_expense": "Янги харажат",
+    "edit_title": "Харажатни таҳрирлаш",
+    "create_title": "Янги харажат яратиш",
+    "category_required": "Категорияни танланг",
+    "frequency_required": "Частотани танланг",
+    "amount_required": "Суммани киритинг",
+    "search_placeholder": "Қидириш...",
+    "delete_confirm_title": "Харажатни ўчириш",
+    "delete_confirm_message": "Ҳақиқатан ҳам бу харажатни ўчирмоқчимисиз?",
+    "delete_confirm_button": "Ўчириш",
+    "restore_confirm_title": "Харажатни тиклаш",
+    "restore_confirm_message": "Бу харажатни тикламоқчимисиз?",
+    "restore": "Тиклаш",
+    "archive": "Архив",
+    "back_to_list": "Рўйхатга қайтиш",
+    "history_title": "Харажат тарихи",
+    "version": "Версия",
+    "current_version": "Жорий",
+    "deleted": "Ўчирилган",
+    "revert_button": "Қайтариш",
+    "revert_confirm_title": "v{{version}} га қайтариш",
+    "revert_confirm_message": "Ҳақиқатан ҳам бу версияга қайтаришни хоҳлайсизми?",
+    "tabs": {
+        "all": "Ҳаммаси",
+        "recurring": "Ойлик",
+        "one_time": "Бир марталик"
+    },
+    "form": {
+        "category": "Категория",
+        "frequency": "Частота",
+        "amount": "Сумма",
+        "notes": "Изоҳлар",
+        "notes_placeholder": "Изоҳ ёзинг...",
+        "categories": {
+            "arenda": "Аренда",
+            "maosh": "Маош",
+            "kommunal": "Коммунал",
+            "transport": "Транспорт",
+            "xom_ashyo": "Хом ашё",
+            "uskuna": "Ускуна",
+            "tamirlash": "Таъмирлаш",
+            "boshqa": "Бошқа"
+        },
+        "frequencies": {
+            "recurring": "Ойлик",
+            "one_time": "Бир марталик"
+        }
+    },
+    "table": {
+        "category": "Категория",
+        "frequency": "Частота",
+        "amount": "Сумма",
+        "notes": "Изоҳлар",
+        "actions": "Амаллар",
+        "deleted_at": "Ўчирилган сана"
+    },
+    "messages": {
+        "success_create": "Харажат муваффақиятли яратилди",
+        "success_update": "Харажат муваффақиятли янгиланди",
+        "error_generic": "Хатолик юз берди"
+    },
+    "cancel": "Бекор қилиш",
+    "update": "Янгилаш",
+    "create": "Яратиш"
+}

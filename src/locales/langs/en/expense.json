@@ -1,0 +1,70 @@
+{
+    "expense": "Expenses",
+    "expense_title": "Expenses",
+    "list": "List",
+    "archived_title": "Archived Expenses",
+    "new_expense": "New Expense",
+    "edit_title": "Edit Expense",
+    "create_title": "Create New Expense",
+    "category_required": "Select category",
+    "frequency_required": "Select frequency",
+    "amount_required": "Enter amount",
+    "search_placeholder": "Search...",
+    "delete_confirm_title": "Delete Expense",
+    "delete_confirm_message": "Are you sure you want to delete this expense?",
+    "delete_confirm_button": "Delete",
+    "restore_confirm_title": "Restore Expense",
+    "restore_confirm_message": "Do you want to restore this expense?",
+    "restore": "Restore",
+    "archive": "Archive",
+    "back_to_list": "Back to List",
+    "history_title": "Expense History",
+    "version": "Version",
+    "current_version": "Current",
+    "deleted": "Deleted",
+    "revert_button": "Revert",
+    "revert_confirm_title": "Revert to v{{version}}",
+    "revert_confirm_message": "Are you sure you want to revert to this version?",
+    "tabs": {
+        "all": "All",
+        "recurring": "Monthly",
+        "one_time": "One-time"
+    },
+    "form": {
+        "category": "Category",
+        "frequency": "Frequency",
+        "amount": "Amount",
+        "notes": "Notes",
+        "notes_placeholder": "Enter notes...",
+        "categories": {
+            "arenda": "Rent",
+            "maosh": "Salary",
+            "kommunal": "Utilities",
+            "transport": "Transport",
+            "xom_ashyo": "Raw Materials",
+            "uskuna": "Equipment",
+            "tamirlash": "Repair",
+            "boshqa": "Other"
+        },
+        "frequencies": {
+            "recurring": "Monthly",
+            "one_time": "One-time"
+        }
+    },
+    "table": {
+        "category": "Category",
+        "frequency": "Frequency",
+        "amount": "Amount",
+        "notes": "Notes",
+        "actions": "Actions",
+        "deleted_at": "Deleted Date"
+    },
+    "messages": {
+        "success_create": "Expense created successfully",
+        "success_update": "Expense updated successfully",
+        "error_generic": "An error occurred"
+    },
+    "cancel": "Cancel",
+    "update": "Update",
+    "create": "Create"
+}

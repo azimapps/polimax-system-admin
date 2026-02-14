@@ -43,5 +43,7 @@
   "order_planning": "Buyurtma planlashtirish",
   "in_progress": "Jarayonda",
   "finished": "Yakunlangan",
-  "mixing_station": "Aralashtirish stansiyasi"
+  "mixing_station": "Aralashtirish stansiyasi",
+  "expenses": "Xarajatlar",
+  "expense_list": "Xarajatlar ro'yxati"
 }

@@ -43,5 +43,7 @@
   "order_planning": "Order Planning",
   "in_progress": "In Progress",
   "finished": "Finished",
-  "mixing_station": "Mixing Station"
+  "mixing_station": "Mixing Station",
+  "expenses": "Expenses",
+  "expense_list": "Expense List"
 }

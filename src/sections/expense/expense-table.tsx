@@ -1,5 +1,5 @@
 import type { GridColDef } from '@mui/x-data-grid';
-import type { FinanceListItem } from 'src/types/finance';
+import type { ExpenseListItem } from 'src/types/expense';
 
 import { memo, useMemo } from 'react';
 
@@ -8,134 +8,77 @@ import Chip from '@mui/material/Chip';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 
-import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 
-import { Currency, FinanceType } from 'src/types/finance';
+import { ExpenseFrequency } from 'src/types/expense';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-    finances: FinanceListItem[];
+    expenses: ExpenseListItem[];
     loading: boolean;
     onHistory: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
 };
 
-function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete }: Props) {
-    const { t } = useTranslate('finance');
+function ExpenseTableComponent({ expenses, loading, onHistory, onEdit, onDelete }: Props) {
+    const { t } = useTranslate('expense');
 
-    const columns: GridColDef<FinanceListItem>[] = useMemo(
+    const columns: GridColDef<ExpenseListItem>[] = useMemo(
         () => [
             {
-                field: 'finance_type',
-                headerName: t('table.type'),
-                width: 120,
+                field: 'category',
+                headerName: t('table.category'),
+                width: 150,
                 sortable: false,
                 renderCell: (params) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                         <Chip
-                            label={t(`form.types.${params.row.finance_type}`)}
-                            color={params.row.finance_type === FinanceType.KIRIM ? 'success' : 'error'}
+                            label={t(`form.categories.${params.row.category}`)}
                             size="small"
                             variant="soft"
+                            color="primary"
                         />
                     </Box>
                 ),
             },
             {
-                field: 'expense_category',
-                headerName: t('table.expense_category'),
+                field: 'frequency',
+                headerName: t('table.frequency'),
                 width: 140,
-                sortable: false,
-                renderCell: (params) => (
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                        {params.row.expense_category ? (
-                            <Chip
-                                label={t(`form.categories.${params.row.expense_category}`)}
-                                size="small"
-                                variant="soft"
-                                color="warning"
-                            />
-                        ) : (
-                            '-'
-                        )}
-                    </Box>
-                ),
-            },
-            {
-                field: 'value',
-                headerName: t('table.value'),
-                width: 180,
-                sortable: false,
-                renderCell: (params) => {
-                    const value = params.row.value;
-                    const currency = params.row.currency;
-                    const displayValue =
-                        currency === Currency.UZS
-                            ? fCurrency(value)
-                            : `$${value.toLocaleString()}`;
-
-                    return (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                height: '100%',
-                                fontWeight: 'fontWeightSemiBold',
-                                color:
-                                    params.row.finance_type === FinanceType.KIRIM
-                                        ? 'success.main'
-                                        : 'error.main',
-                            }}
-                        >
-                            {params.row.finance_type === FinanceType.KIRIM ? '+' : '-'}
-                            {displayValue}
-                        </Box>
-                    );
-                },
-            },
-            {
-                field: 'currency',
-                headerName: t('table.currency'),
-                width: 100,
                 sortable: false,
                 renderCell: (params) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                         <Chip
-                            label={params.row.currency.toUpperCase()}
+                            label={t(`form.frequencies.${params.row.frequency}`)}
                             size="small"
                             variant="outlined"
+                            color={params.row.frequency === ExpenseFrequency.RECURRING ? 'info' : 'default'}
                         />
                     </Box>
                 ),
             },
             {
-                field: 'currency_exchange_rate',
-                headerName: t('table.exchange_rate'),
-                width: 140,
-                sortable: false,
-                renderCell: (params) => (
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                        {params.row.currency_exchange_rate
-                            ? fCurrency(params.row.currency_exchange_rate)
-                            : '-'}
-                    </Box>
-                ),
-            },
-            {
-                field: 'date',
-                headerName: t('table.date'),
+                field: 'amount',
+                headerName: t('table.amount'),
                 width: 180,
                 sortable: false,
                 renderCell: (params) => (
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                        {fDateTime(params.row.date)}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '100%',
+                            fontWeight: 'fontWeightSemiBold',
+                            color: 'error.main',
+                        }}
+                    >
+                        -{fCurrency(params.row.amount)}
                     </Box>
                 ),
             },
@@ -214,7 +157,7 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
             disableColumnMenu
             disableRowSelectionOnClick
             loading={loading}
-            rows={finances}
+            rows={expenses}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
                 pagination: {
@@ -242,10 +185,10 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
                 '& .MuiDataGrid-row:hover': {
                     bgcolor: 'action.hover',
                 },
-                height: finances.length > 0 ? 'auto' : 400,
+                height: expenses.length > 0 ? 'auto' : 400,
             }}
         />
     );
 }
 
-export const FinanceTable = memo(FinanceTableComponent);
+export const ExpenseTable = memo(ExpenseTableComponent);

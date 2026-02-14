@@ -74,6 +74,11 @@ export const paths = {
       transfer: '/finance/transfer',
       archived: '/finance/archived',
     },
+    expense: {
+      root: '/expense',
+      list: '/expense/list',
+      archived: '/expense/archived',
+    },
     production: {
       root: '/production',
       reports: '/production/reports',

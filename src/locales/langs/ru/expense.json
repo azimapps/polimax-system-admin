@@ -1,0 +1,70 @@
+{
+    "expense": "Расходы",
+    "expense_title": "Расходы",
+    "list": "Список",
+    "archived_title": "Архивные расходы",
+    "new_expense": "Новый расход",
+    "edit_title": "Редактировать расход",
+    "create_title": "Создать новый расход",
+    "category_required": "Выберите категорию",
+    "frequency_required": "Выберите частоту",
+    "amount_required": "Введите сумму",
+    "search_placeholder": "Поиск...",
+    "delete_confirm_title": "Удалить расход",
+    "delete_confirm_message": "Вы уверены, что хотите удалить этот расход?",
+    "delete_confirm_button": "Удалить",
+    "restore_confirm_title": "Восстановить расход",
+    "restore_confirm_message": "Хотите восстановить этот расход?",
+    "restore": "Восстановить",
+    "archive": "Архив",
+    "back_to_list": "Назад к списку",
+    "history_title": "История расходов",
+    "version": "Версия",
+    "current_version": "Текущая",
+    "deleted": "Удалено",
+    "revert_button": "Вернуть",
+    "revert_confirm_title": "Вернуть к v{{version}}",
+    "revert_confirm_message": "Вы уверены, что хотите вернуться к этой версии?",
+    "tabs": {
+        "all": "Все",
+        "recurring": "Ежемесячные",
+        "one_time": "Разовые"
+    },
+    "form": {
+        "category": "Категория",
+        "frequency": "Частота",
+        "amount": "Сумма",
+        "notes": "Примечания",
+        "notes_placeholder": "Введите примечания...",
+        "categories": {
+            "arenda": "Аренда",
+            "maosh": "Зарплата",
+            "kommunal": "Коммунальные",
+            "transport": "Транспорт",
+            "xom_ashyo": "Сырьё",
+            "uskuna": "Оборудование",
+            "tamirlash": "Ремонт",
+            "boshqa": "Другое"
+        },
+        "frequencies": {
+            "recurring": "Ежемесячно",
+            "one_time": "Разово"
+        }
+    },
+    "table": {
+        "category": "Категория",
+        "frequency": "Частота",
+        "amount": "Сумма",
+        "notes": "Примечания",
+        "actions": "Действия",
+        "deleted_at": "Дата удаления"
+    },
+    "messages": {
+        "success_create": "Расход успешно создан",
+        "success_update": "Расход успешно обновлен",
+        "error_generic": "Произошла ошибка"
+    },
+    "cancel": "Отмена",
+    "update": "Обновить",
+    "create": "Создать"
+}

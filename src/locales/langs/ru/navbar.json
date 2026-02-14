@@ -43,5 +43,7 @@
   "order_planning": "План заказов",
   "in_progress": "В процессе",
   "finished": "Завершено",
-  "mixing_station": "Станция смешивания"
+  "mixing_station": "Станция смешивания",
+  "expenses": "Расходы",
+  "expense_list": "Список расходов"
 }

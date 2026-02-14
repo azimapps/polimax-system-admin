@@ -43,5 +43,7 @@
   "order_planning": "Буюртма планлаштириш",
   "in_progress": "Жараёнда",
   "finished": "Якунланган",
-  "mixing_station": "Аралаштириш станцияси"
+  "mixing_station": "Аралаштириш станцияси",
+  "expenses": "Харажатлар",
+  "expense_list": "Харажатлар рўйхати"
 }
