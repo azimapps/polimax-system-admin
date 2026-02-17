@@ -1,38 +1,106 @@
 
-export enum OmborCategory {
+export enum OmborType {
     PLYONKA = 'plyonka',
     KRASKA = 'kraska',
+    SUYUQ_KRASKA = 'suyuq_kraska',
     RASTVARITEL = 'rastvaritel',
-    SILINDIR = 'silindir',
+    ARALASHMASI = 'aralashmasi',
+    SILINDIR = 'silindr',
     KLEY = 'kley',
+    ZAPCHASTLAR = 'zapchastlar',
+    OTXOT = 'otxot',
+    TAYYOR_TOSHKENT = 'tayyor_toshkent',
+    TAYYOR_ANGREN = 'tayyor_angren',
+}
+
+export enum PriceCurrency {
+    UZS = 'uzs',
+    USD = 'usd',
+    RUB = 'rub',
+    EUR = 'eur',
+}
+
+export enum PlyonkaCategory {
+    BOPP = 'bopp',
+    CPP = 'cpp',
+    PE = 'pe',
+    PET = 'pet',
+}
+
+export enum SolventType {
+    EAF = 'eaf',
+    EA = 'ea',
+    METOKSIL = 'metoksil',
+}
+
+export enum CylinderOrigin {
+    CHINA = 'china',
+    GERMANY = 'germany',
 }
 
 export type OmborItem = {
     id: number;
     version: number;
+    ombor_type: OmborType;
     name: string;
-    category: OmborCategory[];
-    quantity: number;
-    unit: string;
-    price: number;
-    currency: 'uzs' | 'usd';
-    batch_number?: string;
-    notes?: string;
+    date: string;
+    description?: string;
+    price_currency: PriceCurrency;
+    supplier_id?: number | null;
+    client_id?: number | null;
+    total_kg?: number | null;
+    total_liter?: number | null;
+    quantity?: number | null;
+    barrels?: number | null;
+    price_per_kg?: number | null;
+    price_per_liter?: number | null;
+    price?: number | null;
+    seriya_number?: string | null;
+    number_identifier?: string | null;
+    plyonka_category?: PlyonkaCategory | null;
+    plyonka_subcategory?: string | null;
+    thickness?: number | null;
+    width?: number | null;
+    color_name?: string | null;
+    color_hex?: string | null;
+    marka?: string | null;
+    solvent_type?: SolventType | null;
+    eaf_component_id?: number | null;
+    eaf_component_quantity?: number | null;
+    etilin_component_id?: number | null;
+    etilin_component_quantity?: number | null;
+    metoksil_component_id?: number | null;
+    metoksil_component_quantity?: number | null;
+    origin?: CylinderOrigin | null;
+    length?: number | null;
+    diameter?: number | null;
+    usage?: number | null;
+    usage_limit?: number | null;
+    product_type?: string | null;
+    net_weight?: number | null;
+    gross_weight?: number | null;
+    total_net_weight?: number | null;
+    total_gross_weight?: number | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
+    archived_at: string | null;
+    created_by?: number | null;
+    archived_by?: number | null;
     previous_id: number | null;
 };
 
-export type CreateOmborRequest = {
-    name: string;
-    category: OmborCategory[];
-    quantity: number;
-    unit: string;
-    price: number;
-    currency: 'uzs' | 'usd';
-    batch_number?: string;
-    notes?: string;
-};
+export type CreateOmborRequest = Omit<
+    OmborItem,
+    | 'id'
+    | 'version'
+    | 'created_at'
+    | 'updated_at'
+    | 'deleted_at'
+    | 'archived_at'
+    | 'created_by'
+    | 'archived_by'
+    | 'previous_id'
+>;
 
 export type UpdateOmborRequest = Partial<CreateOmborRequest>;
