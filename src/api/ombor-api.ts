@@ -6,60 +6,60 @@ import axiosInstance from 'src/lib/axios';
 
 export const omborApi = {
     // Get all ombor items
-    getOmborItems: async (params?: {
-        ombor_type?: OmborType;
+    getOmborItems: async (type: OmborType, params?: {
         supplier_id?: number;
         client_id?: number;
         q?: string;
     }): Promise<OmborItem[]> => {
-        const response = await axiosInstance.get('/ombor', { params });
+        const response = await axiosInstance.get(`/ombor/${type}`, { params });
         return response.data;
     },
 
     // Get single ombor item
-    getOmborItem: async (id: number): Promise<OmborItem> => {
-        const response = await axiosInstance.get(`/ombor/${id}`);
+    getOmborItem: async (type: OmborType, id: number): Promise<OmborItem> => {
+        const response = await axiosInstance.get(`/ombor/${type}/${id}`);
         return response.data;
     },
 
     // Create ombor item
-    createOmborItem: async (data: CreateOmborRequest): Promise<OmborItem> => {
-        const response = await axiosInstance.post('/ombor', data);
+    createOmborItem: async (type: OmborType, data: CreateOmborRequest): Promise<OmborItem> => {
+        const response = await axiosInstance.post(`/ombor/${type}`, data);
         return response.data;
     },
 
     // Update ombor item
-    updateOmborItem: async (id: number, data: UpdateOmborRequest): Promise<OmborItem> => {
-        const response = await axiosInstance.put(`/ombor/${id}`, data);
+    updateOmborItem: async (type: OmborType, id: number, data: UpdateOmborRequest): Promise<OmborItem> => {
+        const response = await axiosInstance.put(`/ombor/${type}/${id}`, data);
         return response.data;
     },
 
     // Delete ombor item
-    deleteOmborItem: async (id: number): Promise<void> => {
-        await axiosInstance.delete(`/ombor/${id}`);
+    deleteOmborItem: async (type: OmborType, id: number): Promise<void> => {
+        await axiosInstance.delete(`/ombor/${type}/${id}`);
     },
 
     // Get archived items
-    getArchivedItems: async (q?: string): Promise<OmborItem[]> => {
-        const response = await axiosInstance.get('/ombor/archived', { params: { q } });
+    getArchivedItems: async (type: OmborType, q?: string): Promise<OmborItem[]> => {
+        const response = await axiosInstance.get(`/ombor/${type}/archived`, { params: { q } });
         return response.data;
     },
 
     // Restore item
-    restoreItem: async (id: number): Promise<OmborItem> => {
-        const response = await axiosInstance.post(`/ombor/${id}/restore`);
+    restoreItem: async (type: OmborType, id: number): Promise<OmborItem> => {
+        const response = await axiosInstance.post(`/ombor/${type}/${id}/restore`);
         return response.data;
     },
 
     // Get history
-    getItemHistory: async (id: number): Promise<OmborItem[]> => {
-        const response = await axiosInstance.get(`/ombor/${id}/history`);
+    getItemHistory: async (type: OmborType, id: number): Promise<OmborItem[]> => {
+        const response = await axiosInstance.get(`/ombor/${type}/${id}/history`);
         return response.data;
     },
 
     // Revert to version
-    revertItem: async (id: number, version: number): Promise<OmborItem> => {
-        const response = await axiosInstance.post(`/ombor/${id}/revert/${version}`);
+    revertItem: async (type: OmborType, id: number, version: number): Promise<OmborItem> => {
+        const response = await axiosInstance.post(`/ombor/${type}/${id}/revert/${version}`);
         return response.data;
     },
 };
+

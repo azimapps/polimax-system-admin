@@ -2,9 +2,9 @@ import type { OmborItem } from 'src/types/ombor';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 
@@ -15,9 +15,10 @@ import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { TableHeadCustom, TableNoData, TableSkeleton } from 'src/components/table';
+import { TableNoData, TableSkeleton, TableHeadCustom } from 'src/components/table';
 
 import { OmborType } from 'src/types/ombor';
+
 
 // ----------------------------------------------------------------------
 
@@ -42,22 +43,40 @@ export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Prop
     ];
 
     const getQuantityDisplay = (item: OmborItem) => {
-        if (item.ombor_type === OmborType.PLYONKA || item.ombor_type === OmborType.KRASKA) {
-            return `${item.total_kg || 0} kg`;
+        switch (item.ombor_type) {
+            case OmborType.PLYONKA:
+            case OmborType.KRASKA:
+            case OmborType.SUYUQ_KRASKA:
+            case OmborType.OTXOT:
+                return `${item.total_kg || 0} kg`;
+            case OmborType.RASTVARITEL:
+            case OmborType.ARALASHMASI:
+                return `${item.total_liter || 0} L`;
+            case OmborType.SILINDIR:
+            case OmborType.KLEY:
+            case OmborType.TAYYOR_TOSHKENT:
+            case OmborType.TAYYOR_ANGREN:
+            case OmborType.ZAPCHASTLAR:
+                return `${item.quantity || item.barrels || 0} dona/bochka`;
+            default:
+                return `${item.quantity || item.total_kg || item.total_liter || 0}`;
         }
-        if (item.ombor_type === OmborType.RASTVARITEL || item.ombor_type === OmborType.SUYUQ_KRASKA) {
-            return `${item.total_liter || 0} L`;
-        }
-        if (item.ombor_type === OmborType.SILINDIR) {
-            return `${item.quantity || 0} dona`;
-        }
-        return `${item.quantity || item.total_kg || 0}`;
     };
 
     const getPriceDisplay = (item: OmborItem) => {
-        const price = item.price || (item.price_per_kg ? (item.price_per_kg * (item.total_kg || 0)) : 0);
-        return `${fCurrency(price)} ${item.price_currency.toUpperCase()}`;
+        let price = item.price || 0;
+
+        if (!price) {
+            if (item.price_per_kg && item.total_kg) {
+                price = item.price_per_kg * item.total_kg;
+            } else if (item.price_per_liter && item.total_liter) {
+                price = item.price_per_liter * item.total_liter;
+            }
+        }
+
+        return `${fCurrency(price)} ${item.price_currency?.toUpperCase() || ''}`;
     };
+
 
     return (
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>

@@ -1,3 +1,4 @@
+import type { OmborType } from 'src/types/ombor';
 
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
@@ -5,10 +6,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { useTranslate } from 'src/locales';
 import { useGetOmborItem } from 'src/hooks/use-ombor';
 
+import { useTranslate } from 'src/locales';
+
 import { OmborForm } from './ombor-form';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -16,12 +20,14 @@ type Props = {
     open: boolean;
     onClose: () => void;
     id?: number;
+    type: OmborType;
 };
 
-export function OmborDialog({ open, onClose, id }: Props) {
+export function OmborDialog({ open, onClose, id, type }: Props) {
     const { t } = useTranslate('ombor');
 
-    const { data: item, isLoading } = useGetOmborItem(id || 0);
+    const { data: item, isLoading } = useGetOmborItem(type, id || 0);
+
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -34,12 +40,14 @@ export function OmborDialog({ open, onClose, id }: Props) {
                     </Box>
                 ) : (
                     <OmborForm
+                        type={type}
                         item={id ? item : undefined}
                         onCancel={onClose}
                         onSuccess={() => {
                             onClose();
                         }}
                     />
+
                 )}
             </DialogContent>
         </Dialog>

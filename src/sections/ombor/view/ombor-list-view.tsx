@@ -2,32 +2,67 @@
 import { useState, useCallback } from 'react';
 import { useBoolean } from 'minimal-shared/hooks';
 
+import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { useTranslate } from 'src/locales';
+import { useRouter, usePathname } from 'src/routes/hooks';
+
 import { useGetOmborItems, useDeleteOmborItem } from 'src/hooks/use-ombor';
+
+import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
+import { OmborType } from 'src/types/ombor';
+
 import { OmborTable } from '../ombor-table';
 import { OmborDialog } from '../ombor-dialog';
 
+
+
 // ----------------------------------------------------------------------
+
+const PATH_MAP: Record<string, OmborType> = {
+    '/ombor/plyonka': OmborType.PLYONKA,
+    '/ombor/kraska': OmborType.KRASKA,
+    '/ombor/suyuq-kraska': OmborType.SUYUQ_KRASKA,
+    '/ombor/rastvaritel': OmborType.RASTVARITEL,
+    '/ombor/rastvaritel-mix': OmborType.ARALASHMASI,
+    '/ombor/cilindr': OmborType.SILINDIR,
+    '/ombor/kley': OmborType.KLEY,
+    '/ombor/zapchastlar': OmborType.ZAPCHASTLAR,
+    '/ombor/otxod': OmborType.OTXOT,
+    '/ombor/finished-products-toshkent': OmborType.TAYYOR_TOSHKENT,
+    '/ombor/finished-products-angren': OmborType.TAYYOR_ANGREN,
+};
+
+const TYPE_TO_PATH: Record<string, string> = Object.fromEntries(
+    Object.entries(PATH_MAP).map(([path, type]) => [type, path])
+);
 
 export function OmborListView() {
     const { t } = useTranslate('ombor');
+    const router = useRouter();
+    const pathname = usePathname();
+
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    const { data: items = [], isLoading } = useGetOmborItems({ q: debouncedQuery });
-    const { mutateAsync: deleteItem } = useDeleteOmborItem();
+    const currentTab = PATH_MAP[pathname] || OmborType.PLYONKA;
+
+    const { data: items = [], isLoading } = useGetOmborItems({
+        ombor_type: currentTab,
+        q: debouncedQuery,
+    });
+    const { mutateAsync: deleteItem } = useDeleteOmborItem(currentTab);
 
     const dialog = useBoolean();
     const confirmDialog = useBoolean();
@@ -41,6 +76,14 @@ export function OmborListView() {
         }, 500);
         return () => clearTimeout(timer);
     }, []);
+
+    const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: OmborType) => {
+        const path = TYPE_TO_PATH[newValue];
+        if (path) {
+            router.push(path);
+        }
+    }, [router]);
+
 
     const handleCreate = useCallback(() => {
         setSelectedId(undefined);
@@ -86,6 +129,24 @@ export function OmborListView() {
             </Stack>
 
             <Card>
+                <Tabs
+                    value={currentTab}
+                    onChange={handleChangeTab}
+                    sx={{
+                        px: 2.5,
+                        boxShadow: (theme) => `inset 0 -2px 0 0 ${theme.vars.palette.divider}`,
+                    }}
+                >
+                    {Object.values(OmborType).map((tab) => (
+                        <Tab
+                            key={tab}
+                            iconPosition="end"
+                            value={tab}
+                            label={t(`form.types.${tab}`)}
+                        />
+                    ))}
+                </Tabs>
+
                 <Box sx={{ p: 2 }}>
                     <TextField
                         sx={{ maxWidth: 320 }}
@@ -115,6 +176,7 @@ export function OmborListView() {
                 open={dialog.value}
                 onClose={dialog.onFalse}
                 id={selectedId}
+                type={currentTab}
             />
 
             <ConfirmDialog
@@ -131,3 +193,4 @@ export function OmborListView() {
         </Container>
     );
 }
+

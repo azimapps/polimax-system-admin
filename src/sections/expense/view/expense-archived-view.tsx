@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
 
-import { useGetArchivedExpenses, useRestoreExpense } from 'src/hooks/use-expense';
+import { useRestoreExpense, useGetArchivedExpenses } from 'src/hooks/use-expense';
 
 import { useTranslate } from 'src/locales';
 

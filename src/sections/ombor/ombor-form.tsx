@@ -1,8 +1,8 @@
 
 import type { OmborItem, CreateOmborRequest } from 'src/types/ombor';
 
-import { useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
@@ -17,11 +17,12 @@ import { omborApi } from 'src/api/ombor-api';
 import { Form, Field } from 'src/components/hook-form';
 
 import {
+
     OmborType,
-    PriceCurrency,
     SolventType,
+    PriceCurrency,
     CylinderOrigin,
-    PlyonkaCategory
+    PlyonkaCategory,
 } from 'src/types/ombor';
 
 import { getOmborSchema } from './ombor-schema';
@@ -29,17 +30,18 @@ import { getOmborSchema } from './ombor-schema';
 // ----------------------------------------------------------------------
 
 type Props = {
+    type: OmborType;
     item?: OmborItem;
     onSuccess?: () => void;
     onCancel?: () => void;
 };
 
-export function OmborForm({ item, onSuccess, onCancel }: Props) {
+export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
     const { t } = useTranslate('ombor');
     const isEdit = !!item;
 
     const defaultValues = useMemo(() => ({
-        ombor_type: item?.ombor_type || OmborType.PLYONKA,
+        ombor_type: item?.ombor_type || type,
         name: item?.name || '',
         date: item?.date || new Date().toISOString(),
         description: item?.description || '',
@@ -86,7 +88,8 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
         gross_weight: item?.gross_weight || null,
         total_net_weight: item?.total_net_weight || null,
         total_gross_weight: item?.total_gross_weight || null,
-    }), [item]);
+    }), [item, type]);
+
 
     const methods = useForm<CreateOmborRequest>({
         resolver: zodResolver(getOmborSchema(t)),
@@ -106,11 +109,12 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
     const onSubmit = handleSubmit(async (data) => {
         try {
             if (isEdit && item) {
-                await omborApi.updateOmborItem(item.id, data);
+                await omborApi.updateOmborItem(data.ombor_type, item.id, data);
             } else {
-                await omborApi.createOmborItem(data);
+                await omborApi.createOmborItem(data.ombor_type, data);
             }
             onSuccess?.();
+            reset();
         } catch (error) {
             console.error(error);
         }
@@ -118,19 +122,8 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
 
     const renderCommonFields = (
         <>
-            <Field.Select
-                name="ombor_type"
-                label={t('form.ombor_type')}
-                InputLabelProps={{ shrink: true }}
-            >
-                {Object.values(OmborType).map((type) => (
-                    <MenuItem key={type} value={type}>
-                        {t(`form.types.${type}`)}
-                    </MenuItem>
-                ))}
-            </Field.Select>
-
             <Field.Text
+
                 name="name"
                 label={t('form.name')}
                 InputLabelProps={{ shrink: true }}
@@ -160,16 +153,9 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 ))}
             </Field.Select>
 
-            <Field.Text
-                name="description"
-                label={t('form.description')}
-                InputLabelProps={{ shrink: true }}
-                multiline
-                rows={2}
-                sx={{ gridColumn: 'span 2' }}
-            />
         </>
     );
+
 
     const renderPlyonkaFields = (
         <>
@@ -177,6 +163,7 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 name="plyonka_category"
                 label={t('form.plyonka_category')}
                 InputLabelProps={{ shrink: true }}
+                required
             >
                 {Object.values(PlyonkaCategory).map((cat) => (
                     <MenuItem key={cat} value={cat}>
@@ -206,10 +193,23 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 label={t('form.total_kg')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
+                required
             />
             <Field.Text
                 name="price_per_kg"
                 label={t('form.price_per_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="seriya_number"
+                label={t('form.seriya_number')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
@@ -222,6 +222,7 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 name="color_name"
                 label={t('form.color_name')}
                 InputLabelProps={{ shrink: true }}
+                required
             />
             <Field.Text
                 name="color_hex"
@@ -245,10 +246,132 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 label={t('form.total_kg')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
+                required
             />
             <Field.Text
                 name="price_per_kg"
                 label={t('form.price_per_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="seriya_number"
+                label={t('form.seriya_number')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+        </>
+    );
+
+    const renderRastvaritelFields = (
+        <>
+            <Field.Select
+                name="solvent_type"
+                label={t('form.solvent_type')}
+                InputLabelProps={{ shrink: true }}
+                required
+            >
+                {Object.values(SolventType).map((option) => (
+                    <MenuItem key={option} value={option}>
+                        {option.toUpperCase()}
+                    </MenuItem>
+                ))}
+
+            </Field.Select>
+            <Field.Text
+                name="total_liter"
+                label={t('form.total_liter')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="price_per_liter"
+                label={t('form.price_per_liter')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="seriya_number"
+                label={t('form.seriya_number')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+        </>
+    );
+
+    const renderAralashmasiFields = (
+        <>
+            <Field.Text
+                name="total_liter"
+                label={t('form.total_liter')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="total_kg"
+                label={t('form.total_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="price_per_liter"
+                label={t('form.price_per_liter')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="price_per_kg"
+                label={t('form.price_per_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="eaf_component_id"
+                label={t('form.eaf_component_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="eaf_component_quantity"
+                label={t('form.eaf_component_quantity')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="etilin_component_id"
+                label={t('form.etilin_component_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="etilin_component_quantity"
+                label={t('form.etilin_component_quantity')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="metoksil_component_id"
+                label={t('form.metoksil_component_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="metoksil_component_quantity"
+                label={t('form.metoksil_component_quantity')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
@@ -261,11 +384,13 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 name="seriya_number"
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
+                required
             />
             <Field.Select
                 name="origin"
                 label={t('form.origin')}
                 InputLabelProps={{ shrink: true }}
+                required
             >
                 {Object.values(CylinderOrigin).map((origin) => (
                     <MenuItem key={origin} value={origin}>
@@ -290,10 +415,18 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 label={t('form.quantity')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
+                required
             />
             <Field.Text
                 name="price"
                 label={t('form.price')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="usage"
+                label={t('form.usage')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
@@ -303,21 +436,42 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
         </>
     );
 
-    const renderTayyorFields = (
+    const renderKleyFields = (
         <>
             <Field.Text
                 name="product_type"
                 label={t('form.product_type')}
                 InputLabelProps={{ shrink: true }}
+                required
             />
             <Field.Text
-                name="quantity"
-                label={t('form.quantity')}
+                name="number_identifier"
+                label={t('form.number_identifier')}
+                InputLabelProps={{ shrink: true }}
+                required
+            />
+            <Field.Text
+                name="barrels"
+                label={t('form.barrels')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
+                required
+            />
+            <Field.Text
+                name="price"
+                label={t('form.price')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
             />
             <Field.Text
                 name="net_weight"
@@ -343,33 +497,115 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
         </>
     );
 
-    const renderSolventFields = (
+    const renderTayyorFields = (
         <>
-            <Field.Select
-                name="solvent_type"
-                label={t('form.solvent_type')}
-                InputLabelProps={{ shrink: true }}
-            >
-                {Object.values(SolventType).map((type) => (
-                    <MenuItem key={type} value={type}>
-                        {type.toUpperCase()}
-                    </MenuItem>
-                ))}
-            </Field.Select>
             <Field.Text
-                name="total_liter"
-                label={t('form.total_liter')}
+                name="product_type"
+                label={t('form.product_type')}
+                InputLabelProps={{ shrink: true }}
+                required
+            />
+            <Field.Text
+                name="client_id"
+                label={t('form.client_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="quantity"
+                label={t('form.quantity')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="price"
+                label={t('form.price')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
             <Field.Text
-                name="price_per_liter"
-                label={t('form.price_per_liter')}
+                name="number_identifier"
+                label={t('form.number_identifier')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
+                name="net_weight"
+                label={t('form.net_weight')}
                 InputLabelProps={{ shrink: true }}
                 type="number"
+            />
+            <Field.Text
+                name="gross_weight"
+                label={t('form.gross_weight')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="total_net_weight"
+                label={t('form.total_net_weight')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="total_gross_weight"
+                label={t('form.total_gross_weight')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
+                name="supplier_id"
+                label={t('form.supplier_id')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+        </>
+    );
+
+    const renderZapchastlarFields = (
+        <>
+            <Field.Text
+                name="quantity"
+                label={t('form.quantity')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="price"
+                label={t('form.price')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+        </>
+    );
+
+    const renderOtxotFields = (
+        <>
+            <Field.Text
+                name="total_kg"
+                label={t('form.total_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
+            />
+            <Field.Text
+                name="price_per_kg"
+                label={t('form.price_per_kg')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+                required
             />
         </>
     );
@@ -389,29 +625,26 @@ export function OmborForm({ item, onSuccess, onCancel }: Props) {
                     {renderCommonFields}
 
                     {currentType === OmborType.PLYONKA && renderPlyonkaFields}
-                    {currentType === OmborType.KRASKA && renderKraskaFields}
+                    {(currentType === OmborType.KRASKA || currentType === OmborType.SUYUQ_KRASKA) && renderKraskaFields}
+                    {currentType === OmborType.RASTVARITEL && renderRastvaritelFields}
+                    {currentType === OmborType.ARALASHMASI && renderAralashmasiFields}
                     {currentType === OmborType.SILINDIR && renderSilindrFields}
+                    {currentType === OmborType.KLEY && renderKleyFields}
                     {(currentType === OmborType.TAYYOR_TOSHKENT || currentType === OmborType.TAYYOR_ANGREN) && renderTayyorFields}
-                    {(currentType === OmborType.RASTVARITEL || currentType === OmborType.SUYUQ_KRASKA) && renderSolventFields}
+                    {currentType === OmborType.ZAPCHASTLAR && renderZapchastlarFields}
+                    {currentType === OmborType.OTXOT && renderOtxotFields}
 
-                    {/* General fields for other types */}
-                    {!([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SILINDIR, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN, OmborType.RASTVARITEL, OmborType.SUYUQ_KRASKA].includes(currentType as OmborType)) && (
-                        <>
-                            <Field.Text
-                                name="quantity"
-                                label={t('form.quantity')}
-                                InputLabelProps={{ shrink: true }}
-                                type="number"
-                            />
-                            <Field.Text
-                                name="price"
-                                label={t('form.price')}
-                                InputLabelProps={{ shrink: true }}
-                                type="number"
-                            />
-                        </>
-                    )}
+                    <Field.Text
+                        name="description"
+                        label={t('form.description')}
+                        InputLabelProps={{ shrink: true }}
+                        multiline
+                        rows={2}
+                        sx={{ gridColumn: 'span 2' }}
+                    />
                 </Box>
+
+
 
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <Button variant="outlined" color="inherit" onClick={onCancel}>

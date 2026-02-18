@@ -1,55 +1,178 @@
 
 import { z } from 'zod';
 
-import { OmborType, PriceCurrency, SolventType, CylinderOrigin, PlyonkaCategory } from 'src/types/ombor';
+import { OmborType, SolventType, PriceCurrency, CylinderOrigin, PlyonkaCategory } from 'src/types/ombor';
 
 export const getOmborSchema = (t: any) =>
-    z.object({
-        ombor_type: z.nativeEnum(OmborType),
-        name: z.string().min(1, { message: t('required') }),
-        date: z.string().min(1, { message: t('required') }),
-        description: z.string().optional(),
-        price_currency: z.nativeEnum(PriceCurrency),
-        supplier_id: z.number().optional().nullable(),
-        client_id: z.number().optional().nullable(),
+    z.discriminatedUnion('ombor_type', [
+        // Plyonka
+        z.object({
+            ombor_type: z.literal(OmborType.PLYONKA),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_kg: z.number({ required_error: t('required') }),
+            price_per_kg: z.number({ required_error: t('required') }),
+            plyonka_category: z.nativeEnum(PlyonkaCategory, { required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            seriya_number: z.string().optional().nullable(),
+            plyonka_subcategory: z.string().optional().nullable(),
+            thickness: z.number().optional().nullable(),
+            width: z.number().optional().nullable(),
+        }),
+        // Kraska
+        z.object({
+            ombor_type: z.literal(OmborType.KRASKA),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_kg: z.number({ required_error: t('required') }),
+            price_per_kg: z.number({ required_error: t('required') }),
+            color_name: z.string().min(1, { message: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            barrels: z.number().optional().nullable(),
+            seriya_number: z.string().optional().nullable(),
+            color_hex: z.string().optional().nullable(),
+            marka: z.string().optional().nullable(),
+        }),
+        // Suyuq Kraska
+        z.object({
+            ombor_type: z.literal(OmborType.SUYUQ_KRASKA),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_kg: z.number({ required_error: t('required') }),
+            price_per_kg: z.number({ required_error: t('required') }),
+            color_name: z.string().min(1, { message: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            barrels: z.number().optional().nullable(),
+            seriya_number: z.string().optional().nullable(),
+            color_hex: z.string().optional().nullable(),
+            marka: z.string().optional().nullable(),
+        }),
+        // Rastvaritel
+        z.object({
+            ombor_type: z.literal(OmborType.RASTVARITEL),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_liter: z.number({ required_error: t('required') }),
+            price_per_liter: z.number({ required_error: t('required') }),
+            solvent_type: z.nativeEnum(SolventType, { required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            seriya_number: z.string().optional().nullable(),
+        }),
+        // Aralashmasi
+        z.object({
+            ombor_type: z.literal(OmborType.ARALASHMASI),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_liter: z.number({ required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            total_kg: z.number().optional().nullable(),
+            price_per_liter: z.number().optional().nullable(),
+            price_per_kg: z.number().optional().nullable(),
+            eaf_component_id: z.number().optional().nullable(),
+            eaf_component_quantity: z.number().optional().nullable(),
+            etilin_component_id: z.number().optional().nullable(),
+            etilin_component_quantity: z.number().optional().nullable(),
+            metoksil_component_id: z.number().optional().nullable(),
+            metoksil_component_quantity: z.number().optional().nullable(),
+        }),
+        // Silindr
+        z.object({
+            ombor_type: z.literal(OmborType.SILINDIR),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            quantity: z.number({ required_error: t('required') }),
+            price: z.number({ required_error: t('required') }),
+            seriya_number: z.string().min(1, { message: t('required') }),
+            origin: z.nativeEnum(CylinderOrigin, { required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            length: z.number().optional().nullable(),
+            diameter: z.number().optional().nullable(),
+            usage: z.number().optional().nullable(),
+            usage_limit: z.number().optional().nullable(),
+        }),
+        // Kley
+        z.object({
+            ombor_type: z.literal(OmborType.KLEY),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            barrels: z.number({ required_error: t('required') }),
+            price: z.number({ required_error: t('required') }),
+            product_type: z.string().min(1, { message: t('required') }),
+            number_identifier: z.string().min(1, { message: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            net_weight: z.number().optional().nullable(),
+            gross_weight: z.number().optional().nullable(),
+            total_net_weight: z.number().optional().nullable(),
+            total_gross_weight: z.number().optional().nullable(),
+        }),
+        // Zapchastlar
+        z.object({
+            ombor_type: z.literal(OmborType.ZAPCHASTLAR),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            quantity: z.number({ required_error: t('required') }),
+            price: z.number({ required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+        }),
+        // Otxot
+        z.object({
+            ombor_type: z.literal(OmborType.OTXOT),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            total_kg: z.number({ required_error: t('required') }),
+            price_per_kg: z.number({ required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+        }),
+        // Tayyor Toshkent
+        z.object({
+            ombor_type: z.literal(OmborType.TAYYOR_TOSHKENT),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            quantity: z.number({ required_error: t('required') }),
+            product_type: z.string().min(1, { message: t('required') }),
+            client_id: z.number({ required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            price: z.number().optional().nullable(),
+            number_identifier: z.string().optional().nullable(),
+            net_weight: z.number().optional().nullable(),
+            gross_weight: z.number().optional().nullable(),
+            total_net_weight: z.number().optional().nullable(),
+            total_gross_weight: z.number().optional().nullable(),
+        }),
+        // Tayyor Angren
+        z.object({
+            ombor_type: z.literal(OmborType.TAYYOR_ANGREN),
+            name: z.string().min(1, { message: t('required') }),
+            date: z.string().min(1, { message: t('required') }),
+            quantity: z.number({ required_error: t('required') }),
+            product_type: z.string().min(1, { message: t('required') }),
+            client_id: z.number({ required_error: t('required') }),
+            description: z.string().optional(),
+            price_currency: z.nativeEnum(PriceCurrency).optional(),
+            supplier_id: z.number().optional().nullable(),
+            price: z.number().optional().nullable(),
+            number_identifier: z.string().optional().nullable(),
+            net_weight: z.number().optional().nullable(),
+            gross_weight: z.number().optional().nullable(),
+            total_net_weight: z.number().optional().nullable(),
+            total_gross_weight: z.number().optional().nullable(),
+        }),
+    ]);
 
-        // Plyonka specific
-        plyonka_category: z.nativeEnum(PlyonkaCategory).optional().nullable(),
-        plyonka_subcategory: z.string().optional().nullable(),
-        thickness: z.number().optional().nullable(),
-        width: z.number().optional().nullable(),
-
-        // Kraska specific
-        barrels: z.number().optional().nullable(),
-        color_name: z.string().optional().nullable(),
-        color_hex: z.string().optional().nullable(),
-        marka: z.string().optional().nullable(),
-
-        // Totals/Quantities
-        total_kg: z.number().optional().nullable(),
-        total_liter: z.number().optional().nullable(),
-        quantity: z.number().optional().nullable(),
-
-        // Prices
-        price_per_kg: z.number().optional().nullable(),
-        price_per_liter: z.number().optional().nullable(),
-        price: z.number().optional().nullable(),
-
-        // Silindr specific
-        seriya_number: z.string().optional().nullable(),
-        origin: z.nativeEnum(CylinderOrigin).optional().nullable(),
-        length: z.number().optional().nullable(),
-        diameter: z.number().optional().nullable(),
-        usage: z.number().optional().nullable(),
-        usage_limit: z.number().optional().nullable(),
-
-        // Solvent specific
-        solvent_type: z.nativeEnum(SolventType).optional().nullable(),
-
-        // Tayyor mahsulot specific
-        product_type: z.string().optional().nullable(),
-        net_weight: z.number().optional().nullable(),
-        gross_weight: z.number().optional().nullable(),
-        total_net_weight: z.number().optional().nullable(),
-        total_gross_weight: z.number().optional().nullable(),
-    });
