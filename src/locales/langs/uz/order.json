@@ -1,0 +1,40 @@
+{
+    "list_title": "Buyurtmalar kitobi",
+    "new_item": "Yangi buyurtma",
+    "edit_item": "Buyurtmani tahrirlash",
+    "delete_item": "Buyurtmani o'chirish",
+    "details": "Buyurtma tafsilotlari",
+    "form": {
+        "order_number": "Buyurtma raqami",
+        "date": "Sana",
+        "title": "Nomi",
+        "client": "Mijoz",
+        "quantity_kg": "Miqdor (kg)",
+        "material": "Material",
+        "sub_material": "Sub-material",
+        "film_thickness": "Plyonka qalinligi",
+        "film_width": "Plyonka eni",
+        "cylinder_length": "Silindr uzunligi",
+        "cylinder_count": "Silindr soni",
+        "cylinder_aylanasi": "Silindr aylanasi",
+        "start_date": "Boshlanish sanasi",
+        "end_date": "Tugash sanasi",
+        "price_per_kg": "Kg narxi",
+        "price_currency": "Valyuta",
+        "manager": "Menejer",
+        "admin": "Admin",
+        "number_of_colors": "Ranglar soni",
+        "status": "Holati",
+        "sub_material_options": {
+            "prazrachniy": "Shaffof",
+            "metal": "Metal",
+            "jemchuk": "Jemchuk",
+            "jemchuk_metal": "Jemchuk Metal",
+            "beliy": "Oq"
+        },
+        "status_options": {
+            "in_progress": "Jarayonda",
+            "finished": "Yakunlangan"
+        }
+    }
+}

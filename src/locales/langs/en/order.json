@@ -1,0 +1,40 @@
+{
+    "list_title": "Order Book",
+    "new_item": "New Order",
+    "edit_item": "Edit Order",
+    "delete_item": "Delete Order",
+    "details": "Order Details",
+    "form": {
+        "order_number": "Order Number",
+        "date": "Date",
+        "title": "Title",
+        "client": "Client",
+        "quantity_kg": "Quantity (kg)",
+        "material": "Material",
+        "sub_material": "Sub-material",
+        "film_thickness": "Film Thickness",
+        "film_width": "Film Width",
+        "cylinder_length": "Cylinder Length",
+        "cylinder_count": "Cylinder Count",
+        "cylinder_aylanasi": "Cylinder Circumference",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "price_per_kg": "Price per kg",
+        "price_currency": "Currency",
+        "manager": "Manager",
+        "admin": "Admin",
+        "number_of_colors": "Number of Colors",
+        "status": "Status",
+        "sub_material_options": {
+            "prazrachniy": "Transparent",
+            "metal": "Metal",
+            "jemchuk": "Pearl",
+            "jemchuk_metal": "Pearl Metal",
+            "beliy": "White"
+        },
+        "status_options": {
+            "in_progress": "In Progress",
+            "finished": "Finished"
+        }
+    }
+}

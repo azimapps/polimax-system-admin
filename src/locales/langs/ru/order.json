@@ -1,0 +1,40 @@
+{
+    "list_title": "Книга заказов",
+    "new_item": "Новый заказ",
+    "edit_item": "Редактировать заказ",
+    "delete_item": "Удалить заказ",
+    "details": "Детали заказа",
+    "form": {
+        "order_number": "Номер заказа",
+        "date": "Дата",
+        "title": "Название",
+        "client": "Клиент",
+        "quantity_kg": "Количество (кг)",
+        "material": "Материал",
+        "sub_material": "Под-материал",
+        "film_thickness": "Толщина пленки",
+        "film_width": "Ширина пленки",
+        "cylinder_length": "Длина цилиндра",
+        "cylinder_count": "Количество цилиндров",
+        "cylinder_aylanasi": "Окружность цилиндра",
+        "start_date": "Дата начала",
+        "end_date": "Дата окончания",
+        "price_per_kg": "Цена за кг",
+        "price_currency": "Валюта",
+        "manager": "Менеджер",
+        "admin": "Админ",
+        "number_of_colors": "Количество цветов",
+        "status": "Статус",
+        "sub_material_options": {
+            "prazrachniy": "Прозрачный",
+            "metal": "Металл",
+            "jemchuk": "Жемчуг",
+            "jemchuk_metal": "Жемчуг Металл",
+            "beliy": "Белый"
+        },
+        "status_options": {
+            "in_progress": "В процессе",
+            "finished": "Завершено"
+        }
+    }
+}

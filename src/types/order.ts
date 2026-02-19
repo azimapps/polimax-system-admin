@@ -1,70 +1,77 @@
-import type { IDateValue, IDatePickerControl } from './common';
 
 // ----------------------------------------------------------------------
 
-export type IOrderTableFilters = {
-  name: string;
-  status: string;
-  endDate: IDatePickerControl;
-  startDate: IDatePickerControl;
+export enum OrderMaterial {
+  BOPP = 'bopp',
+  CPP = 'cpp',
+  PE = 'pe',
+  PET = 'pet',
+}
+
+export enum OrderSubMaterial {
+  PRAZRACHNIY = 'prazrachniy',
+  METAL = 'metal',
+  JEMCHUK = 'jemchuk',
+  JEMCHUK_METAL = 'jemchuk_metal',
+  BELIY = 'beliy',
+}
+
+export enum OrderStatus {
+  IN_PROGRESS = 'in_progress',
+  FINISHED = 'finished',
+}
+
+export enum OrderCurrency {
+  UZS = 'uzs',
+  USD = 'usd',
+  RUB = 'rub',
+  EUR = 'eur',
+}
+
+export type Order = {
+  id: number;
+  version: number;
+  order_number: string;
+  date: string;
+  title: string;
+  client_id: number;
+  quantity_kg: number;
+  material: OrderMaterial;
+  sub_material: OrderSubMaterial;
+  film_thickness: number;
+  film_width: number;
+  cylinder_length: number;
+  cylinder_count: number;
+  cylinder_aylanasi: number;
+  start_date: string;
+  end_date: string;
+  price_per_kg: number;
+  price_currency: OrderCurrency;
+  manager: string;
+  admin: string;
+  number_of_colors: number;
+  status: OrderStatus;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  archived_at: string | null;
+  created_by: number;
+  archived_by: number | null;
+  previous_id: number | null;
 };
 
-export type IOrderHistory = {
-  orderTime: IDateValue;
-  paymentTime: IDateValue;
-  deliveryTime: IDateValue;
-  completionTime: IDateValue;
-  timeline: { title: string; time: IDateValue }[];
-};
+export type OrderListItem = Pick<Order, 'id' | 'version' | 'order_number' | 'date' | 'title' | 'client_id' | 'quantity_kg' | 'material' | 'status'>;
 
-export type IOrderShippingAddress = {
-  fullAddress: string;
-  phoneNumber: string;
-};
+export type CreateOrderRequest = Omit<Order, 'id' | 'version' | 'created_at' | 'updated_at' | 'deleted_at' | 'archived_at' | 'created_by' | 'archived_by' | 'previous_id'>;
 
-export type IOrderPayment = {
-  cardType: string;
-  cardNumber: string;
-};
+export type UpdateOrderRequest = Partial<CreateOrderRequest>;
 
-export type IOrderDelivery = {
-  shipBy: string;
-  speedy: string;
-  trackingNumber: string;
-};
-
-export type IOrderCustomer = {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string;
-  ipAddress: string;
-};
-
-export type IOrderProductItem = {
-  id: string;
-  sku: string;
-  name: string;
-  price: number;
-  coverUrl: string;
-  quantity: number;
-};
-
-export type IOrderItem = {
-  id: string;
-  taxes: number;
-  status: string;
-  shipping: number;
-  discount: number;
-  subtotal: number;
-  orderNumber: string;
-  totalAmount: number;
-  totalQuantity: number;
-  createdAt: IDateValue;
-  history: IOrderHistory;
-  payment: IOrderPayment;
-  customer: IOrderCustomer;
-  delivery: IOrderDelivery;
-  items: IOrderProductItem[];
-  shippingAddress: IOrderShippingAddress;
+export type ArchivedOrderListItem = {
+  id: number;
+  order_number: string;
+  title: string;
+  deleted_at: string;
+  archived_at: string;
+  created_by: number;
+  archived_by: number;
 };
