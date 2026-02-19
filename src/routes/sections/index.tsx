@@ -107,7 +107,9 @@ export const routesSection: RouteObject[] = [
       {
         path: 'klientlar',
         children: [
+          { index: true, element: <KlientlarList /> },
           { path: 'list', element: <KlientlarList /> },
+
           { path: 'create', element: <KlientlarCreate /> },
           { path: 'archived', element: <KlientlarArchived /> },
           { path: 'crm', element: <KlientlarCRM /> },
@@ -127,7 +129,9 @@ export const routesSection: RouteObject[] = [
       {
         path: 'staff',
         children: [
+          { index: true, element: <StaffList /> },
           { path: 'list', element: <StaffList /> },
+
           { path: 'crm', element: <StaffList /> },
           { path: 'workers', element: <StaffList /> },
           { path: 'accountants', element: <StaffList /> },
@@ -138,7 +142,9 @@ export const routesSection: RouteObject[] = [
       {
         path: 'stanoklar',
         children: [
+          { index: true, element: <StanokList /> },
           { path: 'list', element: <StanokList /> },
+
           { path: 'pechat', element: <StanokList /> },
           { path: 'reska', element: <StanokList /> },
           { path: 'laminatsiya', element: <StanokList /> },
