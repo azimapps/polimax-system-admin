@@ -21,8 +21,8 @@
         "end_date": "End Date",
         "price_per_kg": "Price per kg",
         "price_currency": "Currency",
-        "manager": "Manager",
-        "admin": "Admin",
+        "manager": "Sales Manager",
+        "admin": "Manager",
         "number_of_colors": "Number of Colors",
         "status": "Status",
         "sub_material_options": {

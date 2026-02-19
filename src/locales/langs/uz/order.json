@@ -21,8 +21,8 @@
         "end_date": "Tugash sanasi",
         "price_per_kg": "Kg narxi",
         "price_currency": "Valyuta",
-        "manager": "Menejer",
-        "admin": "Admin",
+        "manager": "Savdo menejeri",
+        "admin": "Menejer",
         "number_of_colors": "Ranglar soni",
         "status": "Holati",
         "sub_material_options": {

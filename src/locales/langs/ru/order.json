@@ -21,8 +21,8 @@
         "end_date": "Дата окончания",
         "price_per_kg": "Цена за кг",
         "price_currency": "Валюта",
-        "manager": "Менеджер",
-        "admin": "Админ",
+        "manager": "Менеджер по продажам",
+        "admin": "Менеджер",
         "number_of_colors": "Количество цветов",
         "status": "Статус",
         "sub_material_options": {
