@@ -11,13 +11,15 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
 
+import { useGetClients } from 'src/hooks/use-clients';
+import { useGetPartners } from 'src/hooks/use-partners';
+
 import { useTranslate } from 'src/locales';
 import { omborApi } from 'src/api/ombor-api';
 
 import { Form, Field } from 'src/components/hook-form';
 
 import {
-
     OmborType,
     SolventType,
     PriceCurrency,
@@ -29,6 +31,7 @@ import { getOmborSchema } from './ombor-schema';
 
 // ----------------------------------------------------------------------
 
+
 type Props = {
     type: OmborType;
     item?: OmborItem;
@@ -38,7 +41,12 @@ type Props = {
 
 export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
     const { t } = useTranslate('ombor');
+
+    const { data: partners = [] } = useGetPartners();
+    const { data: clients = [] } = useGetClients();
+
     const isEdit = !!item;
+
 
     const defaultValues = useMemo(() => ({
         ombor_type: item?.ombor_type || type,
@@ -207,12 +215,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
@@ -260,12 +271,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
@@ -303,12 +317,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
@@ -436,12 +453,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
@@ -497,12 +517,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
@@ -514,20 +537,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 required
             />
-            <Field.Text
-                name="client_id"
-                label={t('form.client_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
-            <Field.Text
-                name="quantity"
-                label={t('form.quantity')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            <Field.Select name="client_id" label={t('form.client_id')} InputLabelProps={{ shrink: true }} required>
+                <MenuItem value="">None</MenuItem>
+                {clients.map((client) => (
+                    <MenuItem key={client.id} value={client.id}>
+                        {client.fullname} {client.company ? `(${client.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
             <Field.Text
                 name="price"
                 label={t('form.price')}
@@ -563,12 +581,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Text
-                name="supplier_id"
-                label={t('form.supplier_id')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                <MenuItem value="">None</MenuItem>
+                {partners.map((partner) => (
+                    <MenuItem key={partner.id} value={partner.id}>
+                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                    </MenuItem>
+                ))}
+            </Field.Select>
+
         </>
     );
 
