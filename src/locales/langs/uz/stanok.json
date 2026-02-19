@@ -53,5 +53,28 @@
         "products": "Mahsulotlar",
         "edit": "Stanokni tahrirlash",
         "delete": "O'chirish"
+    },
+    "brigada": {
+        "list_title": "Brigadalar",
+        "new_item": "Yangi brigada",
+        "edit_item": "Brigadani tahrirlash",
+        "members": "A'zolar",
+        "form": {
+            "name": "Brigada nomi",
+            "leader": "Brigadir (Leader)",
+            "worker": "Ishchi",
+            "position": "Lavozimi"
+        },
+        "table": {
+            "name": "Nomi",
+            "leader": "Brigadir",
+            "members_count": "A'zolar soni"
+        },
+        "member": {
+            "list_title": "Brigada a'zolari",
+            "add": "A'zo qo'shish",
+            "edit": "Tahrirlash",
+            "delete": "O'chirish"
+        }
     }
 }

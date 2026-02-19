@@ -1,0 +1,80 @@
+{
+    "list_title": "Machines List",
+    "create_title": "Add New Machine",
+    "edit_title": "Edit Machine",
+    "new_stanok": "New Machine",
+    "archive": "Archive",
+    "search_placeholder": "Search...",
+    "coming_soon": "Coming soon...",
+    "form": {
+        "name": "Name",
+        "country_code": "Country Code",
+        "type": "Type"
+    },
+    "type": {
+        "pechat": "Print",
+        "reska": "Cut",
+        "laminatsiya": "Lamination"
+    },
+    "country": {
+        "cn": "China",
+        "de": "Germany",
+        "uz": "Uzbekistan",
+        "ru": "Russia",
+        "gb": "England",
+        "in": "India"
+    },
+    "table": {
+        "name": "Name",
+        "country_code": "Country",
+        "type": "Type",
+        "actions": "Actions"
+    },
+    "messages": {
+        "success_create": "Machine added successfully",
+        "success_update": "Machine updated successfully",
+        "error_generic": "Something went wrong"
+    },
+    "delete_confirm_title": "Delete Machine",
+    "delete_confirm_message": "Are you sure you want to delete?",
+    "delete_confirm_button": "Delete",
+    "history_title": "History",
+    "version": "Version",
+    "current_version": "Current",
+    "deleted": "Deleted",
+    "revert_button": "Revert",
+    "revert_confirm_title": "Revert",
+    "revert_confirm_message": "Are you sure?",
+    "cancel": "Cancel",
+    "create": "Add",
+    "update": "Save",
+    "actions_menu": {
+        "brigades": "Brigades / Groups",
+        "products": "Products",
+        "edit": "Edit Machine",
+        "delete": "Delete"
+    },
+    "brigada": {
+        "list_title": "Brigades",
+        "new_item": "New Brigade",
+        "edit_item": "Edit Brigade",
+        "members": "Members",
+        "form": {
+            "name": "Brigade Name",
+            "leader": "Brigadier (Leader)",
+            "worker": "Worker",
+            "position": "Position"
+        },
+        "table": {
+            "name": "Name",
+            "leader": "Leader",
+            "members_count": "Members Count"
+        },
+        "member": {
+            "list_title": "Brigade Members",
+            "add": "Add Member",
+            "edit": "Edit",
+            "delete": "Delete"
+        }
+    }
+}

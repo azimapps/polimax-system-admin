@@ -1,0 +1,80 @@
+{
+    "list_title": "Список станков",
+    "create_title": "Добавить новый станок",
+    "edit_title": "Редактировать станок",
+    "new_stanok": "Новый станок",
+    "archive": "Архив",
+    "search_placeholder": "Поиск...",
+    "coming_soon": "Скоро...",
+    "form": {
+        "name": "Название",
+        "country_code": "Код страны",
+        "type": "Тип"
+    },
+    "type": {
+        "pechat": "Печать",
+        "reska": "Резка",
+        "laminatsiya": "Ламинация"
+    },
+    "country": {
+        "cn": "Китай",
+        "de": "Германия",
+        "uz": "Узбекистан",
+        "ru": "Россия",
+        "gb": "Англия",
+        "in": "Индия"
+    },
+    "table": {
+        "name": "Название",
+        "country_code": "Страна",
+        "type": "Тип",
+        "actions": "Действия"
+    },
+    "messages": {
+        "success_create": "Станок успешно добавлен",
+        "success_update": "Станок успешно обновлен",
+        "error_generic": "Произошла ошибка"
+    },
+    "delete_confirm_title": "Удалить станок",
+    "delete_confirm_message": "Вы уверены, что хотите удалить?",
+    "delete_confirm_button": "Удалить",
+    "history_title": "История",
+    "version": "Версия",
+    "current_version": "Текущая",
+    "deleted": "Удалено",
+    "revert_button": "Вернуть",
+    "revert_confirm_title": "Вернуть",
+    "revert_confirm_message": "Вы уверены?",
+    "cancel": "Отмена",
+    "create": "Добавить",
+    "update": "Сохранить",
+    "actions_menu": {
+        "brigades": "Бригады / Группы",
+        "products": "Продукты",
+        "edit": "Редактировать станок",
+        "delete": "Удалить"
+    },
+    "brigada": {
+        "list_title": "Бригады",
+        "new_item": "Новая бригада",
+        "edit_item": "Редактировать бригаду",
+        "members": "Участники",
+        "form": {
+            "name": "Название бригады",
+            "leader": "Бригадир (Лидер)",
+            "worker": "Рабочий",
+            "position": "Должность"
+        },
+        "table": {
+            "name": "Имя",
+            "leader": "Бригадир",
+            "members_count": "Кол-во участников"
+        },
+        "member": {
+            "list_title": "Участники бригады",
+            "add": "Добавить участника",
+            "edit": "Редактировать",
+            "delete": "Удалить"
+        }
+    }
+}
