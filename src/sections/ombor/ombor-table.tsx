@@ -13,6 +13,7 @@ import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
+import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableSkeleton, TableHeadCustom } from 'src/components/table';
@@ -77,6 +78,59 @@ export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Prop
         return `${fCurrency(price)} ${item.price_currency?.toUpperCase() || ''}`;
     };
 
+    const renderDetails = (row: OmborItem) => {
+        switch (row.ombor_type) {
+            case OmborType.PLYONKA:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.plyonka_category && <Label variant="soft" color="info">{row.plyonka_category.toUpperCase()}</Label>}
+                        {row.plyonka_subcategory && <Label variant="soft" color="default">{row.plyonka_subcategory}</Label>}
+                        {row.thickness ? <Label variant="soft" color="default">{row.thickness} mkm</Label> : null}
+                        {row.width ? <Label variant="soft" color="default">{row.width} mm</Label> : null}
+                    </Box>
+                );
+            case OmborType.KRASKA:
+            case OmborType.SUYUQ_KRASKA:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.color_name && <Label variant="soft" color="info">{row.color_name}</Label>}
+                        {row.marka && <Label variant="soft" color="default">{row.marka}</Label>}
+                    </Box>
+                );
+            case OmborType.RASTVARITEL:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.solvent_type && <Label variant="soft" color="info">{row.solvent_type.toUpperCase()}</Label>}
+                    </Box>
+                );
+            case OmborType.SILINDIR:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.origin && <Label variant="soft" color="info">{row.origin.toUpperCase()}</Label>}
+                        {row.length ? <Label variant="soft" color="default">L: {row.length}</Label> : null}
+                        {row.diameter ? <Label variant="soft" color="default">D: {row.diameter}</Label> : null}
+                    </Box>
+                );
+            case OmborType.KLEY:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.product_type && <Label variant="soft" color="info">{row.product_type}</Label>}
+                        {row.number_identifier && <Label variant="soft" color="default">{row.number_identifier}</Label>}
+                    </Box>
+                );
+            case OmborType.TAYYOR_TOSHKENT:
+            case OmborType.TAYYOR_ANGREN:
+                return (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {row.product_type && <Label variant="soft" color="info">{row.product_type}</Label>}
+                        {row.number_identifier && <Label variant="soft" color="default">{row.number_identifier}</Label>}
+                    </Box>
+                );
+            default:
+                return null;
+        }
+    };
+
 
     return (
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
@@ -99,9 +153,10 @@ export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Prop
                                     </TableCell>
 
                                     <TableCell>
-                                        <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
+                                        <Box sx={{ fontWeight: 500, mb: 0.5 }}>{row.name}</Box>
+                                        {renderDetails(row)}
                                         {row.description && (
-                                            <Box sx={{ color: 'text.secondary', typography: 'caption' }}>
+                                            <Box sx={{ color: 'text.secondary', typography: 'caption', mt: 0.5, display: 'block' }}>
                                                 {row.description}
                                             </Box>
                                         )}
