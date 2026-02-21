@@ -100,7 +100,7 @@ export function CashView() {
             const financeDate = f.date.split('T')[0];
             return financeDate >= startDate && financeDate <= endDate;
         })
-    , [finances, startDate, endDate]);
+        , [finances, startDate, endDate]);
 
     // Group finances by date
     const groupedFinances = useMemo(() => groupFinancesByDate(filteredFinances), [filteredFinances]);
@@ -399,9 +399,11 @@ export function CashView() {
                                             </Box>
                                             <Box sx={{ flex: 1 }}>
                                                 <Typography variant="body2">
-                                                    {item.expense_category
-                                                        ? t(`form.categories.${item.expense_category}`)
-                                                        : item.notes || '-'}
+                                                    {item.finance_type === FinanceType.KIRIM
+                                                        ? item.name || '-'
+                                                        : item.expense_category
+                                                            ? t(`form.categories.${item.expense_category}`) + (item.kommunal_sub_category ? ` - ${t(`form.kommunal_categories.${item.kommunal_sub_category}`)}` : '')
+                                                            : '-'}
                                                 </Typography>
                                                 {item.currency_exchange_rate && (
                                                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
