@@ -9,9 +9,19 @@ export const omborApi = {
     getOmborItems: async (type: OmborType, params?: {
         supplier_id?: number;
         client_id?: number;
+        davaldiylik_id?: number;
         q?: string;
     }): Promise<OmborItem[]> => {
         const response = await axiosInstance.get(`/ombor/${type}`, { params });
+        return response.data;
+    },
+
+    // Get materials by davaldiylik_id
+    getOmborMaterialsByDavaldiylik: async (davaldiylik_id: number, params?: {
+        ombor_type?: string;
+        q?: string;
+    }): Promise<OmborItem[]> => {
+        const response = await axiosInstance.get('/ombor', { params: { ...params, davaldiylik_id } });
         return response.data;
     },
 

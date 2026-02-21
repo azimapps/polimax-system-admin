@@ -20,6 +20,7 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { MaterialTable } from '../material-table';
 import { MaterialDialog } from '../material-dialog';
+import { MaterialStockDialog } from '../material-stock-dialog';
 import { MaterialHistoryDialog } from '../material-history-dialog';
 
 // ----------------------------------------------------------------------
@@ -38,6 +39,9 @@ export function MaterialsListView() {
     const [selectedId, setSelectedId] = useState<number | undefined>();
     const [deleteId, setDeleteId] = useState<number | undefined>();
     const [historyMaterialId, setHistoryMaterialId] = useState<number>(0);
+    const [stockMaterialId, setStockMaterialId] = useState<number>(0);
+    const [stockMaterialName, setStockMaterialName] = useState<string>('');
+    const stockDialog = useBoolean();
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
@@ -58,6 +62,15 @@ export function MaterialsListView() {
             historyDialog.onTrue();
         },
         [historyDialog]
+    );
+
+    const handleStock = useCallback(
+        (id: number, name: string) => {
+            setStockMaterialId(id);
+            setStockMaterialName(name);
+            stockDialog.onTrue();
+        },
+        [stockDialog]
     );
 
     const handleEdit = useCallback(
@@ -135,6 +148,7 @@ export function MaterialsListView() {
                     onHistory={handleHistory}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
+                    onStock={handleStock}
                 />
             </Card>
 
@@ -156,6 +170,13 @@ export function MaterialsListView() {
                 open={historyDialog.value}
                 onClose={historyDialog.onFalse}
                 materialId={historyMaterialId}
+            />
+
+            <MaterialStockDialog
+                open={stockDialog.value}
+                onClose={stockDialog.onFalse}
+                materialId={stockMaterialId}
+                materialName={stockMaterialName}
             />
         </Container>
     );

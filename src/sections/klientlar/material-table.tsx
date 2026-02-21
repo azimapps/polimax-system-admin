@@ -20,12 +20,13 @@ import { Iconify } from 'src/components/iconify';
 type Props = {
     materials: MaterialListItem[];
     loading: boolean;
-    onHistory: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
+    onHistory: (id: number) => void;
+    onStock: (id: number, name: string) => void;
 };
 
-function MaterialTableComponent({ materials, loading, onHistory, onEdit, onDelete }: Props) {
+function MaterialTableComponent({ materials, loading, onHistory, onEdit, onDelete, onStock }: Props) {
     const { t } = useTranslate('material');
 
     const columns: GridColDef<MaterialListItem>[] = useMemo(
@@ -78,6 +79,17 @@ function MaterialTableComponent({ materials, loading, onHistory, onEdit, onDelet
                 headerAlign: 'right',
                 renderCell: (params) => (
                     <Box display="flex" justifyContent="flex-end" width="100%">
+                        <Tooltip title="Ombor qoldiqlari" arrow>
+                            <IconButton
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onStock(params.row.id, params.row.fullname);
+                                }}
+                            >
+                                <Iconify icon="solar:inbox-bold" />
+                            </IconButton>
+                        </Tooltip>
+
                         <Tooltip title={t('history_button') || 'History'} arrow>
                             <IconButton
                                 onMouseDown={(event) => {
@@ -115,7 +127,7 @@ function MaterialTableComponent({ materials, loading, onHistory, onEdit, onDelet
                 ),
             },
         ],
-        [onEdit, onDelete, onHistory, t]
+        [onEdit, onDelete, onHistory, onStock, t]
     );
 
     return (

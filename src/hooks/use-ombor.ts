@@ -28,6 +28,17 @@ export function useGetOmborItems(params: {
     });
 }
 
+export function useGetOmborMaterialsByDavaldiylik(davaldiylik_id: number, params?: {
+    ombor_type?: string;
+    q?: string;
+}) {
+    return useQuery({
+        queryKey: ['ombor-materials-by-davaldiylik', davaldiylik_id, params],
+        queryFn: () => omborApi.getOmborMaterialsByDavaldiylik(davaldiylik_id, params),
+        enabled: !!davaldiylik_id,
+    });
+}
+
 export function useGetOmborItem(type: OmborType, id: number) {
     return useQuery({
         queryKey: QUERY_KEYS.item(type, id),
