@@ -25,6 +25,7 @@ import { OmborType } from 'src/types/ombor';
 
 import { OmborTable } from '../ombor-table';
 import { OmborDialog } from '../ombor-dialog';
+import { OmborHistoryDialog } from '../ombor-history-dialog';
 
 
 
@@ -65,8 +66,10 @@ export function OmborListView() {
     const { mutateAsync: deleteItem } = useDeleteOmborItem(currentTab);
 
     const dialog = useBoolean();
+    const historyDialog = useBoolean();
     const confirmDialog = useBoolean();
     const [selectedId, setSelectedId] = useState<number | undefined>();
+    const [historyId, setHistoryId] = useState<number | undefined>();
     const [deleteId, setDeleteId] = useState<number | undefined>();
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +99,14 @@ export function OmborListView() {
             dialog.onTrue();
         },
         [dialog]
+    );
+
+    const handleHistoryClick = useCallback(
+        (id: number) => {
+            setHistoryId(id);
+            historyDialog.onTrue();
+        },
+        [historyDialog]
     );
 
     const handleDeleteClick = useCallback(
@@ -167,7 +178,7 @@ export function OmborListView() {
                     type={currentTab}
                     items={items}
                     loading={isLoading}
-                    onHistory={(id) => console.log('History for', id)}
+                    onHistory={handleHistoryClick}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
                 />
@@ -177,6 +188,13 @@ export function OmborListView() {
                 open={dialog.value}
                 onClose={dialog.onFalse}
                 id={selectedId}
+                type={currentTab}
+            />
+
+            <OmborHistoryDialog
+                open={historyDialog.value}
+                onClose={historyDialog.onFalse}
+                id={historyId}
                 type={currentTab}
             />
 
