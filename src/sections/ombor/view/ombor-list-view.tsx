@@ -164,6 +164,7 @@ export function OmborListView() {
                 </Box>
 
                 <OmborTable
+                    type={currentTab}
                     items={items}
                     loading={isLoading}
                     onHistory={(id) => console.log('History for', id)}

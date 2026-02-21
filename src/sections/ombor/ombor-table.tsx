@@ -13,7 +13,6 @@ import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableSkeleton, TableHeadCustom } from 'src/components/table';
@@ -24,6 +23,7 @@ import { OmborType } from 'src/types/ombor';
 // ----------------------------------------------------------------------
 
 type Props = {
+    type: OmborType;
     items: OmborItem[];
     loading: boolean;
     onHistory: (id: number) => void;
@@ -31,12 +31,54 @@ type Props = {
     onDelete: (id: number) => void;
 };
 
-export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Props) {
+export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('ombor');
+
+    const getExtraColumns = () => {
+        switch (type) {
+            case OmborType.PLYONKA:
+                return [
+                    { id: 'plyonka_category', label: t('form.plyonka_category') },
+                    { id: 'plyonka_subcategory', label: t('form.plyonka_subcategory') },
+                    { id: 'thickness', label: t('form.thickness') },
+                    { id: 'width', label: t('form.width') },
+                ];
+            case OmborType.KRASKA:
+            case OmborType.SUYUQ_KRASKA:
+                return [
+                    { id: 'color_name', label: t('form.color_name') },
+                    { id: 'marka', label: t('form.marka') },
+                ];
+            case OmborType.RASTVARITEL:
+                return [
+                    { id: 'solvent_type', label: t('form.solvent_type') },
+                ];
+            case OmborType.SILINDIR:
+                return [
+                    { id: 'origin', label: t('form.origin') },
+                    { id: 'length', label: t('form.length') },
+                    { id: 'diameter', label: t('form.diameter') },
+                ];
+            case OmborType.KLEY:
+                return [
+                    { id: 'product_type', label: t('form.product_type') },
+                    { id: 'number_identifier', label: t('form.number_identifier') },
+                ];
+            case OmborType.TAYYOR_TOSHKENT:
+            case OmborType.TAYYOR_ANGREN:
+                return [
+                    { id: 'product_type', label: t('form.product_type') },
+                    { id: 'number_identifier', label: t('form.number_identifier') },
+                ];
+            default:
+                return [];
+        }
+    };
 
     const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right' }[] = [
         { id: 'ombor_type', label: t('form.ombor_type') },
         { id: 'name', label: t('form.name') },
+        ...getExtraColumns(),
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
         { id: 'price', label: t('form.price'), align: 'center' },
         { id: 'date', label: t('form.date') },
@@ -78,59 +120,58 @@ export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Prop
         return `${fCurrency(price)} ${item.price_currency?.toUpperCase() || ''}`;
     };
 
-    const renderDetails = (row: OmborItem) => {
-        switch (row.ombor_type) {
+    const renderExtraCells = (row: OmborItem) => {
+        switch (type) {
             case OmborType.PLYONKA:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.plyonka_category && <Label variant="soft" color="info">{row.plyonka_category.toUpperCase()}</Label>}
-                        {row.plyonka_subcategory && <Label variant="soft" color="default">{row.plyonka_subcategory}</Label>}
-                        {row.thickness ? <Label variant="soft" color="default">{row.thickness} mkm</Label> : null}
-                        {row.width ? <Label variant="soft" color="default">{row.width} mm</Label> : null}
-                    </Box>
+                    <>
+                        <TableCell>{row.plyonka_category ? row.plyonka_category.toUpperCase() : '-'}</TableCell>
+                        <TableCell>{row.plyonka_subcategory || '-'}</TableCell>
+                        <TableCell>{row.thickness ? `${row.thickness} mkm` : '-'}</TableCell>
+                        <TableCell>{row.width ? `${row.width} mm` : '-'}</TableCell>
+                    </>
                 );
             case OmborType.KRASKA:
             case OmborType.SUYUQ_KRASKA:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.color_name && <Label variant="soft" color="info">{row.color_name}</Label>}
-                        {row.marka && <Label variant="soft" color="default">{row.marka}</Label>}
-                    </Box>
+                    <>
+                        <TableCell>{row.color_name || '-'}</TableCell>
+                        <TableCell>{row.marka || '-'}</TableCell>
+                    </>
                 );
             case OmborType.RASTVARITEL:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.solvent_type && <Label variant="soft" color="info">{row.solvent_type.toUpperCase()}</Label>}
-                    </Box>
+                    <>
+                        <TableCell>{row.solvent_type ? row.solvent_type.toUpperCase() : '-'}</TableCell>
+                    </>
                 );
             case OmborType.SILINDIR:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.origin && <Label variant="soft" color="info">{row.origin.toUpperCase()}</Label>}
-                        {row.length ? <Label variant="soft" color="default">L: {row.length}</Label> : null}
-                        {row.diameter ? <Label variant="soft" color="default">D: {row.diameter}</Label> : null}
-                    </Box>
+                    <>
+                        <TableCell>{row.origin ? row.origin.toUpperCase() : '-'}</TableCell>
+                        <TableCell>{row.length || '-'}</TableCell>
+                        <TableCell>{row.diameter || '-'}</TableCell>
+                    </>
                 );
             case OmborType.KLEY:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.product_type && <Label variant="soft" color="info">{row.product_type}</Label>}
-                        {row.number_identifier && <Label variant="soft" color="default">{row.number_identifier}</Label>}
-                    </Box>
+                    <>
+                        <TableCell>{row.product_type || '-'}</TableCell>
+                        <TableCell>{row.number_identifier || '-'}</TableCell>
+                    </>
                 );
             case OmborType.TAYYOR_TOSHKENT:
             case OmborType.TAYYOR_ANGREN:
                 return (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                        {row.product_type && <Label variant="soft" color="info">{row.product_type}</Label>}
-                        {row.number_identifier && <Label variant="soft" color="default">{row.number_identifier}</Label>}
-                    </Box>
+                    <>
+                        <TableCell>{row.product_type || '-'}</TableCell>
+                        <TableCell>{row.number_identifier || '-'}</TableCell>
+                    </>
                 );
             default:
                 return null;
         }
     };
-
 
     return (
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
@@ -153,14 +194,15 @@ export function OmborTable({ items, loading, onHistory, onEdit, onDelete }: Prop
                                     </TableCell>
 
                                     <TableCell>
-                                        <Box sx={{ fontWeight: 500, mb: 0.5 }}>{row.name}</Box>
-                                        {renderDetails(row)}
+                                        <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
                                         {row.description && (
                                             <Box sx={{ color: 'text.secondary', typography: 'caption', mt: 0.5, display: 'block' }}>
                                                 {row.description}
                                             </Box>
                                         )}
                                     </TableCell>
+
+                                    {renderExtraCells(row)}
 
                                     <TableCell align="center">
                                         {getQuantityDisplay(row)}
