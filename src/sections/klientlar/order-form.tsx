@@ -19,7 +19,7 @@ import { useTranslate } from 'src/locales';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-import { OrderCurrency, OrderStatus, OrderMaterial, OrderSubMaterial } from 'src/types/order';
+import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial } from 'src/types/order';
 
 import { getOrderSchema } from './order-schema';
 

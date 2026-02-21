@@ -1,7 +1,7 @@
 
 import { z } from 'zod';
 
-import { OrderCurrency, OrderStatus, OrderMaterial, OrderSubMaterial } from 'src/types/order';
+import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial } from 'src/types/order';
 
 // ----------------------------------------------------------------------
 

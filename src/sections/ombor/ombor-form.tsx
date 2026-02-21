@@ -19,6 +19,7 @@ import { omborApi } from 'src/api/ombor-api';
 
 import { Form, Field } from 'src/components/hook-form';
 
+import { PartnerCategory } from 'src/types/partner';
 import {
     OmborType,
     SolventType,
@@ -217,7 +218,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
             />
             <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
+                {partners.filter(p => p.categories?.includes(PartnerCategory.PLYONKA)).map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -273,7 +274,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
             />
             <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
+                {partners.filter(p => p.categories?.includes(PartnerCategory.BOYOQ)).map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -319,7 +320,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
             />
             <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
+                {partners.filter(p => p.categories?.includes(PartnerCategory.ERITUVCHI)).map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -455,7 +456,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
             />
             <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
+                {partners.filter(p => p.categories?.includes(PartnerCategory.SILINDR)).map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -519,7 +520,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
             />
             <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
+                {partners.filter(p => p.categories?.includes(PartnerCategory.YELIM)).map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
