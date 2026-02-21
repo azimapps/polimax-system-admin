@@ -8,6 +8,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 
+import { useGetClients } from 'src/hooks/use-clients';
 import { useGetPartners } from 'src/hooks/use-partners';
 
 import { fDate } from 'src/utils/format-time';
@@ -35,12 +36,16 @@ type Props = {
 export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('ombor');
     const { data: partners = [] } = useGetPartners();
+    const { data: clients = [] } = useGetClients();
 
     const getExtraColumns = () => {
         const cols: any[] = [];
 
         if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type)) {
             cols.push({ id: 'supplier_id', label: t('form.supplier_id') });
+        }
+        if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.ZAPCHASTLAR, OmborType.OTXOT, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type)) {
+            cols.push({ id: 'davaldiylik_id', label: t('form.client_id') });
         }
         if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type)) {
             cols.push({ id: 'seriya_number', label: t('form.seriya_number') });
@@ -157,10 +162,20 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
             return partner ? partner.fullname : supplierId;
         };
 
+        const getClientName = (clientId?: number | null, davaldiylikId?: number | null) => {
+            const id = clientId || davaldiylikId;
+            if (!id) return '-';
+            const client = clients.find((c) => c.id === id);
+            return client ? client.fullname : id;
+        };
+
         const renderCommonCells = () => (
             <>
                 {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
                     <TableCell sx={cellSx}>{getSupplierName(row.supplier_id)}</TableCell>
+                )}
+                {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.ZAPCHASTLAR, OmborType.OTXOT, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
+                    <TableCell sx={cellSx}>{getClientName(row.client_id, row.davaldiylik_id)}</TableCell>
                 )}
                 {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
                     <TableCell sx={cellSx}>{row.seriya_number || '-'}</TableCell>

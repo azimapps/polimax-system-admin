@@ -59,7 +59,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
     const isEdit = !!item;
 
     const [isDavaldiylik, setIsDavaldiylik] = useState(
-        !!item?.client_id && activeType !== OmborType.TAYYOR_TOSHKENT && activeType !== OmborType.TAYYOR_ANGREN
+        !!item?.davaldiylik_id && activeType !== OmborType.TAYYOR_TOSHKENT && activeType !== OmborType.TAYYOR_ANGREN
     );
 
     const defaultValues = useMemo(() => ({
@@ -70,6 +70,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
         price_currency: item?.price_currency || PriceCurrency.USD,
         supplier_id: item?.supplier_id || null,
         client_id: item?.client_id || null,
+        davaldiylik_id: item?.davaldiylik_id || null,
 
         // Plyonka
         plyonka_category: item?.plyonka_category || null,
@@ -691,7 +692,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                                         onChange={(e) => {
                                             setIsDavaldiylik(e.target.checked);
                                             if (!e.target.checked) {
-                                                methods.setValue('client_id', null);
+                                                methods.setValue('davaldiylik_id', null);
                                             }
                                         }}
                                     />
@@ -702,7 +703,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                     )}
 
                     {isDavaldiylik && currentType !== OmborType.TAYYOR_TOSHKENT && currentType !== OmborType.TAYYOR_ANGREN && (
-                        <Field.Select name="client_id" label={t('form.client_id')} InputLabelProps={{ shrink: true }} required>
+                        <Field.Select name="davaldiylik_id" label={t('form.client_id')} InputLabelProps={{ shrink: true }} required>
                             {clients.map((client) => (
                                 <MenuItem key={client.id} value={client.id}>
                                     {client.fullname} {client.company ? `(${client.company})` : ''}

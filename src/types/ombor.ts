@@ -48,6 +48,7 @@ export type OmborItem = {
     price_currency: PriceCurrency;
     supplier_id?: number | null;
     client_id?: number | null;
+    davaldiylik_id?: number | null;
     total_kg?: number | null;
     total_liter?: number | null;
     quantity?: number | null;
