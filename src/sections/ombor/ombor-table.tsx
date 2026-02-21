@@ -8,6 +8,8 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 
+import { useGetPartners } from 'src/hooks/use-partners';
+
 import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
@@ -18,7 +20,6 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { TableNoData, TableSkeleton, TableHeadCustom } from 'src/components/table';
 
 import { OmborType } from 'src/types/ombor';
-
 
 // ----------------------------------------------------------------------
 
@@ -33,52 +34,74 @@ type Props = {
 
 export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('ombor');
+    const { data: partners = [] } = useGetPartners();
 
     const getExtraColumns = () => {
+        const cols: any[] = [];
+
+        if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type)) {
+            cols.push({ id: 'supplier_id', label: t('form.supplier_id') });
+        }
+        if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type)) {
+            cols.push({ id: 'seriya_number', label: t('form.seriya_number') });
+        }
+        if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type)) {
+            cols.push({ id: 'price_per_kg', label: t('form.price_per_kg') });
+        }
+        if ([OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type)) {
+            cols.push({ id: 'price_per_liter', label: t('form.price_per_liter') });
+        }
+
         switch (type) {
             case OmborType.PLYONKA:
-                return [
+                cols.push(
                     { id: 'plyonka_category', label: t('form.plyonka_category') },
                     { id: 'plyonka_subcategory', label: t('form.plyonka_subcategory') },
                     { id: 'thickness', label: t('form.thickness') },
-                    { id: 'width', label: t('form.width') },
-                ];
+                    { id: 'width', label: t('form.width') }
+                );
+                break;
             case OmborType.KRASKA:
             case OmborType.SUYUQ_KRASKA:
-                return [
+                cols.push(
                     { id: 'color_name', label: t('form.color_name') },
-                    { id: 'marka', label: t('form.marka') },
-                ];
+                    { id: 'marka', label: t('form.marka') }
+                );
+                break;
             case OmborType.RASTVARITEL:
-                return [
-                    { id: 'solvent_type', label: t('form.solvent_type') },
-                ];
+                cols.push(
+                    { id: 'solvent_type', label: t('form.solvent_type') }
+                );
+                break;
             case OmborType.SILINDIR:
-                return [
+                cols.push(
                     { id: 'origin', label: t('form.origin') },
                     { id: 'length', label: t('form.length') },
-                    { id: 'diameter', label: t('form.diameter') },
-                ];
+                    { id: 'diameter', label: t('form.diameter') }
+                );
+                break;
             case OmborType.KLEY:
-                return [
+                cols.push(
                     { id: 'product_type', label: t('form.product_type') },
-                    { id: 'number_identifier', label: t('form.number_identifier') },
-                ];
+                    { id: 'number_identifier', label: t('form.number_identifier') }
+                );
+                break;
             case OmborType.TAYYOR_TOSHKENT:
             case OmborType.TAYYOR_ANGREN:
-                return [
+                cols.push(
                     { id: 'product_type', label: t('form.product_type') },
-                    { id: 'number_identifier', label: t('form.number_identifier') },
-                ];
+                    { id: 'number_identifier', label: t('form.number_identifier') }
+                );
+                break;
             default:
-                return [];
+                break;
         }
+        return cols;
     };
 
     const extraColumns = getExtraColumns();
 
     const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right' }[] = [
-        { id: 'ombor_type', label: t('form.ombor_type') },
         { id: 'name', label: t('form.name') },
         ...extraColumns,
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
@@ -126,10 +149,39 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
 
     const renderExtraCells = (row: OmborItem) => {
         const cellSx = { whiteSpace: 'nowrap' };
+
+        const getSupplierName = (supplierId?: number | null) => {
+            if (!supplierId) return '-';
+            const partner = partners.find((p) => p.id === supplierId);
+            return partner ? partner.fullname : supplierId;
+        };
+
+        const renderCommonCells = () => (
+                <>
+                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
+                        <TableCell sx={cellSx}>{getSupplierName(row.supplier_id)}</TableCell>
+                    )}
+                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
+                        <TableCell sx={cellSx}>{row.seriya_number || '-'}</TableCell>
+                    )}
+                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type) && (
+                        <TableCell sx={cellSx}>
+                            {row.price_per_kg ? `${fCurrency(row.price_per_kg)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                        </TableCell>
+                    )}
+                    {[OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type) && (
+                        <TableCell sx={cellSx}>
+                            {row.price_per_liter ? `${fCurrency(row.price_per_liter)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                        </TableCell>
+                    )}
+                </>
+            );
+
         switch (type) {
             case OmborType.PLYONKA:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.plyonka_category ? row.plyonka_category.toUpperCase() : '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.plyonka_subcategory || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.thickness ? `${row.thickness} mkm` : '-'}</TableCell>
@@ -140,6 +192,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
             case OmborType.SUYUQ_KRASKA:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.color_name || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.marka || '-'}</TableCell>
                     </>
@@ -147,12 +200,14 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
             case OmborType.RASTVARITEL:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.solvent_type ? row.solvent_type.toUpperCase() : '-'}</TableCell>
                     </>
                 );
             case OmborType.SILINDIR:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.origin ? row.origin.toUpperCase() : '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.length || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.diameter || '-'}</TableCell>
@@ -161,6 +216,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
             case OmborType.KLEY:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.product_type || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
                     </>
@@ -169,12 +225,13 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
             case OmborType.TAYYOR_ANGREN:
                 return (
                     <>
+                        {renderCommonCells()}
                         <TableCell sx={cellSx}>{row.product_type || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
                     </>
                 );
             default:
-                return null;
+                return renderCommonCells();
         }
     };
 
@@ -192,13 +249,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
                         ) : (
                             items.map((row) => (
                                 <TableRow key={row.id} hover>
-                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                        <Box sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-                                            {t(`form.types.${row.ombor_type}`)}
-                                        </Box>
-                                    </TableCell>
-
-                                    <TableCell sx={{ minWidth: 200 }}>
+                                    <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
                                         <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
                                         {row.description && (
                                             <Box sx={{ color: 'text.secondary', typography: 'caption', mt: 0.5, display: 'block' }}>

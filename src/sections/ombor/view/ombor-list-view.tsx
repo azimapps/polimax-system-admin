@@ -117,7 +117,7 @@ export function OmborListView() {
     return (
         <Container maxWidth="xl">
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5 }}>
-                <Typography variant="h4">{t('list_title')}</Typography>
+                <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{t(`form.types.${currentTab}`)}</Typography>
 
                 <Button
                     variant="contained"
