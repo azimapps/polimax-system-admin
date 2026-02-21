@@ -75,15 +75,19 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
         }
     };
 
+    const extraColumns = getExtraColumns();
+
     const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right' }[] = [
         { id: 'ombor_type', label: t('form.ombor_type') },
         { id: 'name', label: t('form.name') },
-        ...getExtraColumns(),
+        ...extraColumns,
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
         { id: 'price', label: t('form.price'), align: 'center' },
         { id: 'date', label: t('form.date') },
         { id: 'actions', label: '', align: 'right' },
     ];
+
+    const tableMinWidth = 800 + (extraColumns.length * 150);
 
     const getQuantityDisplay = (item: OmborItem) => {
         switch (item.ombor_type) {
@@ -121,51 +125,52 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
     };
 
     const renderExtraCells = (row: OmborItem) => {
+        const cellSx = { whiteSpace: 'nowrap' };
         switch (type) {
             case OmborType.PLYONKA:
                 return (
                     <>
-                        <TableCell>{row.plyonka_category ? row.plyonka_category.toUpperCase() : '-'}</TableCell>
-                        <TableCell>{row.plyonka_subcategory || '-'}</TableCell>
-                        <TableCell>{row.thickness ? `${row.thickness} mkm` : '-'}</TableCell>
-                        <TableCell>{row.width ? `${row.width} mm` : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.plyonka_category ? row.plyonka_category.toUpperCase() : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.plyonka_subcategory || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.thickness ? `${row.thickness} mkm` : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.width ? `${row.width} mm` : '-'}</TableCell>
                     </>
                 );
             case OmborType.KRASKA:
             case OmborType.SUYUQ_KRASKA:
                 return (
                     <>
-                        <TableCell>{row.color_name || '-'}</TableCell>
-                        <TableCell>{row.marka || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.color_name || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.marka || '-'}</TableCell>
                     </>
                 );
             case OmborType.RASTVARITEL:
                 return (
                     <>
-                        <TableCell>{row.solvent_type ? row.solvent_type.toUpperCase() : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.solvent_type ? row.solvent_type.toUpperCase() : '-'}</TableCell>
                     </>
                 );
             case OmborType.SILINDIR:
                 return (
                     <>
-                        <TableCell>{row.origin ? row.origin.toUpperCase() : '-'}</TableCell>
-                        <TableCell>{row.length || '-'}</TableCell>
-                        <TableCell>{row.diameter || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.origin ? row.origin.toUpperCase() : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.length || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.diameter || '-'}</TableCell>
                     </>
                 );
             case OmborType.KLEY:
                 return (
                     <>
-                        <TableCell>{row.product_type || '-'}</TableCell>
-                        <TableCell>{row.number_identifier || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.product_type || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
                     </>
                 );
             case OmborType.TAYYOR_TOSHKENT:
             case OmborType.TAYYOR_ANGREN:
                 return (
                     <>
-                        <TableCell>{row.product_type || '-'}</TableCell>
-                        <TableCell>{row.number_identifier || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.product_type || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
                     </>
                 );
             default:
@@ -176,7 +181,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
     return (
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
             <Scrollbar>
-                <Table size="medium" sx={{ minWidth: 800 }}>
+                <Table size="medium" sx={{ minWidth: tableMinWidth }}>
                     <TableHeadCustom headCells={TABLE_HEAD} />
 
                     <TableBody>
@@ -187,13 +192,13 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
                         ) : (
                             items.map((row) => (
                                 <TableRow key={row.id} hover>
-                                    <TableCell>
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                         <Box sx={{ color: 'primary.main', fontWeight: 'bold' }}>
                                             {t(`form.types.${row.ombor_type}`)}
                                         </Box>
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell sx={{ minWidth: 200 }}>
                                         <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
                                         {row.description && (
                                             <Box sx={{ color: 'text.secondary', typography: 'caption', mt: 0.5, display: 'block' }}>
@@ -204,15 +209,15 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
 
                                     {renderExtraCells(row)}
 
-                                    <TableCell align="center">
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
                                         {getQuantityDisplay(row)}
                                     </TableCell>
 
-                                    <TableCell align="center">
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
                                         {getPriceDisplay(row)}
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                         {fDate(row.date)}
                                     </TableCell>
 
