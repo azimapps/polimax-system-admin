@@ -2,14 +2,16 @@
 import type { OmborItem, CreateOmborRequest } from 'src/types/ombor';
 
 import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Switch from '@mui/material/Switch';
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useGetClients } from 'src/hooks/use-clients';
 import { useGetPartners } from 'src/hooks/use-partners';
@@ -56,6 +58,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
     const isEdit = !!item;
 
+    const [isDavaldiylik, setIsDavaldiylik] = useState(
+        !!item?.client_id && activeType !== OmborType.TAYYOR_TOSHKENT && activeType !== OmborType.TAYYOR_ANGREN
+    );
 
     const defaultValues = useMemo(() => ({
         ombor_type: item?.ombor_type || type,
@@ -677,6 +682,35 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                         sm: 'repeat(2, 1fr)',
                     }}
                 >
+                    {(currentType !== OmborType.TAYYOR_TOSHKENT && currentType !== OmborType.TAYYOR_ANGREN) && (
+                        <Box sx={{ gridColumn: { xs: 'span 1', sm: 'span 2' } }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={isDavaldiylik}
+                                        onChange={(e) => {
+                                            setIsDavaldiylik(e.target.checked);
+                                            if (!e.target.checked) {
+                                                methods.setValue('client_id', null);
+                                            }
+                                        }}
+                                    />
+                                }
+                                label={t('form.is_davaldiylik')}
+                            />
+                        </Box>
+                    )}
+
+                    {isDavaldiylik && currentType !== OmborType.TAYYOR_TOSHKENT && currentType !== OmborType.TAYYOR_ANGREN && (
+                        <Field.Select name="client_id" label={t('form.client_id')} InputLabelProps={{ shrink: true }} required>
+                            {clients.map((client) => (
+                                <MenuItem key={client.id} value={client.id}>
+                                    {client.fullname} {client.company ? `(${client.company})` : ''}
+                                </MenuItem>
+                            ))}
+                        </Field.Select>
+                    )}
+
                     {renderCommonFields}
 
                     {currentType === OmborType.PLYONKA && renderPlyonkaFields}

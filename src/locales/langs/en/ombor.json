@@ -38,6 +38,7 @@
         "total_gross_weight": "Total Gross Weight",
         "number_identifier": "Identifier Number",
         "client_id": "Client",
+        "is_davaldiylik": "Toll Product?",
         "supplier_id": "Supplier",
         "usage": "Usage Amount",
         "eaf_component_id": "EAF Component ID",

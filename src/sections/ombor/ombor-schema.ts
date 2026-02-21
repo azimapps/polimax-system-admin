@@ -16,6 +16,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             seriya_number: z.string().optional().nullable(),
             plyonka_subcategory: z.string().optional().nullable(),
             thickness: z.number().optional().nullable(),
@@ -32,6 +33,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             barrels: z.number().optional().nullable(),
             seriya_number: z.string().optional().nullable(),
             color_hex: z.string().optional().nullable(),
@@ -48,6 +50,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             barrels: z.number().optional().nullable(),
             seriya_number: z.string().optional().nullable(),
             color_hex: z.string().optional().nullable(),
@@ -64,6 +67,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             seriya_number: z.string().optional().nullable(),
         }),
         // Aralashmasi
@@ -74,6 +78,7 @@ export const getOmborSchema = (t: any) =>
             total_liter: z.number({ required_error: t('required') }),
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
+            client_id: z.number().optional().nullable(),
             total_kg: z.number().optional().nullable(),
             price_per_liter: z.number().optional().nullable(),
             price_per_kg: z.number().optional().nullable(),
@@ -96,6 +101,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             length: z.number().optional().nullable(),
             diameter: z.number().optional().nullable(),
             usage: z.number().optional().nullable(),
@@ -113,6 +119,7 @@ export const getOmborSchema = (t: any) =>
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
             supplier_id: z.number().optional().nullable(),
+            client_id: z.number().optional().nullable(),
             net_weight: z.number().optional().nullable(),
             gross_weight: z.number().optional().nullable(),
             total_net_weight: z.number().optional().nullable(),
@@ -127,6 +134,7 @@ export const getOmborSchema = (t: any) =>
             price: z.number({ required_error: t('required') }),
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
+            client_id: z.number().optional().nullable(),
         }),
         // Otxot
         z.object({
@@ -137,6 +145,7 @@ export const getOmborSchema = (t: any) =>
             price_per_kg: z.number({ required_error: t('required') }),
             description: z.string().optional(),
             price_currency: z.nativeEnum(PriceCurrency).optional(),
+            client_id: z.number().optional().nullable(),
         }),
         // Tayyor Toshkent
         z.object({

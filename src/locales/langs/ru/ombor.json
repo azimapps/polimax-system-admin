@@ -38,6 +38,7 @@
         "total_gross_weight": "Общий вес брутто",
         "number_identifier": "Идентификационный номер",
         "client_id": "Клиент",
+        "is_davaldiylik": "Давальческое сырье?",
         "supplier_id": "Поставщик",
         "usage": "Использованное количество",
         "eaf_component_id": "ID компонента EAF",

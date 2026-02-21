@@ -38,6 +38,7 @@
         "total_gross_weight": "Jami brutto",
         "number_identifier": "Identifikator raqami",
         "client_id": "Mijoz",
+        "is_davaldiylik": "Davaldiylikmi?",
         "supplier_id": "Yetkazib beruvchi",
         "usage": "Ishlatilgan miqdor",
         "eaf_component_id": "EAF komponenti ID",
