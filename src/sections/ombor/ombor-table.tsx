@@ -10,6 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { useGetClients } from 'src/hooks/use-clients';
 import { useGetPartners } from 'src/hooks/use-partners';
+import { useGetMaterials } from 'src/hooks/use-materials';
 
 import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
@@ -37,6 +38,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
     const { t } = useTranslate('ombor');
     const { data: partners = [] } = useGetPartners();
     const { data: clients = [] } = useGetClients();
+    const { data: materials = [] } = useGetMaterials();
 
     const getExtraColumns = () => {
         const cols: any[] = [];
@@ -163,10 +165,15 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
         };
 
         const getClientName = (clientId?: number | null, davaldiylikId?: number | null) => {
-            const id = clientId || davaldiylikId;
-            if (!id) return '-';
-            const client = clients.find((c) => c.id === id);
-            return client ? client.fullname : id;
+            if (clientId) {
+                const client = clients.find((c) => c.id === clientId);
+                return client ? client.fullname : clientId;
+            }
+            if (davaldiylikId) {
+                const material = materials.find((m) => m.id === davaldiylikId);
+                return material ? material.fullname : davaldiylikId;
+            }
+            return '-';
         };
 
         const renderCommonCells = () => (
