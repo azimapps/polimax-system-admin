@@ -116,6 +116,24 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
     const { handleSubmit, reset, watch: watchForm, formState: { isSubmitting } } = methods;
 
     const currentType = watchForm('ombor_type');
+    const currentPlyonkaCategory = watchForm('plyonka_category');
+
+    const plyonkaSubcategories = useMemo(() => {
+        if (currentPlyonkaCategory === PlyonkaCategory.BOPP) return ['prazrachniy', 'metal', 'jemchuk', 'jemchuk metal'];
+        if (currentPlyonkaCategory === PlyonkaCategory.CPP) return ['prazrachniy', 'beliy', 'metal'];
+        if (currentPlyonkaCategory === PlyonkaCategory.PE) return ['prazrachniy', 'beliy'];
+        if (currentPlyonkaCategory === PlyonkaCategory.PET) return ['prazrachniy', 'metal', 'beliy'];
+        return [];
+    }, [currentPlyonkaCategory]);
+
+    useEffect(() => {
+        const currentSub = methods.getValues('plyonka_subcategory');
+        if (currentType === OmborType.PLYONKA && currentPlyonkaCategory && currentSub) {
+            if (!plyonkaSubcategories.includes(currentSub)) {
+                methods.setValue('plyonka_subcategory', '');
+            }
+        }
+    }, [currentPlyonkaCategory, plyonkaSubcategories, methods, currentType]);
 
     useEffect(() => {
         if (item) {
@@ -188,11 +206,18 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                     </MenuItem>
                 ))}
             </Field.Select>
-            <Field.Text
+            <Field.Select
                 name="plyonka_subcategory"
                 label={t('form.plyonka_subcategory')}
                 InputLabelProps={{ shrink: true }}
-            />
+            >
+                <MenuItem value="">{/* Bo'sh qoldirish uchun */}</MenuItem>
+                {plyonkaSubcategories.map((sub) => (
+                    <MenuItem key={sub} value={sub}>
+                        {sub}
+                    </MenuItem>
+                ))}
+            </Field.Select>
             <Field.Text
                 name="thickness"
                 label={t('form.thickness')}
