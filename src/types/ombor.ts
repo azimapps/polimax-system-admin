@@ -46,7 +46,7 @@ export type OmborItem = {
     date: string;
     description?: string;
     price_currency: PriceCurrency;
-    partner_id?: number | null;
+    supplier_id?: number | null;
     client_id?: number | null;
     total_kg?: number | null;
     total_liter?: number | null;
