@@ -261,14 +261,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -319,14 +321,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -367,14 +371,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -509,14 +515,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -575,14 +583,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -639,14 +649,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
-                <MenuItem value="">None</MenuItem>
-                {partners.map((partner) => (
-                    <MenuItem key={partner.id} value={partner.id}>
-                        {partner.fullname} {partner.company ? `(${partner.company})` : ''}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+                    <MenuItem value="">None</MenuItem>
+                    {partners.map((partner) => (
+                        <MenuItem key={partner.id} value={partner.id}>
+                            {partner.fullname} {partner.company ? `(${partner.company})` : ''}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
