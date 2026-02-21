@@ -33,7 +33,10 @@ export function PartnerDialog({ open, onClose, id }: Props) {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <PartnerForm partner={id ? partner : undefined} onSuccess={onClose} />
+                    <PartnerForm partner={id ? partner : undefined} onSuccess={() => {
+                        onClose();
+                        window.location.reload();
+                    }} />
                 )}
             </DialogContent>
         </Dialog>

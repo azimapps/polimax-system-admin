@@ -45,6 +45,7 @@ export function OmborDialog({ open, onClose, id, type }: Props) {
                         onCancel={onClose}
                         onSuccess={() => {
                             onClose();
+                            window.location.reload();
                         }}
                     />
 
