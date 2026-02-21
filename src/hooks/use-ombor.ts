@@ -17,7 +17,7 @@ const QUERY_KEYS = {
 
 export function useGetOmborItems(params: {
     ombor_type: OmborType;
-    supplier_id?: number;
+    partner_id?: number;
     client_id?: number;
     q?: string;
 }) {

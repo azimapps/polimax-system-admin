@@ -43,7 +43,15 @@ type Props = {
 export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
     const { t } = useTranslate('ombor');
 
-    const { data: partners = [] } = useGetPartners();
+    const activeType = item?.ombor_type || type;
+    let partnerCategory: string | undefined = undefined;
+    if (activeType === OmborType.PLYONKA) partnerCategory = PartnerCategory.PLYONKA;
+    else if (activeType === OmborType.KRASKA || activeType === OmborType.SUYUQ_KRASKA) partnerCategory = PartnerCategory.BOYOQ;
+    else if (activeType === OmborType.RASTVARITEL || activeType === OmborType.ARALASHMASI) partnerCategory = PartnerCategory.ERITUVCHI;
+    else if (activeType === OmborType.SILINDIR) partnerCategory = PartnerCategory.SILINDR;
+    else if (activeType === OmborType.KLEY) partnerCategory = PartnerCategory.YELIM;
+
+    const { data: partners = [] } = useGetPartners(partnerCategory ? { category: partnerCategory } : undefined);
     const { data: clients = [] } = useGetClients();
 
     const isEdit = !!item;
@@ -55,7 +63,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
         date: item?.date || new Date().toISOString(),
         description: item?.description || '',
         price_currency: item?.price_currency || PriceCurrency.USD,
-        supplier_id: item?.supplier_id || null,
+        partner_id: item?.partner_id || null,
         client_id: item?.client_id || null,
 
         // Plyonka
@@ -216,9 +224,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.filter(p => p.categories?.includes(PartnerCategory.PLYONKA)).map((partner) => (
+                {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -272,9 +280,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.filter(p => p.categories?.includes(PartnerCategory.BOYOQ)).map((partner) => (
+                {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -318,9 +326,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.filter(p => p.categories?.includes(PartnerCategory.ERITUVCHI)).map((partner) => (
+                {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -454,9 +462,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.filter(p => p.categories?.includes(PartnerCategory.SILINDR)).map((partner) => (
+                {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -518,9 +526,9 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
-                {partners.filter(p => p.categories?.includes(PartnerCategory.YELIM)).map((partner) => (
+                {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>
                         {partner.fullname} {partner.company ? `(${partner.company})` : ''}
                     </MenuItem>
@@ -582,7 +590,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
+            <Field.Select name="partner_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                 <MenuItem value="">None</MenuItem>
                 {partners.map((partner) => (
                     <MenuItem key={partner.id} value={partner.id}>

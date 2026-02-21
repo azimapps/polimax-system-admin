@@ -7,7 +7,7 @@ import axiosInstance from 'src/lib/axios';
 export const omborApi = {
     // Get all ombor items
     getOmborItems: async (type: OmborType, params?: {
-        supplier_id?: number;
+        partner_id?: number;
         client_id?: number;
         q?: string;
     }): Promise<OmborItem[]> => {
