@@ -184,17 +184,19 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 }}
             />
 
-            <Field.Select
-                name="price_currency"
-                label={t('form.price_currency')}
-                InputLabelProps={{ shrink: true }}
-            >
-                {Object.values(PriceCurrency).map((currency) => (
-                    <MenuItem key={currency} value={currency}>
-                        {currency.toUpperCase()}
-                    </MenuItem>
-                ))}
-            </Field.Select>
+            {!isDavaldiylik && (
+                <Field.Select
+                    name="price_currency"
+                    label={t('form.price_currency')}
+                    InputLabelProps={{ shrink: true }}
+                >
+                    {Object.values(PriceCurrency).map((currency) => (
+                        <MenuItem key={currency} value={currency}>
+                            {currency.toUpperCase()}
+                        </MenuItem>
+                    ))}
+                </Field.Select>
+            )}
 
         </>
     );
@@ -245,13 +247,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price_per_kg"
-                label={t('form.price_per_kg')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price_per_kg"
+                    label={t('form.price_per_kg')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
             <Field.Text
                 name="seriya_number"
                 label={t('form.seriya_number')}
@@ -301,13 +305,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price_per_kg"
-                label={t('form.price_per_kg')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price_per_kg"
+                    label={t('form.price_per_kg')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
             <Field.Text
                 name="seriya_number"
                 label={t('form.seriya_number')}
@@ -347,13 +353,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price_per_liter"
-                label={t('form.price_per_liter')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price_per_liter"
+                    label={t('form.price_per_liter')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
             <Field.Text
                 name="seriya_number"
                 label={t('form.seriya_number')}
@@ -386,18 +394,22 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
-            <Field.Text
-                name="price_per_liter"
-                label={t('form.price_per_liter')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
-            <Field.Text
-                name="price_per_kg"
-                label={t('form.price_per_kg')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
+            {!isDavaldiylik && (
+                <>
+                    <Field.Text
+                        name="price_per_liter"
+                        label={t('form.price_per_liter')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                    />
+                    <Field.Text
+                        name="price_per_kg"
+                        label={t('form.price_per_kg')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                    />
+                </>
+            )}
             <Field.Text
                 name="eaf_component_id"
                 label={t('form.eaf_component_id')}
@@ -476,13 +488,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price"
-                label={t('form.price')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price"
+                    label={t('form.price')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
             <Field.Text
                 name="usage"
                 label={t('form.usage')}
@@ -528,13 +542,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price"
-                label={t('form.price')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price"
+                    label={t('form.price')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
             <Field.Text
                 name="net_weight"
                 label={t('form.net_weight')}
@@ -644,13 +660,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price"
-                label={t('form.price')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price"
+                    label={t('form.price')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
         </>
     );
 
@@ -663,13 +681,15 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
                 required
             />
-            <Field.Text
-                name="price_per_kg"
-                label={t('form.price_per_kg')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
+            {!isDavaldiylik && (
+                <Field.Text
+                    name="price_per_kg"
+                    label={t('form.price_per_kg')}
+                    InputLabelProps={{ shrink: true }}
+                    type="number"
+                    required
+                />
+            )}
         </>
     );
 
