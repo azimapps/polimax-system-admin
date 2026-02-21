@@ -15,6 +15,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useGetClients } from 'src/hooks/use-clients';
 import { useGetPartners } from 'src/hooks/use-partners';
+import { useGetMaterials } from 'src/hooks/use-materials';
 
 import { useTranslate } from 'src/locales';
 import { omborApi } from 'src/api/ombor-api';
@@ -55,6 +56,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
     const { data: partners = [] } = useGetPartners(partnerCategory ? { category: partnerCategory } : undefined);
     const { data: clients = [] } = useGetClients();
+    const { data: materials = [] } = useGetMaterials();
 
     const isEdit = !!item;
 
@@ -704,7 +706,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
                     {isDavaldiylik && currentType !== OmborType.TAYYOR_TOSHKENT && currentType !== OmborType.TAYYOR_ANGREN && (
                         <Field.Select name="davaldiylik_id" label={t('form.client_id')} InputLabelProps={{ shrink: true }} required>
-                            {clients.map((client) => (
+                            {materials.map((client) => (
                                 <MenuItem key={client.id} value={client.id}>
                                     {client.fullname} {client.company ? `(${client.company})` : ''}
                                 </MenuItem>
