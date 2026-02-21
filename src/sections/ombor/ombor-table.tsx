@@ -102,11 +102,11 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
     const extraColumns = getExtraColumns();
 
     const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right' }[] = [
+        { id: 'date', label: t('form.date') },
         { id: 'name', label: t('form.name') },
         ...extraColumns,
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
         { id: 'price', label: t('form.price'), align: 'center' },
-        { id: 'date', label: t('form.date') },
         { id: 'actions', label: '', align: 'right' },
     ];
 
@@ -157,25 +157,25 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
         };
 
         const renderCommonCells = () => (
-                <>
-                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
-                        <TableCell sx={cellSx}>{getSupplierName(row.supplier_id)}</TableCell>
-                    )}
-                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
-                        <TableCell sx={cellSx}>{row.seriya_number || '-'}</TableCell>
-                    )}
-                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type) && (
-                        <TableCell sx={cellSx}>
-                            {row.price_per_kg ? `${fCurrency(row.price_per_kg)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
-                        </TableCell>
-                    )}
-                    {[OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type) && (
-                        <TableCell sx={cellSx}>
-                            {row.price_per_liter ? `${fCurrency(row.price_per_liter)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
-                        </TableCell>
-                    )}
-                </>
-            );
+            <>
+                {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
+                    <TableCell sx={cellSx}>{getSupplierName(row.supplier_id)}</TableCell>
+                )}
+                {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
+                    <TableCell sx={cellSx}>{row.seriya_number || '-'}</TableCell>
+                )}
+                {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type) && (
+                    <TableCell sx={cellSx}>
+                        {row.price_per_kg ? `${fCurrency(row.price_per_kg)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                    </TableCell>
+                )}
+                {[OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type) && (
+                    <TableCell sx={cellSx}>
+                        {row.price_per_liter ? `${fCurrency(row.price_per_liter)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                    </TableCell>
+                )}
+            </>
+        );
 
         switch (type) {
             case OmborType.PLYONKA:
@@ -249,6 +249,10 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
                         ) : (
                             items.map((row) => (
                                 <TableRow key={row.id} hover>
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {fDate(row.date)}
+                                    </TableCell>
+
                                     <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
                                         <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
                                         {row.description && (
@@ -266,10 +270,6 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
 
                                     <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
                                         {getPriceDisplay(row)}
-                                    </TableCell>
-
-                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                        {fDate(row.date)}
                                     </TableCell>
 
                                     <TableCell align="right">
