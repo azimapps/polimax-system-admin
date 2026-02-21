@@ -47,9 +47,7 @@ export type Order = {
   end_date: string;
   price_per_kg: number;
   price_currency: OrderCurrency;
-  manager: string;
-  admin: string;
-  number_of_colors: number;
+  manager_id: number;
   status: OrderStatus;
   created_at: string;
   updated_at: string;

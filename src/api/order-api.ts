@@ -17,6 +17,7 @@ export const orderApi = {
         status?: string;
         material?: string;
         client_id?: number;
+        manager_id?: number;
         q?: string;
     }): Promise<OrderListItem[]> => {
         const response = await axiosInstance.get('/orders', { params });

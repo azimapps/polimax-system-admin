@@ -20,6 +20,7 @@ export function useGetOrders(params?: {
     status?: string;
     material?: string;
     client_id?: number;
+    manager_id?: number;
     q?: string;
 }) {
     return useQuery({

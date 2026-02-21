@@ -23,8 +23,6 @@ export const getOrderSchema = (t: any) =>
         end_date: z.string().min(1, { message: t('required') }),
         price_per_kg: z.number().min(0, { message: t('required') }),
         price_currency: z.nativeEnum(OrderCurrency, { required_error: t('required') }),
-        manager: z.string().min(1, { message: t('required') }),
-        admin: z.string().min(1, { message: t('required') }),
-        number_of_colors: z.number().min(0, { message: t('required') }),
+        manager_id: z.number().min(1, { message: t('required') }),
         status: z.nativeEnum(OrderStatus, { required_error: t('required') }),
     });

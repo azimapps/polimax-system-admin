@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import LoadingButton from '@mui/lab/LoadingButton';
 
+import { useGetStaff } from 'src/hooks/use-staff';
 import { useGetClients } from 'src/hooks/use-clients';
 import { useCreateOrder, useUpdateOrder } from 'src/hooks/use-orders';
 
@@ -19,6 +20,7 @@ import { useTranslate } from 'src/locales';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
+import { StaffType } from 'src/types/staff';
 import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial } from 'src/types/order';
 
 import { getOrderSchema } from './order-schema';
@@ -35,6 +37,7 @@ export function OrderBookForm({ order, onSuccess }: Props) {
     const isEdit = !!order;
 
     const { data: clients = [] } = useGetClients();
+    const { data: staffData = [] } = useGetStaff(undefined, StaffType.CRM);
     const { mutateAsync: createOrder, isPending: isCreating } = useCreateOrder();
     const { mutateAsync: updateOrder, isPending: isUpdating } = useUpdateOrder(order?.id || 0);
 
@@ -58,9 +61,7 @@ export function OrderBookForm({ order, onSuccess }: Props) {
             end_date: order?.end_date || new Date().toISOString(),
             price_per_kg: order?.price_per_kg || 0,
             price_currency: order?.price_currency || OrderCurrency.UZS,
-            manager: order?.manager || '',
-            admin: order?.admin || '',
-            number_of_colors: order?.number_of_colors || 0,
+            manager_id: order?.manager_id || 0,
             status: order?.status || OrderStatus.IN_PROGRESS,
         }),
         [order]
@@ -150,9 +151,14 @@ export function OrderBookForm({ order, onSuccess }: Props) {
                         ))}
                     </Field.Select>
 
-                    <Field.Text name="manager" label={t('form.manager')} required />
-                    <Field.Text name="admin" label={t('form.admin')} required />
-                    <Field.Text name="number_of_colors" label={t('form.number_of_colors')} type="number" required />
+                    <Field.Select name="manager_id" label={t('form.manager')} required>
+                        <MenuItem value={0}>None</MenuItem>
+                        {staffData.map((staff) => (
+                            <MenuItem key={staff.id} value={staff.id}>
+                                {staff.fullname}
+                            </MenuItem>
+                        ))}
+                    </Field.Select>
 
                     <Field.Select name="status" label={t('form.status')} required>
                         {Object.values(OrderStatus).map((option) => (
