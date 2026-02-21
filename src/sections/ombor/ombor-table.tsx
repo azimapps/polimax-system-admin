@@ -107,6 +107,7 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
         ...extraColumns,
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
         { id: 'price', label: t('form.price'), align: 'center' },
+        { id: 'description', label: t('form.description') },
         { id: 'actions', label: '', align: 'right' },
     ];
 
@@ -255,11 +256,6 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
 
                                     <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
                                         <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
-                                        {row.description && (
-                                            <Box sx={{ color: 'text.secondary', typography: 'caption', mt: 0.5, display: 'block' }}>
-                                                {row.description}
-                                            </Box>
-                                        )}
                                     </TableCell>
 
                                     {renderExtraCells(row)}
@@ -270,6 +266,10 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
 
                                     <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
                                         {getPriceDisplay(row)}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.description || '-'}
                                     </TableCell>
 
                                     <TableCell align="right">
