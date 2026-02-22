@@ -46,6 +46,7 @@
         "phone_number": "Telefon",
         "type": "Turi",
         "role": "Vazifasi",
+        "brigada": "Brigada",
         "actions": "Harakatlar"
     },
     "messages": {

@@ -19,6 +19,14 @@ export enum AccountantType {
     OMBOR = 'ombor',
 }
 
+export interface StaffBrigadaInfo {
+    brigada_id: number;
+    brigada_name: string;
+    machine_type: string;
+    position: string | null;
+    is_leader: boolean;
+}
+
 export interface Staff {
     id: number;
     version: number;
@@ -30,6 +38,7 @@ export interface Staff {
     type: StaffType;
     accountant_type: AccountantType | null;
     worker_type: WorkerType | null;
+    brigada: StaffBrigadaInfo | null;
     fixed_salary: number | null;
     worker_fixed_salary: number | null;
     starting_salary: number | null;

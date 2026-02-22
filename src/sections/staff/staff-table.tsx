@@ -83,6 +83,36 @@ function StaffTableComponent({ staffList, loading, onHistory, onEdit, onDelete, 
                     },
                 },
                 {
+                    field: 'brigada',
+                    headerName: t('table.brigada'),
+                    width: 180,
+                    sortable: false,
+                    renderCell: (params) => {
+                        const brigada = params.row.brigada;
+                        if (!brigada) return '-';
+
+                        return (
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Box sx={{ typography: 'body2' }}>
+                                    {brigada.brigada_name}
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
+                                    {brigada.is_leader && (
+                                        <Label color="success" sx={{ fontSize: 10, px: 0.5 }}>
+                                            Lider
+                                        </Label>
+                                    )}
+                                    {brigada.position && (
+                                        <Label color="info" sx={{ fontSize: 10, px: 0.5 }}>
+                                            {brigada.position}
+                                        </Label>
+                                    )}
+                                </Box>
+                            </Box>
+                        );
+                    },
+                },
+                {
                     field: 'actions',
                     headerName: t('table.actions'),
                     width: 150,
