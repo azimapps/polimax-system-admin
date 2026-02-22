@@ -1,0 +1,45 @@
+{
+    "title": "Планирование заказов",
+    "in_progress": "В процессе",
+    "finished": "Завершено",
+    "list_title": "Все планы",
+    "new_plan": "Новый план",
+    "start_date": "Начало",
+    "end_date": "Конец",
+    "status": "Статус",
+    "order": "Заказ",
+    "brigada": "Бригада",
+    "machine": "Станок",
+    "table": {
+        "order": "Заказ",
+        "brigada": "Бригада",
+        "machine": "Станок",
+        "start_date": "Время начала",
+        "end_date": "Время окончания",
+        "status": "Статус",
+        "actions": "Действия",
+        "no_data": "Нет данных"
+    },
+    "form": {
+        "order": "Заказ ID",
+        "brigada": "Бригада",
+        "machine_type": "Тип станка",
+        "machine": "Станок",
+        "start_date": "Начало",
+        "end_date": "Конец",
+        "status": "Статус",
+        "create_title": "Создать план",
+        "edit_title": "Редактировать план",
+        "cancel": "Отмена",
+        "create": "Сохранить",
+        "update": "Обновить"
+    },
+    "delete_confirm_title": "Удалить",
+    "delete_confirm_message": "Вы уверены, что хотите удалить этот план?",
+    "delete_confirm_button": "Удалить",
+    "messages": {
+        "success_create": "План успешно создан",
+        "success_update": "План успешно обновлен",
+        "error_generic": "Произошла ошибка"
+    }
+}

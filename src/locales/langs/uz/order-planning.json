@@ -1,0 +1,40 @@
+{
+    "title": "Buyurtmani Rejalashtirish",
+    "in_progress": "Jarayonda",
+    "finished": "Asosiy ro'yxat",
+    "list_title": "Barcha rejalar",
+    "new_plan": "Yangi reja",
+    "start_date": "Boshlanish",
+    "end_date": "Tugash",
+    "status": "Holati",
+    "order": "Buyurtma",
+    "brigada": "Brigada",
+    "machine": "Uskuna",
+    "table": {
+        "order": "Buyurtma",
+        "brigada": "Brigada",
+        "machine": "Uskuna",
+        "start_date": "Boshlanish vaqti",
+        "end_date": "Tugash vaqti",
+        "status": "Holati",
+        "actions": "Harakatlar",
+        "no_data": "Ma'lumot topilmadi"
+    },
+    "form": {
+        "order": "Buyurtma ID",
+        "brigada": "Brigada",
+        "machine_type": "Uskuna turi",
+        "machine": "Uskuna",
+        "start_date": "Boshlanish",
+        "end_date": "Tugash",
+        "status": "Holati",
+        "create_title": "Yangi reja qo'shish",
+        "edit_title": "Rejani tahrirlash",
+        "cancel": "Bekor qilish",
+        "create": "Saqlash",
+        "update": "Yangilash"
+    },
+    "delete_confirm_title": "O'chirish",
+    "delete_confirm_message": "Haqiqatan ham ushbu rejani o'chirib tashlamoqchimisiz?",
+    "delete_confirm_button": "O'chirish"
+}
