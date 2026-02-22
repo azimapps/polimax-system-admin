@@ -64,9 +64,7 @@ const OmborPage = lazy(() => import('src/pages/ombor/page'));
 const FinanceCashPage = lazy(() => import('src/pages/finance/cash'));
 const FinanceTransferPage = lazy(() => import('src/pages/finance/transfer'));
 const FinanceArchivedPage = lazy(() => import('src/pages/finance/archived'));
-// Expense
-const ExpenseListPage = lazy(() => import('src/pages/expense/list'));
-const ExpenseArchivedPage = lazy(() => import('src/pages/expense/archived'));
+// Production
 const ProductionPage = lazy(() => import('src/pages/production/page'));
 const OrderPlanningPage = lazy(() => import('src/pages/order-planning/page'));
 const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
@@ -184,14 +182,6 @@ export const routesSection: RouteObject[] = [
           { path: 'cash', element: <FinanceCashPage /> },
           { path: 'transfer', element: <FinanceTransferPage /> },
           { path: 'archived', element: <FinanceArchivedPage /> },
-        ],
-      },
-      {
-        path: 'expense',
-        children: [
-          { index: true, element: <ExpenseListPage /> },
-          { path: 'list', element: <ExpenseListPage /> },
-          { path: 'archived', element: <ExpenseArchivedPage /> },
         ],
       },
       {

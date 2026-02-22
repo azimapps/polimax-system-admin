@@ -1,6 +1,6 @@
-
 import type { CreateBrigadaRequest, UpdateBrigadaRequest, CreateBrigadaMemberRequest, UpdateBrigadaMemberRequest } from 'src/types/brigada';
 
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { brigadaApi } from 'src/api/brigada-api';
@@ -140,4 +140,56 @@ export function useDeleteBrigadaMember(brigadaId: number) {
             queryClient.invalidateQueries({ queryKey: BRIGADA_KEYS.members(brigadaId) });
         },
     });
+}
+
+
+export function useGetAssignedWorkers(machine_type?: string) {
+    const [assignedLeaders, setAssignedLeaders] = useState<Set<string>>(new Set());
+    const [assignedMembers, setAssignedMembers] = useState<Set<number>>(new Set());
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        async function fetchAssignments() {
+            setIsLoading(true);
+            try {
+                const brigadas = await brigadaApi.getBrigadas({ machine_type });
+
+                const leaders = new Set<string>();
+                brigadas.forEach((b: any) => {
+                    if (b.leader) {
+                        leaders.add(b.leader);
+                    }
+                });
+
+                const membersPromises = brigadas.map((b: any) => brigadaApi.getBrigadaMembers(b.id));
+                const allMembersResult = await Promise.all(membersPromises);
+
+                const members = new Set<number>();
+                allMembersResult.forEach((memberGroup: any) => {
+                    memberGroup.forEach((m: any) => members.add(m.worker_id));
+                });
+
+                if (isMounted) {
+                    setAssignedLeaders(leaders);
+                    setAssignedMembers(members);
+                }
+            } catch (error) {
+                console.error("Failed to fetch assigned workers", error);
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        }
+
+        if (machine_type) {
+            fetchAssignments();
+        }
+
+        return () => {
+            isMounted = false;
+        };
+    }, [machine_type]);
+
+    return { assignedLeaders, assignedMembers, isLoading };
 }

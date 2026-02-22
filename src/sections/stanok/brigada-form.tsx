@@ -11,12 +11,15 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { useCreateBrigada, useUpdateBrigada } from 'src/hooks/use-brigadas';
+import { useGetStaff } from 'src/hooks/use-staff';
+import { useCreateBrigada, useUpdateBrigada, useGetAssignedWorkers } from 'src/hooks/use-brigadas';
 
 import { useTranslate } from 'src/locales';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+
+import { StaffType } from 'src/types/staff';
 
 import { getBrigadaSchema } from './brigada-schema';
 
@@ -35,6 +38,19 @@ export function BrigadaForm({ brigada, machineId, machineType, onSuccess }: Prop
 
     const { mutateAsync: createBrigada, isPending: isCreating } = useCreateBrigada();
     const { mutateAsync: updateBrigada, isPending: isUpdating } = useUpdateBrigada(brigada?.id || 0);
+
+    const { data: workers = [] } = useGetStaff(undefined, StaffType.WORKER, machineType as any);
+
+    const { assignedLeaders, assignedMembers } = useGetAssignedWorkers(machineType);
+
+    const workerOptions = workers
+        .filter((w) => {
+            if (isEdit && w.fullname === brigada?.leader) return true;
+            if (assignedLeaders.has(w.fullname)) return false;
+            if (assignedMembers.has(w.id)) return false;
+            return true;
+        })
+        .map((w) => w.fullname);
 
     const isPending = isCreating || isUpdating;
 
@@ -84,7 +100,12 @@ export function BrigadaForm({ brigada, machineId, machineType, onSuccess }: Prop
                     }}
                 >
                     <Field.Text name="name" label={t('brigada.form.name')} required />
-                    <Field.Text name="leader" label={t('brigada.form.leader')} />
+                    <Field.Autocomplete
+                        name="leader"
+                        label={t('brigada.form.leader')}
+                        options={workerOptions}
+                        freeSolo
+                    />
                 </Box>
 
                 <Stack direction="row" spacing={2} justifyContent="flex-end">

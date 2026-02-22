@@ -2,23 +2,28 @@ import type { Finance, CreateFinanceRequest, UpdateFinanceRequest } from 'src/ty
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
+import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetClients } from 'src/hooks/use-clients';
+import { useGetPartners } from 'src/hooks/use-partners';
+import { useGetMaterials } from 'src/hooks/use-materials';
 import { useCreateFinance, useUpdateFinance } from 'src/hooks/use-finance';
 
-import { fDate, fDateTime } from 'src/utils/format-time';
+import { fDateTime } from 'src/utils/format-time';
 
 import { useTranslate } from 'src/locales';
 
@@ -30,7 +35,8 @@ import {
     FinanceType,
     PaymentMethod,
     ExpenseCategory,
-    KommunalSubCategory,
+    ExpenseFrequency,
+    ExpenseSubCategory,
 } from 'src/types/finance';
 
 import { getFinanceFormSchema } from './finance-schema';
@@ -50,9 +56,15 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
     const isEdit = !!finance;
 
     const { data: clients = [] } = useGetClients();
+    const { data: partners = [] } = useGetPartners();
+    const { data: materials = [] } = useGetMaterials();
 
     const { mutateAsync: createFinance, isPending: isCreating } = useCreateFinance();
     const { mutateAsync: updateFinance, isPending: isUpdating } = useUpdateFinance(finance?.id || 0);
+
+    const [kirimType, setKirimType] = useState<'client' | 'davaldiylik'>(
+        finance?.davaldiylik_id ? 'davaldiylik' : 'client'
+    );
 
     const isPending = isCreating || isUpdating;
 
@@ -61,13 +73,16 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
             payment_method: finance?.payment_method || defaultPaymentMethod || PaymentMethod.NAQD,
             finance_type: finance?.finance_type || FinanceType.KIRIM,
             expense_category: finance?.expense_category || null,
-            kommunal_sub_category: finance?.kommunal_sub_category || null,
+            expense_subcategory: finance?.expense_subcategory || null,
+            expense_frequency: finance?.expense_frequency || null,
+            expense_title: finance?.expense_title || '',
             client_id: finance?.client_id || null,
-            name: finance?.name || '',
+            davaldiylik_id: finance?.davaldiylik_id || null,
+            partner_id: finance?.partner_id || null,
             value: finance?.value || 0,
             currency: finance?.currency || Currency.UZS,
             currency_exchange_rate: finance?.currency_exchange_rate || null,
-            date: finance?.date ? finance.date.slice(0, 16) : new Date().toISOString().slice(0, 16),
+            date: finance?.date || new Date().toISOString(),
             notes: finance?.notes || '',
         }),
         [finance, defaultPaymentMethod]
@@ -111,16 +126,25 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
     useEffect(() => {
         if (financeType === FinanceType.CHIQIM) {
             setValue('client_id', null);
-            setValue('name', null);
+            setValue('davaldiylik_id', null);
         } else {
             setValue('expense_category', null);
-            setValue('kommunal_sub_category', null);
+            setValue('expense_subcategory', null);
+            setValue('expense_frequency', null);
+            setValue('expense_title', null);
+            setValue('partner_id', null);
         }
     }, [financeType, setValue]);
 
     useEffect(() => {
         if (expenseCategory !== ExpenseCategory.KOMMUNAL) {
-            setValue('kommunal_sub_category', null);
+            setValue('expense_subcategory', null);
+        }
+        if (expenseCategory !== ExpenseCategory.MAHSULOTLAR) {
+            setValue('partner_id', null);
+        }
+        if (expenseCategory !== ExpenseCategory.BOSHQA) {
+            setValue('expense_title', null);
         }
     }, [expenseCategory, setValue]);
 
@@ -152,17 +176,33 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
     const clientOptions = useMemo(
         () =>
             clients.map((client) => ({
-                value: client.id,
-                label: client.fullname,
+                id: client.id,
+                label: `${client.fullname} ${client.company ? `(${client.company})` : ''}`,
             })),
         [clients]
+    );
+
+    const davaldiylikOptions = useMemo(
+        () =>
+            materials.map((m) => ({
+                id: m.id,
+                label: `${m.fullname} ${m.company ? `(${m.company})` : ''}`,
+            })),
+        [materials]
+    );
+
+    const partnerOptions = useMemo(
+        () =>
+            partners.map((p) => ({
+                id: p.id,
+                label: `${p.fullname} ${p.company ? `(${p.company})` : ''}`,
+            })),
+        [partners]
     );
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: FinanceType) => {
         setValue('finance_type', newValue);
     };
-
-    const formattedDate = selectedDate ? fDate(new Date(selectedDate), 'yyyy-MM-dd') : '';
 
     return (
         <Form methods={methods} onSubmit={onSubmit}>
@@ -219,104 +259,159 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
 
                 {/* Dynamic Fields Based on Finance Type */}
                 {financeType === FinanceType.KIRIM ? (
-                    <>
-                        {/* Client Selection for Kirim */}
-                        <Field.Autocomplete
-                            name="client_id"
-                            label={t('form.client')}
-                            options={clientOptions}
-                            getOptionLabel={(option) => {
-                                if (typeof option === 'number') {
-                                    const client = clientOptions.find((c) => c.value === option);
-                                    return client?.label || '';
+                    <Stack spacing={2}>
+                        <RadioGroup
+                            row
+                            value={kirimType}
+                            onChange={(e) => {
+                                const newValue = e.target.value as 'client' | 'davaldiylik';
+                                setKirimType(newValue);
+                                if (newValue === 'client') {
+                                    setValue('davaldiylik_id', null);
+                                } else {
+                                    setValue('client_id', null);
                                 }
-                                return option.label;
                             }}
-                            isOptionEqualToValue={(option, value) => option.value === value}
-                            onChange={(_, newValue) => {
-                                setValue('client_id', newValue?.value || null);
-                            }}
-                            value={clientOptions.find((c) => c.value === watch('client_id')) || null}
-                            slotProps={{
-                                textfield: {
-                                    InputLabelProps: { shrink: true },
-                                },
-                            }}
-                        />
+                            sx={{ mb: 1 }}
+                        >
+                            <FormControlLabel
+                                value="client"
+                                control={<Radio size="medium" />}
+                                label={t('form.client')}
+                            />
+                            <FormControlLabel
+                                value="davaldiylik"
+                                control={<Radio size="medium" />}
+                                label={t('form.davaldiylik')}
+                            />
+                        </RadioGroup>
 
-                        {/* Name Field for Kirim */}
-                        <Field.Text
-                            name="name"
-                            label={t('form.name')}
-                            placeholder={t('form.name_placeholder')}
-                            InputLabelProps={{ shrink: true }}
-                        />
-                    </>
+                        {kirimType === 'client' ? (
+                            <Field.Autocomplete
+                                name="client_id"
+                                label={t('form.client')}
+                                options={clientOptions}
+                                getOptionLabel={(option) => {
+                                    if (typeof option === 'number') {
+                                        return clientOptions.find((c) => c.id === option)?.label || '';
+                                    }
+                                    return option.label;
+                                }}
+                                isOptionEqualToValue={(option, value) => {
+                                    if (typeof value === 'number') return option.id === value;
+                                    return option.id === value.id;
+                                }}
+                                onChange={(_, newValue) => {
+                                    setValue('client_id', newValue?.id || null);
+                                }}
+                                value={clientOptions.find((c) => c.id === watch('client_id')) || null}
+                                slotProps={{ textfield: { InputLabelProps: { shrink: true } } }}
+                            />
+                        ) : (
+                            <Field.Autocomplete
+                                name="davaldiylik_id"
+                                label={t('form.davaldiylik')}
+                                options={davaldiylikOptions}
+                                getOptionLabel={(option) => {
+                                    if (typeof option === 'number') {
+                                        return davaldiylikOptions.find((c) => c.id === option)?.label || '';
+                                    }
+                                    return option.label;
+                                }}
+                                isOptionEqualToValue={(option, value) => {
+                                    if (typeof value === 'number') return option.id === value;
+                                    return option.id === value.id;
+                                }}
+                                onChange={(_, newValue) => {
+                                    setValue('davaldiylik_id', newValue?.id || null);
+                                }}
+                                value={davaldiylikOptions.find((c) => c.id === watch('davaldiylik_id')) || null}
+                                slotProps={{ textfield: { InputLabelProps: { shrink: true } } }}
+                            />
+                        )}
+                    </Stack>
                 ) : (
                     <>
-                        {/* Expense Category for Chiqim */}
-                        <Field.Select
-                            name="expense_category"
-                            label={t('form.expense_category')}
-                            InputLabelProps={{ shrink: true }}
-                            required
+                        <Box
+                            display="grid"
+                            gap={2}
+                            gridTemplateColumns={{
+                                xs: '1fr',
+                                sm: '1fr 1fr',
+                            }}
                         >
-                            <MenuItem value={ExpenseCategory.MAHSULOTLAR}>
-                                {t('form.categories.mahsulotlar')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.KOMMUNAL}>
-                                {t('form.categories.kommunal')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.SOLIQLAR}>
-                                {t('form.categories.soliqlar')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.QARZ}>
-                                {t('form.categories.qarz')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.OZIQ_OVQAT}>
-                                {t('form.categories.oziq_ovqat')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.TRANSPORT}>
-                                {t('form.categories.transport')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.REMONT}>
-                                {t('form.categories.remont')}
-                            </MenuItem>
-                            <MenuItem value={ExpenseCategory.BOSHQA}>
-                                {t('form.categories.boshqa')}
-                            </MenuItem>
-                        </Field.Select>
-
-                        {/* Kommunal Sub-Category */}
-                        {expenseCategory === ExpenseCategory.KOMMUNAL && (
                             <Field.Select
-                                name="kommunal_sub_category"
-                                label={t('form.kommunal_sub_category')}
+                                name="expense_category"
+                                label={t('form.expense_category')}
                                 InputLabelProps={{ shrink: true }}
                                 required
                             >
-                                <MenuItem value={KommunalSubCategory.SVET}>
-                                    {t('form.kommunal_categories.svet')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.GAZ}>
-                                    {t('form.kommunal_categories.gaz')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.SUV}>
-                                    {t('form.kommunal_categories.suv')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.INTERNET}>
-                                    {t('form.kommunal_categories.internet')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.MUSOR}>
-                                    {t('form.kommunal_categories.musor')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.ARENDA}>
-                                    {t('form.kommunal_categories.arenda')}
-                                </MenuItem>
-                                <MenuItem value={KommunalSubCategory.BOSHQA}>
-                                    {t('form.kommunal_categories.boshqa')}
-                                </MenuItem>
+                                {Object.values(ExpenseCategory).map((category) => (
+                                    <MenuItem key={category} value={category}>
+                                        {t(`form.categories.${category}`)}
+                                    </MenuItem>
+                                ))}
                             </Field.Select>
+
+                            <Field.Select
+                                name="expense_frequency"
+                                label={t('form.expense_frequency')}
+                                InputLabelProps={{ shrink: true }}
+                                required
+                            >
+                                {Object.values(ExpenseFrequency).map((freq) => (
+                                    <MenuItem key={freq} value={freq}>
+                                        {t(`form.frequencies.${freq}`)}
+                                    </MenuItem>
+                                ))}
+                            </Field.Select>
+                        </Box>
+
+                        {expenseCategory === ExpenseCategory.KOMMUNAL && (
+                            <Field.Select
+                                name="expense_subcategory"
+                                label={t('form.expense_subcategory')}
+                                InputLabelProps={{ shrink: true }}
+                                required
+                            >
+                                {Object.values(ExpenseSubCategory).map((sub) => (
+                                    <MenuItem key={sub} value={sub}>
+                                        {t(`form.kommunal_categories.${sub}`)}
+                                    </MenuItem>
+                                ))}
+                            </Field.Select>
+                        )}
+
+                        {expenseCategory === ExpenseCategory.MAHSULOTLAR && (
+                            <Field.Autocomplete
+                                name="partner_id"
+                                label={t('form.partner')}
+                                options={partnerOptions}
+                                getOptionLabel={(option) => {
+                                    if (typeof option === 'number') {
+                                        return partnerOptions.find((p) => p.id === option)?.label || '';
+                                    }
+                                    return option.label;
+                                }}
+                                isOptionEqualToValue={(option, value) => {
+                                    if (typeof value === 'number') return option.id === value;
+                                    return option.id === value.id;
+                                }}
+                                onChange={(_, newValue) => {
+                                    setValue('partner_id', newValue?.id || null);
+                                }}
+                                value={partnerOptions.find((p) => p.id === watch('partner_id')) || null}
+                                slotProps={{ textfield: { InputLabelProps: { shrink: true } } }}
+                            />
+                        )}
+
+                        {expenseCategory === ExpenseCategory.BOSHQA && (
+                            <Field.Text
+                                name="expense_title"
+                                label={t('form.expense_title')}
+                                placeholder={t('form.expense_title_placeholder')}
+                                InputLabelProps={{ shrink: true }}
+                            />
                         )}
                     </>
                 )}
@@ -377,11 +472,6 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
                                 </InputAdornment>
                             ),
                         }}
-                        helperText={
-                            formattedDate
-                                ? t('form.rate_for_date', { date: formattedDate })
-                                : undefined
-                        }
                         required
                     />
                 )}
@@ -397,11 +487,11 @@ export function FinanceForm({ finance, onSuccess, defaultPaymentMethod }: Props)
                             <Typography
                                 sx={{
                                     py: 1.5,
-                                    px: 0,
+                                    px: 1.75,
                                     color: 'text.primary',
                                 }}
                             >
-                                {fDateTime(new Date(selectedDate), 'dd/MM/yyyy, HH:mm')}
+                                {fDateTime(new Date(selectedDate), 'DD/MM/YYYY, HH:mm')}
                             </Typography>
                         ),
                     }}

@@ -1,12 +1,16 @@
 import type { GridColDef } from '@mui/x-data-grid';
 import type { FinanceListItem } from 'src/types/finance';
 
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
+
+import { useGetClients } from 'src/hooks/use-clients';
+import { useGetPartners } from 'src/hooks/use-partners';
+import { useGetMaterials } from 'src/hooks/use-materials';
 
 import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
@@ -15,7 +19,7 @@ import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 
-import { Currency, FinanceType } from 'src/types/finance';
+import { Currency, FinanceType, ExpenseCategory } from 'src/types/finance';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +33,38 @@ type Props = {
 
 function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('finance');
+
+    const { data: clients = [] } = useGetClients();
+    const { data: partners = [] } = useGetPartners();
+    const { data: materials = [] } = useGetMaterials();
+
+    const getReferenceName = useCallback(
+        (item: FinanceListItem) => {
+            if (item.finance_type === FinanceType.KIRIM) {
+                if (item.client_id) {
+                    const client = clients.find((c) => c.id === item.client_id);
+                    return client ? `${client.fullname} ${client.company ? `(${client.company})` : ''}` : '-';
+                }
+                if (item.davaldiylik_id) {
+                    const material = materials.find((m) => m.id === item.davaldiylik_id);
+                    return material ? `${material.fullname} ${material.company ? `(${material.company})` : ''}` : '-';
+                }
+            } else {
+                if (item.expense_category === ExpenseCategory.MAHSULOTLAR && item.partner_id) {
+                    const partner = partners.find((p) => p.id === item.partner_id);
+                    return partner ? `${partner.fullname} ${partner.company ? `(${partner.company})` : ''}` : t(`form.categories.${item.expense_category}`);
+                }
+                if (item.expense_category === ExpenseCategory.BOSHQA && item.expense_title) {
+                    return item.expense_title;
+                }
+                if (item.expense_category) {
+                    return t(`form.categories.${item.expense_category}`) + (item.expense_subcategory ? ` - ${t(`form.kommunal_categories.${item.expense_subcategory}`)}` : '');
+                }
+            }
+            return '-';
+        },
+        [clients, materials, partners, t]
+    );
 
     const columns: GridColDef<FinanceListItem>[] = useMemo(
         () => [
@@ -49,22 +85,14 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
                 ),
             },
             {
-                field: 'expense_category',
-                headerName: t('table.expense_category'),
-                width: 140,
+                field: 'name',
+                headerName: t('table.name'),
+                flex: 1,
+                minWidth: 200,
                 sortable: false,
                 renderCell: (params) => (
                     <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                        {params.row.expense_category ? (
-                            <Chip
-                                label={t(`form.categories.${params.row.expense_category}`)}
-                                size="small"
-                                variant="soft"
-                                color="warning"
-                            />
-                        ) : (
-                            '-'
-                        )}
+                        {getReferenceName(params.row)}
                     </Box>
                 ),
             },
@@ -116,19 +144,6 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
                 ),
             },
             {
-                field: 'currency_exchange_rate',
-                headerName: t('table.exchange_rate'),
-                width: 140,
-                sortable: false,
-                renderCell: (params) => (
-                    <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                        {params.row.currency_exchange_rate
-                            ? fCurrency(params.row.currency_exchange_rate)
-                            : '-'}
-                    </Box>
-                ),
-            },
-            {
                 field: 'date',
                 headerName: t('table.date'),
                 width: 180,
@@ -142,8 +157,7 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
             {
                 field: 'notes',
                 headerName: t('table.notes'),
-                flex: 1,
-                minWidth: 200,
+                width: 200,
                 sortable: false,
                 renderCell: (params) => (
                     <Box
@@ -205,7 +219,7 @@ function FinanceTableComponent({ finances, loading, onHistory, onEdit, onDelete 
                 ),
             },
         ],
-        [onEdit, onDelete, onHistory, t]
+        [getReferenceName, onEdit, onDelete, onHistory, t]
     );
 
     return (

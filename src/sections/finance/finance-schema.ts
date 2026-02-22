@@ -5,7 +5,8 @@ import {
     FinanceType,
     PaymentMethod,
     ExpenseCategory,
-    KommunalSubCategory,
+    ExpenseFrequency,
+    ExpenseSubCategory,
 } from 'src/types/finance';
 
 export const getFinanceFormSchema = (t: (key: string) => string) =>
@@ -18,9 +19,12 @@ export const getFinanceFormSchema = (t: (key: string) => string) =>
                 required_error: t('finance_type_required'),
             }),
             expense_category: zod.nativeEnum(ExpenseCategory).nullable().optional(),
-            kommunal_sub_category: zod.nativeEnum(KommunalSubCategory).nullable().optional(),
+            expense_subcategory: zod.nativeEnum(ExpenseSubCategory).nullable().optional(),
+            expense_frequency: zod.nativeEnum(ExpenseFrequency).nullable().optional(),
+            expense_title: zod.string().nullable().optional(),
             client_id: zod.number().nullable().optional(),
-            name: zod.string().nullable().optional(),
+            davaldiylik_id: zod.number().nullable().optional(),
+            partner_id: zod.number().nullable().optional(),
             value: zod.number().min(0.01, t('value_required')),
             currency: zod.nativeEnum(Currency, {
                 required_error: t('currency_required'),
@@ -48,12 +52,14 @@ export const getFinanceFormSchema = (t: (key: string) => string) =>
         .refine(
             (data) => {
                 if (data.finance_type === FinanceType.KIRIM) {
-                    return data.client_id !== null && data.client_id !== undefined && data.client_id > 0;
+                    const hasClient = data.client_id !== null && data.client_id !== undefined && data.client_id > 0;
+                    const hasDavaldiylik = data.davaldiylik_id !== null && data.davaldiylik_id !== undefined && data.davaldiylik_id > 0;
+                    return hasClient || hasDavaldiylik;
                 }
                 return true;
             },
             {
-                message: t('client_required'),
+                message: t('client_or_davaldiylik_required'),
                 path: ['client_id'],
             }
         )
@@ -71,29 +77,45 @@ export const getFinanceFormSchema = (t: (key: string) => string) =>
         )
         .refine(
             (data) => {
+                if (data.finance_type === FinanceType.CHIQIM) {
+                    return data.expense_frequency !== null && data.expense_frequency !== undefined;
+                }
+                return true;
+            },
+            {
+                message: t('expense_frequency_required'),
+                path: ['expense_frequency'],
+            }
+        )
+        .refine(
+            (data) => {
                 if (data.expense_category === ExpenseCategory.KOMMUNAL) {
                     return (
-                        data.kommunal_sub_category !== null &&
-                        data.kommunal_sub_category !== undefined
+                        data.expense_subcategory !== null &&
+                        data.expense_subcategory !== undefined
                     );
                 }
                 return true;
             },
             {
-                message: t('kommunal_sub_category_required'),
-                path: ['kommunal_sub_category'],
+                message: t('expense_subcategory_required'),
+                path: ['expense_subcategory'],
             }
         )
         .refine(
             (data) => {
-                if (data.finance_type === FinanceType.KIRIM) {
-                    return data.name !== null && data.name !== undefined && data.name.trim() !== '';
+                if (data.expense_category === ExpenseCategory.MAHSULOTLAR) {
+                    return (
+                        data.partner_id !== null &&
+                        data.partner_id !== undefined &&
+                        data.partner_id > 0
+                    );
                 }
                 return true;
             },
             {
-                message: t('name_required'),
-                path: ['name'],
+                message: t('partner_required'),
+                path: ['partner_id'],
             }
         );
 

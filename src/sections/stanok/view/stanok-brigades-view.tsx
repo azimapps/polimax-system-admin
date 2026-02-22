@@ -132,6 +132,8 @@ export function StanokBrigadesView() {
                 onClose={membersDialog.onFalse}
                 brigadaId={selectedBrigadaId || 0}
                 brigadaName={selectedBrigadaName}
+                machineType={stanok?.type}
+                leaderName={selectedBrigada?.leader}
             />
 
             <BrigadaHistoryDialog

@@ -24,7 +24,7 @@ import TableContainer from '@mui/material/TableContainer';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetStaff } from 'src/hooks/use-staff';
-import { useAddBrigadaMember, useGetBrigadaMembers, useDeleteBrigadaMember } from 'src/hooks/use-brigadas';
+import { useAddBrigadaMember, useGetBrigadaMembers, useGetAssignedWorkers, useDeleteBrigadaMember } from 'src/hooks/use-brigadas';
 
 import { useTranslate } from 'src/locales';
 
@@ -41,16 +41,26 @@ type Props = {
     onClose: () => void;
     brigadaId: number;
     brigadaName: string;
+    machineType?: string;
+    leaderName?: string;
 };
 
-export function BrigadaMemberDialog({ open, onClose, brigadaId, brigadaName }: Props) {
+export function BrigadaMemberDialog({ open, onClose, brigadaId, brigadaName, machineType, leaderName }: Props) {
     const { t } = useTranslate('stanok');
 
     const { data: members = [], isLoading: isMembersLoading } = useGetBrigadaMembers(brigadaId);
-    const { data: staffData = [] } = useGetStaff('', 'worker' as StaffType);
+    const { data: staffData = [] } = useGetStaff('', 'worker' as StaffType, machineType as any);
+
+    const { assignedLeaders, assignedMembers } = useGetAssignedWorkers(machineType);
 
     // Sort staff to show only those not in brigada (optional UX)
-    const availableWorkers = staffData;
+    const availableWorkers = staffData.filter(
+        (worker) =>
+            worker.fullname !== leaderName &&
+            !members.some((m) => m.worker_id === worker.id) &&
+            !assignedLeaders.has(worker.fullname) &&
+            !assignedMembers.has(worker.id)
+    );
 
     const { mutateAsync: addMember, isPending: isAdding } = useAddBrigadaMember(brigadaId);
     const { mutateAsync: deleteMember } = useDeleteBrigadaMember(brigadaId);
@@ -98,7 +108,7 @@ export function BrigadaMemberDialog({ open, onClose, brigadaId, brigadaName }: P
             </DialogTitle>
             <DialogContent sx={{ pb: 3 }}>
                 <Form methods={methods} onSubmit={onSubmit}>
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3, pt: 1 }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3, pt: 1 }} alignItems="flex-start">
                         <Field.Select name="worker_id" label={t('brigada.form.worker')} sx={{ minWidth: 200 }} required>
                             <MenuItem value={0}>None</MenuItem>
                             {availableWorkers.map((worker) => (
@@ -108,7 +118,13 @@ export function BrigadaMemberDialog({ open, onClose, brigadaId, brigadaName }: P
                             ))}
                         </Field.Select>
                         <Field.Text name="position" label={t('brigada.form.position')} sx={{ flexGrow: 1 }} required />
-                        <LoadingButton type="submit" variant="contained" loading={isAdding} startIcon={<Iconify icon="mingcute:add-line" />}>
+                        <LoadingButton
+                            type="submit"
+                            variant="contained"
+                            loading={isAdding}
+                            startIcon={<Iconify icon="mingcute:add-line" />}
+                            sx={{ height: 56, whiteSpace: 'nowrap', flexShrink: 0 }}
+                        >
                             {t('brigada.member.add')}
                         </LoadingButton>
                     </Stack>
@@ -149,8 +165,8 @@ export function BrigadaMemberDialog({ open, onClose, brigadaId, brigadaName }: P
                                     ))}
                                     {members.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
-                                                No members found
+                                            <TableCell colSpan={3} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                                {t('table.no_data')}
                                             </TableCell>
                                         </TableRow>
                                     )}

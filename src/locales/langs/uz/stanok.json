@@ -28,7 +28,8 @@
         "name": "Nomi",
         "country_code": "Davlat",
         "type": "Turi",
-        "actions": "Harakatlar"
+        "actions": "Harakatlar",
+        "no_data": "Ma'lumot topilmadi"
     },
     "messages": {
         "success_create": "Stanok muvaffaqiyatli qo'shildi",

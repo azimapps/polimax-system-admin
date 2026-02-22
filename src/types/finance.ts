@@ -14,25 +14,39 @@ export enum Currency {
 }
 
 export enum ExpenseCategory {
-    MAHSULOTLAR = 'mahsulotlar',
+    ARENDA = 'arenda',
+    MAOSH = 'maosh',
     KOMMUNAL = 'kommunal',
-    SOLIQLAR = 'soliqlar',
-    QARZ = 'qarz',
-    OZIQ_OVQAT = 'oziq_ovqat',
     TRANSPORT = 'transport',
-    REMONT = 'remont',
+    MAHSULOTLAR = 'mahsulotlar',
+    XOM_ASHYO = 'xom_ashyo',
+    USKUNA = 'uskuna',
+    TAMIRLASH = 'tamirlash',
     BOSHQA = 'boshqa',
 }
 
-export enum KommunalSubCategory {
-    SVET = 'svet',
+export enum ExpenseSubCategory {
+    ELEKTR = 'elektr',
     GAZ = 'gaz',
     SUV = 'suv',
+    KANALIZATSIYA = 'kanalizatsiya',
+    CHIQINDI = 'chiqindi',
+    ISITISH = 'isitish',
     INTERNET = 'internet',
-    MUSOR = 'musor',
-    ARENDA = 'arenda',
-    BOSHQA = 'boshqa',
+    TELEFON = 'telefon',
 }
+
+export enum ExpenseFrequency {
+    RECURRING = 'recurring',
+    ONE_TIME = 'one_time',
+}
+
+export type FinanceUser = {
+    id: number;
+    username: string;
+    fullname: string;
+    role: 'admin' | 'accountant' | 'worker';
+};
 
 export type Finance = {
     id: number;
@@ -40,9 +54,12 @@ export type Finance = {
     payment_method: PaymentMethod;
     finance_type: FinanceType;
     expense_category: ExpenseCategory | null;
-    kommunal_sub_category: KommunalSubCategory | null;
+    expense_subcategory: ExpenseSubCategory | null;
+    expense_title: string | null;
+    expense_frequency: ExpenseFrequency | null;
     client_id: number | null;
-    name: string | null;
+    davaldiylik_id: number | null;
+    partner_id: number | null;
     value: number;
     currency: Currency;
     currency_exchange_rate: number | null;
@@ -53,7 +70,9 @@ export type Finance = {
     deleted_at: string | null;
     archived_at: string | null;
     created_by: number;
+    created_by_user: FinanceUser;
     archived_by: number | null;
+    archived_by_user: FinanceUser | null;
     previous_id: number | null;
 };
 
@@ -64,9 +83,12 @@ export type FinanceListItem = Pick<
     | 'payment_method'
     | 'finance_type'
     | 'expense_category'
-    | 'kommunal_sub_category'
+    | 'expense_subcategory'
+    | 'expense_title'
+    | 'expense_frequency'
     | 'client_id'
-    | 'name'
+    | 'davaldiylik_id'
+    | 'partner_id'
     | 'value'
     | 'currency'
     | 'currency_exchange_rate'
@@ -79,8 +101,8 @@ export type ArchivedFinanceListItem = {
     payment_method: PaymentMethod;
     finance_type: FinanceType;
     expense_category: ExpenseCategory | null;
-    kommunal_sub_category: KommunalSubCategory | null;
-    name: string | null;
+    expense_subcategory: ExpenseSubCategory | null;
+    expense_title: string | null;
     value: number;
     currency: Currency;
     deleted_at: string;
@@ -89,15 +111,19 @@ export type ArchivedFinanceListItem = {
     archived_by: number;
     notes?: string;
     date?: string;
+    previous_id: number | null;
 };
 
 export type CreateFinanceRequest = {
     payment_method: PaymentMethod;
     finance_type: FinanceType;
     expense_category?: ExpenseCategory | null;
-    kommunal_sub_category?: KommunalSubCategory | null;
+    expense_subcategory?: ExpenseSubCategory | null;
+    expense_title?: string | null;
+    expense_frequency?: ExpenseFrequency | null;
     client_id?: number | null;
-    name?: string | null;
+    davaldiylik_id?: number | null;
+    partner_id?: number | null;
     value: number;
     currency: Currency;
     currency_exchange_rate?: number | null;
@@ -112,5 +138,10 @@ export type FinanceQueryParams = {
     payment_method?: PaymentMethod;
     currency?: Currency;
     client_id?: number;
+    davaldiylik_id?: number;
+    expense_category?: ExpenseCategory;
+    expense_subcategory?: ExpenseSubCategory;
+    expense_frequency?: ExpenseFrequency;
+    partner_id?: number;
     q?: string;
 };

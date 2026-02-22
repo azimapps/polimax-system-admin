@@ -1,5 +1,6 @@
 import type { FinanceListItem } from 'src/types/finance';
 
+import dayjs from 'dayjs';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useMemo, useState, useCallback } from 'react';
 
@@ -11,10 +12,13 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import { useGetClients } from 'src/hooks/use-clients';
+import { useGetPartners } from 'src/hooks/use-partners';
+import { useGetMaterials } from 'src/hooks/use-materials';
 import { useGetFinances, useDeleteFinance } from 'src/hooks/use-finance';
 
 import { fDate } from 'src/utils/format-time';
@@ -25,7 +29,7 @@ import { useTranslate } from 'src/locales';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
-import { Currency, FinanceType, PaymentMethod } from 'src/types/finance';
+import { Currency, FinanceType, PaymentMethod, ExpenseCategory } from 'src/types/finance';
 
 import { FinanceDialog } from '../finance-dialog';
 import { FinanceHistoryDialog } from '../finance-history-dialog';
@@ -74,10 +78,8 @@ export function CashView() {
     const [currentTab, setCurrentTab] = useState<FinanceType | 'all'>('all');
 
     // Date range state
-    const today = new Date();
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const [startDate, setStartDate] = useState(firstDayOfMonth.toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
+    const [startDate, setStartDate] = useState(dayjs().subtract(1, 'month').format('YYYY-MM-DD'));
+    const [endDate, setEndDate] = useState(dayjs().format('YYYY-MM-DD'));
 
     const queryParams = {
         payment_method: PaymentMethod.NAQD,
@@ -87,12 +89,45 @@ export function CashView() {
     const { data: finances = [], isLoading } = useGetFinances(queryParams);
     const { mutateAsync: deleteFinance } = useDeleteFinance();
 
+    const { data: clients = [] } = useGetClients();
+    const { data: partners = [] } = useGetPartners();
+    const { data: materials = [] } = useGetMaterials();
+
     const dialog = useBoolean();
     const confirmDialog = useBoolean();
     const historyDialog = useBoolean();
     const [selectedId, setSelectedId] = useState<number | undefined>();
     const [deleteId, setDeleteId] = useState<number | undefined>();
     const [historyFinanceId, setHistoryFinanceId] = useState<number>(0);
+
+    // Helper to get name based on IDs
+    const getReferenceName = useCallback(
+        (item: FinanceListItem) => {
+            if (item.finance_type === FinanceType.KIRIM) {
+                if (item.client_id) {
+                    const client = clients.find((c) => c.id === item.client_id);
+                    return client ? `${client.fullname} ${client.company ? `(${client.company})` : ''}` : '-';
+                }
+                if (item.davaldiylik_id) {
+                    const material = materials.find((m) => m.id === item.davaldiylik_id);
+                    return material ? `${material.fullname} ${material.company ? `(${material.company})` : ''}` : '-';
+                }
+            } else {
+                if (item.expense_category === ExpenseCategory.MAHSULOTLAR && item.partner_id) {
+                    const partner = partners.find((p) => p.id === item.partner_id);
+                    return partner ? `${partner.fullname} ${partner.company ? `(${partner.company})` : ''}` : t(`form.categories.${item.expense_category}`);
+                }
+                if (item.expense_category === ExpenseCategory.BOSHQA && item.expense_title) {
+                    return item.expense_title;
+                }
+                if (item.expense_category) {
+                    return t(`form.categories.${item.expense_category}`) + (item.expense_subcategory ? ` - ${t(`form.kommunal_categories.${item.expense_subcategory}`)}` : '');
+                }
+            }
+            return '-';
+        },
+        [clients, materials, partners, t]
+    );
 
     // Filter finances by date range
     const filteredFinances = useMemo(() =>
@@ -184,15 +219,20 @@ export function CashView() {
                         }}
                     >
                         <Iconify icon="solar:calendar-date-bold" sx={{ color: 'primary.main' }} />
-                        <TextField
-                            type="date"
-                            size="small"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            variant="standard"
-                            InputProps={{
-                                disableUnderline: true,
-                                sx: { fontSize: 14 },
+                        <DatePicker
+                            value={dayjs(startDate)}
+                            onChange={(newValue) => setStartDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                            format="DD/MM/YYYY"
+                            views={['year', 'month', 'day']}
+                            slotProps={{
+                                textField: {
+                                    size: 'small',
+                                    variant: 'standard',
+                                    InputProps: {
+                                        disableUnderline: true,
+                                        sx: { fontSize: 14, minWidth: 100 },
+                                    }
+                                }
                             }}
                         />
                     </Stack>
@@ -209,15 +249,20 @@ export function CashView() {
                         }}
                     >
                         <Iconify icon="solar:calendar-date-bold" sx={{ color: 'primary.main' }} />
-                        <TextField
-                            type="date"
-                            size="small"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            variant="standard"
-                            InputProps={{
-                                disableUnderline: true,
-                                sx: { fontSize: 14 },
+                        <DatePicker
+                            value={dayjs(endDate)}
+                            onChange={(newValue) => setEndDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                            format="DD/MM/YYYY"
+                            views={['year', 'month', 'day']}
+                            slotProps={{
+                                textField: {
+                                    size: 'small',
+                                    variant: 'standard',
+                                    InputProps: {
+                                        disableUnderline: true,
+                                        sx: { fontSize: 14, minWidth: 100 },
+                                    }
+                                }
                             }}
                         />
                     </Stack>
@@ -399,11 +444,7 @@ export function CashView() {
                                             </Box>
                                             <Box sx={{ flex: 1 }}>
                                                 <Typography variant="body2">
-                                                    {item.finance_type === FinanceType.KIRIM
-                                                        ? item.name || '-'
-                                                        : item.expense_category
-                                                            ? t(`form.categories.${item.expense_category}`) + (item.kommunal_sub_category ? ` - ${t(`form.kommunal_categories.${item.kommunal_sub_category}`)}` : '')
-                                                            : '-'}
+                                                    {getReferenceName(item)}
                                                 </Typography>
                                                 {item.currency_exchange_rate && (
                                                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
