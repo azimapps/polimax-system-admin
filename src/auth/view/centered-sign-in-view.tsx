@@ -1,10 +1,13 @@
 import { z as zod } from 'zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBoolean } from 'minimal-shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -15,8 +18,9 @@ import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 import { AnimateLogoRotate } from 'src/components/animate';
 
-import { useSignIn } from '../context/jwt';
 import { FormHead } from '../components/form-head';
+import { useSignIn, useStaffLogin } from '../context/jwt';
+import { TelegramLoginButton } from '../components/telegram-login';
 
 // ----------------------------------------------------------------------
 
@@ -30,9 +34,11 @@ export const SignInSchema = zod.object({
 // ----------------------------------------------------------------------
 
 export function CenteredSignInView() {
+  const [currentTab, setCurrentTab] = useState('manager');
   const showPassword = useBoolean();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { isPending, mutateAsync } = useSignIn();
+  const { isPending: isStaffPending, mutateAsync: mutateStaffAsync } = useStaffLogin();
   const defaultValues: SignInSchemaType = {
     login: '',
     password: '',
@@ -108,15 +114,53 @@ export function CenteredSignInView() {
     </Box>
   );
 
+  const renderTabs = () => (
+    <Tabs
+      value={currentTab}
+      onChange={(_, newValue) => setCurrentTab(newValue)}
+      sx={{ mb: 3 }}
+      centered
+    >
+      <Tab value="manager" label="Manager / CEO Login" />
+      <Tab value="staff" label="Staff Telegram Login" />
+    </Tabs>
+  );
+
   return (
     <>
       <AnimateLogoRotate sx={{ mb: 3, mx: 'auto' }} />
 
       <FormHead title={t('sign_in_title')} description={null} />
 
-      <Form methods={methods} onSubmit={onSubmit}>
-        {renderForm()}
-      </Form>
+      {renderTabs()}
+
+      {currentTab === 'manager' && (
+        <Form methods={methods} onSubmit={onSubmit}>
+          {renderForm()}
+        </Form>
+      )}
+
+      {currentTab === 'staff' && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <TelegramLoginButton
+            botName="Polimaxuz_bot"
+            onAuth={async (user) => {
+              await mutateStaffAsync({
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name ?? null,
+                username: user.username ?? null,
+                photo_url: user.photo_url ?? null,
+                auth_date: user.auth_date,
+                hash: user.hash,
+              });
+            }}
+          />
+          {isStaffPending && (
+            <Box sx={{ mt: 2, color: 'text.secondary' }}>Kirish amalga oshirilmoqda...</Box>
+          )}
+        </Box>
+      )}
     </>
   );
 }

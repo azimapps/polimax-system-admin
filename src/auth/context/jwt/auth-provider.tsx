@@ -85,6 +85,19 @@ export function AuthProvider({ children }: Props) {
     [setState]
   );
 
+  const staffLogin = useCallback(
+    async (payload: Record<string, any>) => {
+      const res = await axiosInstance.post('/staff/login', payload);
+      const { token, account } = res.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(account));
+
+      setState({ user: account });
+    },
+    [setState]
+  );
+
   const logout = useCallback(async () => {
     try {
       // Call logout endpoint to invalidate token on server
@@ -121,10 +134,11 @@ export function AuthProvider({ children }: Props) {
       authenticated: status === 'authenticated',
       unauthenticated: status === 'unauthenticated',
       login,
+      staffLogin,
       logout,
       updateUser,
     }),
-    [checkUserSession, login, logout, updateUser, state.user, status]
+    [checkUserSession, login, staffLogin, logout, updateUser, state.user, status]
   );
 
   return <AuthContext value={memoizedValue}>{children}</AuthContext>;

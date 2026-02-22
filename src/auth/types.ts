@@ -12,6 +12,7 @@ export type AuthContextValue = {
   unauthenticated: boolean;
   checkUserSession?: () => Promise<void>;
   login: (payload: Record<string, any>) => Promise<void>;
+  staffLogin: (payload: Record<string, any>) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: UserType) => void;
 };

@@ -51,6 +51,35 @@ export const useSignIn = () => {
   return { isPending, mutateAsync };
 };
 
+export const useStaffLogin = () => {
+  const router = useRouter();
+  const { staffLogin } = useAuthContext();
+  const searchParams = useSearchParams();
+  const { t } = useTranslate();
+
+  const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: async (value: Record<string, any>) => {
+      await staffLogin(value);
+    },
+    onSuccess: () => {
+      toast.success('Hush kelibsiz', { position: 'top-center' });
+      router.replace(returnTo);
+    },
+    onError: (err: any) => {
+      const errorMessage = err?.response?.data?.detail
+        ? err.response.data.detail.includes('Invalid') || err.response.data.detail.includes('not linked')
+          ? err.response.data.detail // Show exact error from backend
+          : t('auth.login_failed')
+        : t('auth.login_failed');
+      toast.error(errorMessage, { position: 'top-center' });
+    },
+  });
+
+  return { isPending, mutateAsync };
+};
+
 /** **************************************
  * Sign out
  *************************************** */
