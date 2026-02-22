@@ -84,7 +84,10 @@ export function DashboardLayout({
     }
     const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
-    return !roles.includes(user?.role);
+    // Check against standard role, staff type, or worker subtype
+    const userRole = user?.role || user?.type || user?.worker_type;
+
+    return !roles.includes(userRole);
   };
 
   const renderHeader = () => {
