@@ -19,6 +19,8 @@ const ICONS = {
 
 // ----------------------------------------------------------------------
 
+const ADMIN_ROLES = ['admin', 'ceo', 'manager'];
+
 export const useNavData = (): NavSectionProps['data'] => {
   const { t } = useTranslate('navbar');
 
@@ -31,6 +33,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('ombor'),
             path: '/ombor',
+            allowedRoles: [...ADMIN_ROLES, 'ombor'],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 5H4v14h16V5zm-2 12H6V7h12v10zm-4-8h-4v2h4V9zm0 4h-4v2h4v-2z" opacity=".3" />
@@ -57,6 +60,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('stanoklar'),
             path: '/stanoklar',
+            allowedRoles: [...ADMIN_ROLES, 'pechat', 'reska', 'laminatsiya'],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.64-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
@@ -73,6 +77,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('sushka_paneli'),
             path: '/sushka-paneli',
+            allowedRoles: [...ADMIN_ROLES, 'sushka'],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.5h-2v3h2V1zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.75l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zm-12.24 0l-1.79 1.79 1.41 1.41 1.79-1.8-1.41-1.4zM20 10.5v2h3v-2h-3zm-8-7c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1 3h2v3h-2v-3z" />
@@ -84,6 +89,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('staff'),
             path: '/staff',
+            allowedRoles: ADMIN_ROLES,
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -105,6 +111,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('partners'),
             path: '/partners/list',
+            allowedRoles: ADMIN_ROLES,
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -119,6 +126,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('clients'),
             path: '/klientlar',
+            allowedRoles: [...ADMIN_ROLES, 'crm'],
             icon: ICONS.analytics,
             children: [
               { title: t('clients'), path: '/klientlar/list' },
@@ -132,6 +140,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('finance'),
             path: '/finance',
+            allowedRoles: [...ADMIN_ROLES, 'accountant'],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23" />
@@ -149,6 +158,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('production'),
             path: '/production',
+            allowedRoles: ADMIN_ROLES,
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
@@ -164,6 +174,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('order_planning'),
             path: '/order-planning',
+            allowedRoles: [...ADMIN_ROLES, 'planner', 'pechat', 'reska', 'laminatsiya'],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -179,6 +190,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('mixing_station'),
             path: '/mixing-station',
+            allowedRoles: ADMIN_ROLES,
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
