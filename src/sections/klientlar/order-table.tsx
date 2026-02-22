@@ -49,6 +49,12 @@ function OrderTableComponent({ orders, loading, onHistory, onEdit, onDelete }: P
                 minWidth: 200,
             },
             {
+                field: 'client_id',
+                headerName: t('form.client'),
+                width: 140,
+                renderCell: (params) => (params.row as any).client?.name || params.row.client_id || '-',
+            },
+            {
                 field: 'quantity_kg',
                 headerName: t('form.quantity_kg'),
                 width: 120,
@@ -56,12 +62,72 @@ function OrderTableComponent({ orders, loading, onHistory, onEdit, onDelete }: P
             {
                 field: 'material',
                 headerName: t('form.material'),
-                width: 100,
+                width: 120,
                 renderCell: (params) => (
                     <Label variant="soft" color="info">
-                        {params.row.material.toUpperCase()}
+                        {params.row.material?.toUpperCase() || '-'}
                     </Label>
                 ),
+            },
+            {
+                field: 'sub_material',
+                headerName: t('form.sub_material'),
+                width: 140,
+                renderCell: (params) => params.row.sub_material ? t(`form.sub_material_options.${params.row.sub_material}`) : '-',
+            },
+            {
+                field: 'film_thickness',
+                headerName: t('form.film_thickness'),
+                width: 130,
+            },
+            {
+                field: 'film_width',
+                headerName: t('form.film_width'),
+                width: 130,
+            },
+            {
+                field: 'cylinder_length',
+                headerName: t('form.cylinder_length'),
+                width: 140,
+            },
+            {
+                field: 'cylinder_count',
+                headerName: t('form.cylinder_count'),
+                width: 120,
+            },
+            {
+                field: 'cylinder_aylanasi',
+                headerName: t('form.cylinder_aylanasi'),
+                width: 140,
+            },
+            {
+                field: 'start_date',
+                headerName: t('form.start_date'),
+                width: 150,
+                renderCell: (params) => params.row.start_date ? fDate(params.row.start_date) : '-',
+            },
+            {
+                field: 'end_date',
+                headerName: t('form.end_date'),
+                width: 150,
+                renderCell: (params) => params.row.end_date ? fDate(params.row.end_date) : '-',
+            },
+            {
+                field: 'price_per_kg',
+                headerName: t('form.price_per_kg'),
+                width: 120,
+            },
+            {
+                field: 'price_currency',
+                headerName: t('form.price_currency'),
+                width: 100,
+                renderCell: (params) => params.row.price_currency?.toUpperCase() || '-',
+            },
+            {
+                field: 'manager_id',
+                headerName: t('form.manager'),
+                width: 150,
+                renderCell: (params) => (params.row as any).manager?.fullname || params.row.manager_id || '-',
             },
             {
                 field: 'status',

@@ -58,7 +58,7 @@ export type Order = {
   previous_id: number | null;
 };
 
-export type OrderListItem = Pick<Order, 'id' | 'version' | 'order_number' | 'date' | 'title' | 'client_id' | 'quantity_kg' | 'material' | 'status'>;
+export type OrderListItem = Order;
 
 export type CreateOrderRequest = Omit<Order, 'id' | 'version' | 'created_at' | 'updated_at' | 'deleted_at' | 'archived_at' | 'created_by' | 'archived_by' | 'previous_id'>;
 

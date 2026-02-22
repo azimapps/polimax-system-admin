@@ -25,11 +25,12 @@ import { PlanItemStatus } from 'src/types/plan-item';
 type Props = {
     planItems: PlanItemListItem[];
     loading: boolean;
+    onView: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
 };
 
-export function OrderPlanningTable({ planItems, loading, onEdit, onDelete }: Props) {
+export function OrderPlanningTable({ planItems, loading, onView, onEdit, onDelete }: Props) {
     const { t } = useTranslate('order-planning');
 
     if (loading) {
@@ -68,6 +69,9 @@ export function OrderPlanningTable({ planItems, loading, onEdit, onDelete }: Pro
                                 {item.status === PlanItemStatus.FINISHED ? t('finished') : t('in_progress')}
                             </TableCell>
                             <TableCell align="right">
+                                <IconButton color="info" onClick={() => onView(item.id)}>
+                                    <Iconify icon="solar:eye-bold" />
+                                </IconButton>
                                 <IconButton color="inherit" onClick={() => onEdit(item.id)}>
                                     <Iconify icon="solar:pen-bold" />
                                 </IconButton>

@@ -21,6 +21,7 @@ import { PlanItemStatus } from 'src/types/plan-item';
 
 import { OrderPlanningTable } from '../order-planning-table';
 import { OrderPlanningDialog } from '../order-planning-dialog';
+import { OrderPlanningDetailDialog } from '../order-planning-detail-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +40,7 @@ export function OrderPlanningView() {
     const { mutateAsync: deletePlanItem } = useDeletePlanItem();
 
     const dialog = useBoolean();
+    const detailDialog = useBoolean();
     const confirmDialog = useBoolean();
 
     const [selectedId, setSelectedId] = useState<number | undefined>();
@@ -55,6 +57,14 @@ export function OrderPlanningView() {
             dialog.onTrue();
         },
         [dialog]
+    );
+
+    const handleView = useCallback(
+        (id: number) => {
+            setSelectedId(id);
+            detailDialog.onTrue();
+        },
+        [detailDialog]
     );
 
     const handleDeleteClick = useCallback(
@@ -100,6 +110,7 @@ export function OrderPlanningView() {
                 <OrderPlanningTable
                     planItems={planItems}
                     loading={isLoading}
+                    onView={handleView}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
                 />
@@ -108,6 +119,12 @@ export function OrderPlanningView() {
             <OrderPlanningDialog
                 open={dialog.value}
                 onClose={dialog.onFalse}
+                id={selectedId}
+            />
+
+            <OrderPlanningDetailDialog
+                open={detailDialog.value}
+                onClose={detailDialog.onFalse}
                 id={selectedId}
             />
 

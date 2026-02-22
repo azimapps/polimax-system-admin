@@ -14,7 +14,6 @@ type Props = {
     botName: string;
     buttonSize?: 'large' | 'medium' | 'small';
     cornerRadius?: number;
-    requestAccess?: 'write';
     usePic?: boolean;
     onAuth: (user: TelegramUser) => void;
 };
@@ -23,7 +22,6 @@ export function TelegramLoginButton({
     botName,
     buttonSize = 'large',
     cornerRadius = 8,
-    requestAccess = 'write',
     usePic = false,
     onAuth,
 }: Props) {
@@ -41,9 +39,6 @@ export function TelegramLoginButton({
         script.setAttribute('data-size', buttonSize);
         if (cornerRadius !== undefined) {
             script.setAttribute('data-radius', cornerRadius.toString());
-        }
-        if (requestAccess) {
-            script.setAttribute('data-request-access', requestAccess);
         }
         script.setAttribute('data-userpic', usePic.toString());
         script.setAttribute('data-onauth', 'TelegramLoginWidget.dataOnauth(user)');
