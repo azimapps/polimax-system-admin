@@ -1,4 +1,5 @@
 {
+    "ombor_analytics": "Аналитика Склада",
     "list_title": "Список Склада",
     "new_item": "Новый Товар",
     "cancel": "Отмена",
@@ -6,6 +7,18 @@
     "update": "Сохранить",
     "required": "Это поле обязательно",
     "error_generic": "Произошла ошибка",
+    "analytics": {
+        "overall": "Общий",
+        "total_items": "Всего сопоставлено товаров",
+        "total_volume": "Общий объем / количество",
+        "est_total_value": "Оценка общей стоимости",
+        "volume_by_category": "Объем по категориям",
+        "items_by_source": "Товары по источникам",
+        "other": "Другое",
+        "supplier": "Поставщик",
+        "client": "Клиент",
+        "internal": "Внутренний"
+    },
     "form": {
         "login": "Логин",
         "password": "Пароль",

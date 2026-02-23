@@ -13,7 +13,6 @@ import { useGetPartners } from 'src/hooks/use-partners';
 import { useGetMaterials } from 'src/hooks/use-materials';
 
 import { fDate } from 'src/utils/format-time';
-import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
@@ -165,7 +164,12 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
             }
         }
 
-        return `${fCurrency(price)} ${item.price_currency?.toUpperCase() || ''}`;
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+        }).format(price || 0);
     };
 
     const renderExtraCells = (row: OmborItem) => {
@@ -202,12 +206,12 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                 )}
                 {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type) && (
                     <TableCell sx={cellSx}>
-                        {row.price_per_kg ? `${fCurrency(row.price_per_kg)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                        {row.price_per_kg ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row.price_per_kg) : '-'}
                     </TableCell>
                 )}
                 {[OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type) && (
                     <TableCell sx={cellSx}>
-                        {row.price_per_liter ? `${fCurrency(row.price_per_liter)} ${row.price_currency?.toUpperCase() || ''}` : '-'}
+                        {row.price_per_liter ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row.price_per_liter) : '-'}
                     </TableCell>
                 )}
             </>

@@ -1,4 +1,5 @@
 {
+    "ombor_analytics": "Warehouse Analytics",
     "list_title": "Warehouse List",
     "new_item": "New Item",
     "cancel": "Cancel",
@@ -6,6 +7,18 @@
     "update": "Save",
     "required": "This field is required",
     "error_generic": "An error occurred",
+    "analytics": {
+        "overall": "Overall",
+        "total_items": "Total Items Mapped",
+        "total_volume": "Total Volume / Quantity",
+        "est_total_value": "Est. Total Value",
+        "volume_by_category": "Volume by Category",
+        "items_by_source": "Items by Source",
+        "other": "Other",
+        "supplier": "Supplier",
+        "client": "Client",
+        "internal": "Internal"
+    },
     "form": {
         "login": "Login",
         "password": "Password",

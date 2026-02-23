@@ -1,4 +1,5 @@
 {
+    "ombor_analytics": "Омбор Таҳлили",
     "list_title": "Омбор Рўйхати",
     "new_item": "Янги Маҳсулот",
     "cancel": "Бекор қилиш",
@@ -6,6 +7,18 @@
     "update": "Сақлаш",
     "required": "Бу майдон талаб қилинади",
     "error_generic": "Хатолик юз берди",
+    "analytics": {
+        "overall": "Умумий",
+        "total_items": "Жами сақланган турлар",
+        "total_volume": "Жами ҳажм / миқдор",
+        "est_total_value": "Тахминий жами қиймати",
+        "volume_by_category": "Категория бўйича ҳажм",
+        "items_by_source": "Манба бўйича қолдиқлар",
+        "other": "Бошқа",
+        "supplier": "Етказиб берувчи",
+        "client": "Мижоз",
+        "internal": "Ички завод"
+    },
     "form": {
         "login": "Логин",
         "password": "Пароль",

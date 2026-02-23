@@ -26,6 +26,7 @@ export function useGetOmborItems(params: {
     return useQuery({
         queryKey: [...QUERY_KEYS.ombor(ombor_type), queryParams],
         queryFn: () => omborApi.getOmborItems(ombor_type, queryParams),
+        enabled: ombor_type !== ('overall' as unknown as OmborType),
     });
 }
 

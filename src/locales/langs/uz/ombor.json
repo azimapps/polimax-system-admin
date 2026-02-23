@@ -1,4 +1,5 @@
 {
+    "ombor_analytics": "Ombor Tahlili",
     "list_title": "Ombor Ro'yxati",
     "new_item": "Yangi Mahsulot",
     "cancel": "Bekor qilish",
@@ -6,6 +7,18 @@
     "update": "Saqlash",
     "required": "Bu maydon talab qilinadi",
     "error_generic": "Xatolik yuz berdi",
+    "analytics": {
+        "overall": "Umumiy",
+        "total_items": "Jami saqlangan turlar",
+        "total_volume": "Jami hajm / miqdor",
+        "est_total_value": "Taxminiy jami qiymati",
+        "volume_by_category": "Kategoriya bo'yicha hajm",
+        "items_by_source": "Manba bo'yicha qoldiqlar",
+        "other": "Boshqa",
+        "supplier": "Yetkazib beruvchi",
+        "client": "Mijoz",
+        "internal": "Ichki zavod"
+    },
     "form": {
         "login": "Login",
         "password": "Parol",
