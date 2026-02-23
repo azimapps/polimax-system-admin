@@ -80,8 +80,10 @@
         }
     },
     "import_ai": {
-        "title": "Import Film via AI",
+        "title": "AI Import",
         "upload_zone": "Drop your Excel (.xlsx) file here or select",
+        "template_hint": "Tip: You can download example files to see the required format.",
+        "saving_progress": "Saving items to system... Please wait.",
         "processing": "AI is analyzing data...",
         "analyzing": "Analyzing file...",
         "questions_needed": "AI needs clarification on a few things",

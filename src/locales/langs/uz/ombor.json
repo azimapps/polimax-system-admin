@@ -80,8 +80,10 @@
         }
     },
     "import_ai": {
-        "title": "AI orqali Plyonkalarni yuklash",
+        "title": "AI orqali yuklash",
         "upload_zone": "Excel (.xlsx) faylini shu yerga tashlang yoki tanlang",
+        "template_hint": "Maslahat: Kerakli formatni ko'rish uchun namuna fayllarni yuklab olishingiz mumkin.",
+        "saving_progress": "Ma'lumotlar tizimga saqlanmoqda... Iltimos kutib turing.",
         "processing": "AI ma'lumotlarni tahlil qilmoqda...",
         "analyzing": "Fayl tahlil qilinmoqda...",
         "questions_needed": "AI bir nechta savollarni aniqlashtirishni so'ramoqda",

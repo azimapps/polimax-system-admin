@@ -146,40 +146,65 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
 
     const renderQuestions = () => (
         <Stack spacing={3} sx={{ py: 3 }}>
-            <Alert severity="info">{t('import_ai.questions_needed')}</Alert>
-            {questions.map((q) => (
-                <Box key={q.id}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>{q.text}</Typography>
-                    {q.context && <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>{q.context}</Typography>}
-                    <TextField
-                        fullWidth
-                        select
-                        size="small"
-                        value={answers[q.id] || ''}
-                        onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                    >
-                        {q.options.map((opt) => (
-                            <MenuItem key={opt.value} value={opt.value}>
-                                {opt.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Box>
-            ))}
+            <Box>
+                <Alert severity="info" sx={{ mb: 2 }}>{t('import_ai.questions_needed')}</Alert>
+                <Typography variant="body2" color="text.secondary">
+                    {t('import_ai.template_hint') || 'Tip: You can download example files to see the required format.'}
+                </Typography>
+            </Box>
+
+            <Scrollbar sx={{ maxHeight: 400, pr: 1 }}>
+                <Stack spacing={3}>
+                    {questions.map((q) => (
+                        <Box key={q.id}>
+                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                {q.text}
+                            </Typography>
+                            {q.context && (
+                                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+                                    {q.context}
+                                </Typography>
+                            )}
+                            <TextField
+                                fullWidth
+                                select={q.options.length > 0}
+                                size="small"
+                                value={answers[q.id] || ''}
+                                onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                                placeholder={q.text}
+                            >
+                                {q.options.map((opt) => (
+                                    <MenuItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Box>
+                    ))}
+                </Stack>
+            </Scrollbar>
+
             <LoadingButton
                 fullWidth
                 variant="contained"
                 onClick={handleSubmitAnswers}
-                loading={status === 'uploading'}
+                loading={(status as string) === 'uploading'}
             >
-                {t('import_ai.questions.save_answers')}
+                {t('import_ai.questions.save_answers') || 'Submit Answers'}
             </LoadingButton>
         </Stack>
     );
 
     const renderResult = () => (
         <Stack spacing={3} sx={{ py: 3 }}>
-            <Alert severity="success">{t('import_ai.complete')}</Alert>
+            <Box>
+                <Alert severity="success" sx={{ mb: 2 }}>{t('import_ai.complete')}</Alert>
+                {status === ('uploading' as string) && (
+                    <Typography variant="caption" color="primary" sx={{ textAlign: 'center', display: 'block', animate: 'pulse 2s infinite' }}>
+                        {t('import_ai.saving_progress') || 'Saving items to system... Please wait.'}
+                    </Typography>
+                )}
+            </Box>
 
             <Stack direction="row" spacing={2}>
                 <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1, flexGrow: 1 }}>
@@ -200,13 +225,29 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
                 <TableContainer>
                     <Table size="small">
                         <TableBody>
-                            {result?.items.slice(0, 5).map((item, i) => (
-                                <TableRow key={i}>
-                                    <TableCell>{item.name}</TableCell>
-                                    <TableCell>{item.total_kg || item.quantity} {item.plyonka_category}</TableCell>
-                                    <TableCell align="right">${item.price_per_kg || item.price}</TableCell>
-                                </TableRow>
-                            ))}
+                            {result?.items.slice(0, 10).map((item, i) => {
+                                const amount = item.total_kg || item.total_liter || item.quantity || item.net_weight || 0;
+                                const unit = item.total_kg ? 'kg' : item.total_liter ? 'L' : item.quantity ? 'pcs' : '';
+                                const subInfo = item.plyonka_category || item.color_name || item.marka || item.seriya_number || '';
+                                const price = item.price_per_kg || item.price_per_liter || item.price || 0;
+
+                                return (
+                                    <TableRow key={i}>
+                                        <TableCell>
+                                            <Typography variant="subtitle2" noWrap>{item.name}</Typography>
+                                            {subInfo && <Typography variant="caption" color="text.secondary" noWrap>{subInfo}</Typography>}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2" noWrap>{amount} {unit}</Typography>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography variant="body2" color="primary.main" fontWeight="bold">
+                                                ${price}
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>
