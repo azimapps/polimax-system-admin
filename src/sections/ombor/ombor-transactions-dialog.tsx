@@ -10,6 +10,7 @@ import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,6 +19,8 @@ import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
+import { useGetStanoklar } from 'src/hooks/use-stanok';
+import { useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetOmborTransactions, useCreateOmborTransaction } from 'src/hooks/use-ombor';
 
 import { fDate } from 'src/utils/format-time';
@@ -46,6 +49,9 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
     const { data: transactions = [], isLoading } = useGetOmborTransactions(id || 0, currentTab === 'all' ? undefined : currentTab);
     const { mutateAsync: createTransaction, isPending: isCreatingTx } = useCreateOmborTransaction(id || 0, type);
 
+    const { data: planItems = [] } = useGetPlanItems();
+    const { data: stanoklar = [] } = useGetStanoklar();
+
     const methods = useForm<CreateOmborTransactionRequest>({
         defaultValues: {
             transaction_type: OmborTransactionType.KIRIM,
@@ -70,7 +76,8 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
             quantity_liter: null as any,
             quantity_count: null as any,
             quantity_barrels: null as any,
-            order_id: null as any,
+            plan_item_id: null as any,
+            stanok_id: null as any,
             notes: '',
         });
     };
@@ -115,7 +122,23 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                     {showBarrels && <Field.Text name="quantity_barrels" label={t('transactions.form.quantity_barrels')} type="number" />}
 
                     {isCreating === OmborTransactionType.CHIQIM && (
-                        <Field.Text name="order_id" label={t('transactions.form.order_id')} type="number" />
+                        <>
+                            <Field.Select name="plan_item_id" label={t('transactions.form.plan_item_id')} required>
+                                {planItems.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {t('transactions.buyurtma')} #{item.order_id || item.id}
+                                    </MenuItem>
+                                ))}
+                            </Field.Select>
+
+                            <Field.Select name="stanok_id" label={t('transactions.form.stanok_id')} required>
+                                {stanoklar.map((stanok) => (
+                                    <MenuItem key={stanok.id} value={stanok.id}>
+                                        {stanok.name}
+                                    </MenuItem>
+                                ))}
+                            </Field.Select>
+                        </>
                     )}
 
                     <Field.Text name="notes" label={t('transactions.form.notes')} multiline rows={3} />
@@ -177,7 +200,8 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                                         <TableCell>{t('transactions.table.date')}</TableCell>
                                         <TableCell>{t('transactions.table.type')}</TableCell>
                                         <TableCell>{t('transactions.table.quantity')}</TableCell>
-                                        <TableCell>{t('transactions.table.order_id')}</TableCell>
+                                        <TableCell>{t('transactions.table.plan_item_id')}</TableCell>
+                                        <TableCell>{t('transactions.table.stanok_id')}</TableCell>
                                         <TableCell>{t('transactions.table.notes')}</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -202,13 +226,14 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                                                 {tx.quantity_count ? `${tx.quantity_count} dona ` : ''}
                                                 {tx.quantity_barrels ? `(${tx.quantity_barrels} bochka)` : ''}
                                             </TableCell>
-                                            <TableCell>{tx.order_id || '-'}</TableCell>
+                                            <TableCell>{tx.plan_item_id || '-'}</TableCell>
+                                            <TableCell>{tx.stanok_id || '-'}</TableCell>
                                             <TableCell>{tx.notes || '-'}</TableCell>
                                         </TableRow>
                                     ))}
                                     {transactions.length === 0 && !isLoading && (
                                         <TableRow>
-                                            <TableCell colSpan={5} align="center">
+                                            <TableCell colSpan={6} align="center">
                                                 <Typography variant="body2" sx={{ color: 'text.secondary', p: 2 }}>
                                                     {t('transactions.empty')}
                                                 </Typography>

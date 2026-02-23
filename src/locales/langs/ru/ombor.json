@@ -79,16 +79,19 @@
             "type": "Тип",
             "quantity": "Количество",
             "notes": "Описание",
-            "order_id": "ID заказа"
+            "plan_item_id": "Номер заказа",
+            "stanok_id": "Станок"
         },
         "form": {
             "quantity_kg": "Количество (кг)",
             "quantity_liter": "Количество (литр)",
             "quantity_count": "Количество (шт)",
             "quantity_barrels": "Количество бочек",
-            "order_id": "ID заказа",
+            "plan_item_id": "Номер заказа",
+            "stanok_id": "Станок",
             "notes": "Описание"
-        }
+        },
+        "buyurtma": "Заказ"
     },
     "ombor_accounts_title": "Учетные записи склада",
     "new_account": "Новая Учетная Запись",

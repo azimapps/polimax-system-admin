@@ -68,16 +68,19 @@
             "type": "Тури",
             "quantity": "Миқдор",
             "notes": "Изоҳ",
-            "order_id": "Буюртма ID"
+            "plan_item_id": "Буюртма рақами",
+            "stanok_id": "Станок"
         },
         "form": {
             "quantity_kg": "Миқдор (кг)",
             "quantity_liter": "Миқдор (литр)",
             "quantity_count": "Миқдор (дона)",
             "quantity_barrels": "Бочкалар сони",
-            "order_id": "Буюртма ID",
+            "plan_item_id": "Буюртма рақами",
+            "stanok_id": "Станок",
             "notes": "Изоҳ"
-        }
+        },
+        "buyurtma": "Буюртма"
     },
     "ombor_accounts_title": "Омбор Ҳисоблари",
     "new_account": "Янги Ҳисоб",

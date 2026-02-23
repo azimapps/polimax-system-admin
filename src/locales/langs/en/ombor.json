@@ -79,16 +79,19 @@
             "type": "Type",
             "quantity": "Quantity",
             "notes": "Notes",
-            "order_id": "Order ID"
+            "plan_item_id": "Order Number",
+            "stanok_id": "Machine"
         },
         "form": {
             "quantity_kg": "Quantity (kg)",
             "quantity_liter": "Quantity (liter)",
             "quantity_count": "Quantity (count)",
             "quantity_barrels": "Number of barrels",
-            "order_id": "Order ID",
+            "plan_item_id": "Order Number",
+            "stanok_id": "Machine",
             "notes": "Notes"
-        }
+        },
+        "buyurtma": "Order"
     },
     "ombor_accounts_title": "Warehouse Accounts",
     "new_account": "New Account",

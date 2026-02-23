@@ -109,14 +109,26 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
 
     const extraColumns = getExtraColumns();
 
-    const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right' }[] = [
+    const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right'; sx?: any }[] = [
         { id: 'date', label: t('form.date') },
         { id: 'name', label: t('form.name') },
         ...extraColumns,
         { id: 'quantity', label: t('form.quantity'), align: 'center' },
         { id: 'price', label: t('form.price'), align: 'center' },
         { id: 'description', label: t('form.description') },
-        { id: 'actions', label: '', align: 'right' },
+        {
+            id: 'actions',
+            label: '',
+            align: 'right',
+            sx: {
+                position: 'sticky',
+                right: 0,
+                backgroundColor: 'background.neutral',
+                zIndex: 1,
+                boxShadow: (theme: any) => `-10px 0 20px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)'}`,
+                borderLeft: (theme: any) => `1px solid ${theme.palette.divider}`,
+            }
+        },
     ];
 
     const tableMinWidth = 800 + (extraColumns.length * 150);
@@ -295,7 +307,16 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                                         {row.description || '-'}
                                     </TableCell>
 
-                                    <TableCell align="right">
+                                    <TableCell
+                                        align="right"
+                                        sx={{
+                                            position: 'sticky',
+                                            right: 0,
+                                            backgroundColor: 'background.paper',
+                                            boxShadow: (theme) => `-10px 0 20px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)'}`,
+                                            borderLeft: (theme) => `1px solid ${theme.palette.divider}`,
+                                        }}
+                                    >
                                         <IconButton onClick={() => onTransactions(row.id)}>
                                             <Iconify icon="solar:transfer-horizontal-bold-duotone" />
                                         </IconButton>

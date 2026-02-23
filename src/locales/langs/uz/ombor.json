@@ -79,16 +79,19 @@
             "type": "Turi",
             "quantity": "Miqdor",
             "notes": "Izoh",
-            "order_id": "Buyurtma ID"
+            "plan_item_id": "Buyurtma raqami",
+            "stanok_id": "Stanok"
         },
         "form": {
             "quantity_kg": "Miqdor (kg)",
             "quantity_liter": "Miqdor (litr)",
             "quantity_count": "Miqdor (dona)",
             "quantity_barrels": "Bochkalar soni",
-            "order_id": "Buyurtma ID",
+            "plan_item_id": "Buyurtma raqami",
+            "stanok_id": "Stanok",
             "notes": "Izoh"
-        }
+        },
+        "buyurtma": "Buyurtma"
     },
     "ombor_accounts_title": "Ombor Hisoblari",
     "new_account": "Yangi Hisob",

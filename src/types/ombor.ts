@@ -111,7 +111,8 @@ export type OmborTransaction = {
     quantity_count?: number | null;
     quantity_barrels?: number | null;
     notes?: string | null;
-    order_id?: number | null;
+    plan_item_id?: number | null;
+    stanok_id?: number | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
@@ -129,6 +130,7 @@ export type CreateOmborTransactionRequest = {
     quantity_count?: number | null;
     quantity_barrels?: number | null;
     notes?: string | null;
-    order_id?: number | null;
+    plan_item_id?: number | null;
+    stanok_id?: number | null;
 };
 
