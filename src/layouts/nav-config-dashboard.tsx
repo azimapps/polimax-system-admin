@@ -20,6 +20,19 @@ const ICONS = {
 // ----------------------------------------------------------------------
 
 const ADMIN_ROLES = ['admin', 'ceo', 'manager'];
+const OMBOR_ROLES = [
+  'ombor',
+  'ombor_plyonka',
+  'ombor_kraska',
+  'ombor_suyuq_kraska',
+  'ombor_rastvaritel',
+  'ombor_rastvaritel_aralashma',
+  'ombor_kley',
+  'ombor_silindr',
+  'ombor_zapchast',
+  'ombor_tayyor_mahsulotlar_toshkent',
+  'ombor_tayyor_mahsulotlar_angren'
+];
 
 export const useNavData = (): NavSectionProps['data'] => {
   const { t } = useTranslate('navbar');
@@ -33,7 +46,7 @@ export const useNavData = (): NavSectionProps['data'] => {
           {
             title: t('ombor'),
             path: '/ombor',
-            allowedRoles: [...ADMIN_ROLES, 'ombor'],
+            allowedRoles: [...ADMIN_ROLES, ...OMBOR_ROLES],
             icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 5H4v14h16V5zm-2 12H6V7h12v10zm-4-8h-4v2h4V9zm0 4h-4v2h4v-2z" opacity=".3" />
@@ -41,18 +54,19 @@ export const useNavData = (): NavSectionProps['data'] => {
               </svg>
             ),
             children: [
-              { title: t('ombor_analytics'), path: '/ombor/analytics' },
-              { title: t('plyonka'), path: '/ombor/plyonka' },
-              { title: t('kraska'), path: '/ombor/kraska' },
-              { title: t('suyuq_kraska'), path: '/ombor/suyuq-kraska' },
-              { title: t('rastvaritel'), path: '/ombor/rastvaritel' },
-              { title: t('rastvaritel_mix'), path: '/ombor/rastvaritel-mix' },
-              { title: t('cilindr'), path: '/ombor/cilindr' },
-              { title: t('kley'), path: '/ombor/kley' },
-              { title: t('zapchastlar'), path: '/ombor/zapchastlar' },
-              { title: t('otxod'), path: '/ombor/otxod' },
-              { title: t('finished_products_toshkent'), path: '/ombor/finished-products-toshkent' },
-              { title: t('finished_products_angren'), path: '/ombor/finished-products-angren' },
+              { title: t('ombor_analytics'), path: '/ombor/analytics', allowedRoles: [...ADMIN_ROLES, 'ombor'] },
+              { title: t('plyonka'), path: '/ombor/plyonka', allowedRoles: [...ADMIN_ROLES, 'ombor_plyonka', 'ombor'] },
+              { title: t('kraska'), path: '/ombor/kraska', allowedRoles: [...ADMIN_ROLES, 'ombor_kraska', 'ombor'] },
+              { title: t('suyuq_kraska'), path: '/ombor/suyuq-kraska', allowedRoles: [...ADMIN_ROLES, 'ombor_suyuq_kraska', 'ombor'] },
+              { title: t('rastvaritel'), path: '/ombor/rastvaritel', allowedRoles: [...ADMIN_ROLES, 'ombor_rastvaritel', 'ombor'] },
+              { title: t('rastvaritel_mix'), path: '/ombor/rastvaritel-mix', allowedRoles: [...ADMIN_ROLES, 'ombor_rastvaritel_aralashma', 'ombor'] },
+              { title: t('cilindr'), path: '/ombor/cilindr', allowedRoles: [...ADMIN_ROLES, 'ombor_silindr', 'ombor'] },
+              { title: t('kley'), path: '/ombor/kley', allowedRoles: [...ADMIN_ROLES, 'ombor_kley', 'ombor'] },
+              { title: t('zapchastlar'), path: '/ombor/zapchastlar', allowedRoles: [...ADMIN_ROLES, 'ombor_zapchast', 'ombor'] },
+              { title: t('otxod'), path: '/ombor/otxod', allowedRoles: [...ADMIN_ROLES, 'ombor'] },
+              { title: t('finished_products_toshkent'), path: '/ombor/finished-products-toshkent', allowedRoles: [...ADMIN_ROLES, 'ombor_tayyor_mahsulotlar_toshkent', 'ombor'] },
+              { title: t('finished_products_angren'), path: '/ombor/finished-products-angren', allowedRoles: [...ADMIN_ROLES, 'ombor_tayyor_mahsulotlar_angren', 'ombor'] },
+              { title: t('ombor_accounts'), path: '/ombor/accounts', allowedRoles: ADMIN_ROLES },
             ],
           },
 

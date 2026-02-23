@@ -80,6 +80,35 @@ export const useStaffLogin = () => {
   return { isPending, mutateAsync };
 };
 
+export const useOmborLogin = () => {
+  const router = useRouter();
+  const { omborLogin } = useAuthContext();
+  const searchParams = useSearchParams();
+  const { t } = useTranslate();
+
+  const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: async (value: Record<string, any>) => {
+      await omborLogin(value);
+    },
+    onSuccess: () => {
+      toast.success('Hush kelibsiz', { position: 'top-center' });
+      router.replace(returnTo);
+    },
+    onError: (err: any) => {
+      const errorMessage = err?.response?.data?.detail
+        ? err.response.data.detail.includes('Invalid')
+          ? t('auth.invalid_credentials')
+          : t('auth.login_failed')
+        : t('auth.login_failed');
+      toast.error(errorMessage, { position: 'top-center' });
+    },
+  });
+
+  return { isPending, mutateAsync };
+};
+
 /** **************************************
  * Sign out
  *************************************** */

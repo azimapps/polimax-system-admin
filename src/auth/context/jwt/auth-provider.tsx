@@ -98,6 +98,19 @@ export function AuthProvider({ children }: Props) {
     [setState]
   );
 
+  const omborLogin = useCallback(
+    async (payload: Record<string, any>) => {
+      const res = await axiosInstance.post('/ombor-accounts/login', payload);
+      const { token, account } = res.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(account));
+
+      setState({ user: account });
+    },
+    [setState]
+  );
+
   const logout = useCallback(async () => {
     try {
       // Call logout endpoint to invalidate token on server
@@ -135,10 +148,11 @@ export function AuthProvider({ children }: Props) {
       unauthenticated: status === 'unauthenticated',
       login,
       staffLogin,
+      omborLogin,
       logout,
       updateUser,
     }),
-    [checkUserSession, login, staffLogin, logout, updateUser, state.user, status]
+    [checkUserSession, login, staffLogin, omborLogin, logout, updateUser, state.user, status]
   );
 
   return <AuthContext value={memoizedValue}>{children}</AuthContext>;

@@ -1,4 +1,4 @@
-import type { OmborItem, OmborType, CreateOmborRequest, UpdateOmborRequest } from 'src/types/ombor';
+import type { OmborItem, OmborType, OmborTransaction, CreateOmborRequest, UpdateOmborRequest, CreateOmborTransactionRequest } from 'src/types/ombor';
 
 import axiosInstance from 'src/lib/axios';
 
@@ -71,5 +71,19 @@ export const omborApi = {
         const response = await axiosInstance.post(`/ombor/${type}/${id}/revert/${version}`);
         return response.data;
     },
+
+    // Get transactions
+    getOmborTransactions: async (id: number, transaction_type?: string): Promise<OmborTransaction[]> => {
+        const response = await axiosInstance.get(`/ombor/${id}/transactions`, {
+            params: { transaction_type }
+        });
+        return response.data;
+    },
+
+    // Create transaction
+    createOmborTransaction: async (id: number, data: CreateOmborTransactionRequest): Promise<OmborTransaction> => {
+        const response = await axiosInstance.post(`/ombor/${id}/transactions`, data);
+        return response.data;
+    }
 };
 

@@ -95,3 +95,40 @@ export type CreateOmborRequest = any; // Simplifying for now to resolve complex 
 
 export type UpdateOmborRequest = Partial<OmborItem>;
 
+export enum OmborTransactionType {
+    KIRIM = 'kirim',
+    CHIQIM = 'chiqim'
+}
+
+export type OmborTransaction = {
+    id: number;
+    version: number;
+    ombor_item_id: number;
+    transaction_type: OmborTransactionType;
+    date: string;
+    quantity_kg?: number | null;
+    quantity_liter?: number | null;
+    quantity_count?: number | null;
+    quantity_barrels?: number | null;
+    notes?: string | null;
+    order_id?: number | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    archived_at: string | null;
+    created_by?: number | null;
+    archived_by?: number | null;
+    previous_id: number | null;
+};
+
+export type CreateOmborTransactionRequest = {
+    transaction_type: OmborTransactionType;
+    date: string;
+    quantity_kg?: number | null;
+    quantity_liter?: number | null;
+    quantity_count?: number | null;
+    quantity_barrels?: number | null;
+    notes?: string | null;
+    order_id?: number | null;
+};
+

@@ -5,7 +5,12 @@
     "create": "Қўшиш",
     "update": "Сақлаш",
     "required": "Бу майдон талаб қилинади",
+    "error_generic": "Хатолик юз берди",
     "form": {
+        "login": "Логин",
+        "password": "Пароль",
+        "password_update_hint": "Паролни ўзгартириш учун киритинг (бўш қолдирилса аввалгиси қолади)",
+        "role": "Омбор роли",
         "ombor_type": "Омбор Тури",
         "name": "Номи",
         "date": "Сана",
@@ -49,5 +54,58 @@
             "tayyor_toshkent": "Тайёр маҳсулот (Тошкент)",
             "tayyor_angren": "Тайёр маҳсулот (Ангрен)"
         }
+    },
+    "transactions": {
+        "title": "Транзакциялар",
+        "new_kirim": "Кирим қилиш",
+        "new_chiqim": "Чиқим қилиш",
+        "kirim": "Кирим",
+        "chiqim": "Чиқим",
+        "all": "Барча",
+        "empty": "Транзакциялар йўқ",
+        "table": {
+            "date": "Сана",
+            "type": "Тури",
+            "quantity": "Миқдор",
+            "notes": "Изоҳ",
+            "order_id": "Буюртма ID"
+        },
+        "form": {
+            "quantity_kg": "Миқдор (кг)",
+            "quantity_liter": "Миқдор (литр)",
+            "quantity_count": "Миқдор (дона)",
+            "quantity_barrels": "Бочкалар сони",
+            "order_id": "Буюртма ID",
+            "notes": "Изоҳ"
+        }
+    },
+    "ombor_accounts_title": "Омбор Ҳисоблари",
+    "new_account": "Янги Ҳисоб",
+    "edit_account": "Ҳисобни Таҳрирлаш",
+    "delete_confirm_title": "Ҳисобни Ўчириш",
+    "delete_confirm_message": "Ҳақиқатан ҳам бу ҳисобни ўчирмоқчимисиз?",
+    "delete_confirm_button": "Ўчириш",
+    "search_placeholder": "Қидириш...",
+    "messages": {
+        "success_create": "Ҳисоб муваффақиятли яратилди",
+        "success_update": "Ҳисоб муваффақиятли янгиланди",
+        "success_delete": "Ҳисоб муваффақиятли ўчирилди"
+    },
+    "role_options": {
+        "ombor_plyonka": "Омбор Плёнка",
+        "ombor_kraska": "Омбор Бўёқ (Краска)",
+        "ombor_suyuq_kraska": "Омбор Суюқ Бўёқ",
+        "ombor_rastvaritel": "Омбор Эритувчи (Растварител)",
+        "ombor_rastvaritel_aralashma": "Омбор Эритувчи Аралашма",
+        "ombor_kley": "Омбор Елим (Клей)",
+        "ombor_silindr": "Омбор Цилиндр",
+        "ombor_zapchast": "Омбор Эҳтиёт қисмлар",
+        "ombor_tayyor_mahsulotlar_toshkent": "Омбор Тайёр Маҳсулот (Тошкент)",
+        "ombor_tayyor_mahsulotlar_angren": "Омбор Тайёр Маҳсулот (Ангрен)"
+    },
+    "table": {
+        "login": "Логин",
+        "role": "Роль",
+        "actions": "Ҳаракатлар"
     }
 }

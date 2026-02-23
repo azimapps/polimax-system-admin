@@ -19,8 +19,8 @@ import { Form, Field } from 'src/components/hook-form';
 import { AnimateLogoRotate } from 'src/components/animate';
 
 import { FormHead } from '../components/form-head';
-import { useSignIn, useStaffLogin } from '../context/jwt';
 import { TelegramLoginButton } from '../components/telegram-login';
+import { useSignIn, useStaffLogin, useOmborLogin } from '../context/jwt';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +39,7 @@ export function CenteredSignInView() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { isPending, mutateAsync } = useSignIn();
   const { isPending: isStaffPending, mutateAsync: mutateStaffAsync } = useStaffLogin();
+  const { isPending: isOmborPending, mutateAsync: mutateOmborAsync } = useOmborLogin();
   const defaultValues: SignInSchemaType = {
     login: '',
     password: '',
@@ -69,7 +70,19 @@ export function CenteredSignInView() {
     }
   });
 
-  const renderForm = () => (
+  const onSubmitOmbor = handleSubmit(async (data) => {
+    try {
+      return await mutateOmborAsync({
+        login: data.login,
+        password: data.password,
+      });
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  });
+
+  const renderForm = (isOmbor: boolean = false) => (
     <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
       <Field.Text
         name="login"
@@ -106,7 +119,7 @@ export function CenteredSignInView() {
         size="large"
         type="submit"
         variant="contained"
-        loading={isPending}
+        loading={isOmbor ? isOmborPending : isPending}
         loadingIndicator={t('loading_indicator')}
       >
         {t('sign_in_button')}
@@ -123,6 +136,7 @@ export function CenteredSignInView() {
     >
       <Tab value="manager" label="Manager / CEO Login" />
       <Tab value="staff" label="Staff Telegram Login" />
+      <Tab value="ombor" label="Ombor Login" />
     </Tabs>
   );
 
@@ -160,6 +174,12 @@ export function CenteredSignInView() {
             <Box sx={{ mt: 2, color: 'text.secondary' }}>Kirish amalga oshirilmoqda...</Box>
           )}
         </Box>
+      )}
+
+      {currentTab === 'ombor' && (
+        <Form methods={methods} onSubmit={onSubmitOmbor}>
+          {renderForm(true)}
+        </Form>
       )}
     </>
   );

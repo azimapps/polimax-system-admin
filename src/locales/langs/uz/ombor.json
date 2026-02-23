@@ -5,7 +5,12 @@
     "create": "Qo'shish",
     "update": "Saqlash",
     "required": "Bu maydon talab qilinadi",
+    "error_generic": "Xatolik yuz berdi",
     "form": {
+        "login": "Login",
+        "password": "Parol",
+        "password_update_hint": "Parolni o'zgartirish uchun kiriting (bo'sh qoldirilsa avvalgisi qoladi)",
+        "role": "Ombor roli",
         "ombor_type": "Ombor Turi",
         "name": "Nomi",
         "date": "Sana",
@@ -60,5 +65,58 @@
             "tayyor_toshkent": "Tayyor mahsulot (Toshkent)",
             "tayyor_angren": "Tayyor mahsulot (Angren)"
         }
+    },
+    "transactions": {
+        "title": "Tranzaksiyalar",
+        "new_kirim": "Kirim qilish",
+        "new_chiqim": "Chiqim qilish",
+        "kirim": "Kirim",
+        "chiqim": "Chiqim",
+        "all": "Barcha",
+        "empty": "Tranzaksiyalar yo'q",
+        "table": {
+            "date": "Sana",
+            "type": "Turi",
+            "quantity": "Miqdor",
+            "notes": "Izoh",
+            "order_id": "Buyurtma ID"
+        },
+        "form": {
+            "quantity_kg": "Miqdor (kg)",
+            "quantity_liter": "Miqdor (litr)",
+            "quantity_count": "Miqdor (dona)",
+            "quantity_barrels": "Bochkalar soni",
+            "order_id": "Buyurtma ID",
+            "notes": "Izoh"
+        }
+    },
+    "ombor_accounts_title": "Ombor Hisoblari",
+    "new_account": "Yangi Hisob",
+    "edit_account": "Hisobni Tahrirlash",
+    "delete_confirm_title": "Hisobni O'chirish",
+    "delete_confirm_message": "Haqiqatan ham bu hisobni o'chirmoqchimisiz?",
+    "delete_confirm_button": "O'chirish",
+    "search_placeholder": "Qidirish...",
+    "messages": {
+        "success_create": "Hisob muvaffaqiyatli yaratildi",
+        "success_update": "Hisob muvaffaqiyatli yangilandi",
+        "success_delete": "Hisob muvaffaqiyatli o'chirildi"
+    },
+    "role_options": {
+        "ombor_plyonka": "Ombor Plyonka",
+        "ombor_kraska": "Ombor Kraska",
+        "ombor_suyuq_kraska": "Ombor Suyuq Kraska",
+        "ombor_rastvaritel": "Ombor Rastvaritel",
+        "ombor_rastvaritel_aralashma": "Ombor Rastvaritel Aralashma",
+        "ombor_kley": "Ombor Kley",
+        "ombor_silindr": "Ombor Silindr",
+        "ombor_zapchast": "Ombor Zapchast",
+        "ombor_tayyor_mahsulotlar_toshkent": "Ombor Tayyor Mahsulot (Toshkent)",
+        "ombor_tayyor_mahsulotlar_angren": "Ombor Tayyor Mahsulot (Angren)"
+    },
+    "table": {
+        "login": "Login",
+        "role": "Rol",
+        "actions": "Harakatlar"
     }
 }

@@ -30,11 +30,12 @@ type Props = {
     items: OmborItem[];
     loading: boolean;
     onHistory: (id: number) => void;
+    onTransactions: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
 };
 
-export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }: Props) {
+export function OmborTable({ type, items, loading, onHistory, onTransactions, onEdit, onDelete }: Props) {
     const { t } = useTranslate('ombor');
     const { data: partners = [] } = useGetPartners();
     const { data: clients = [] } = useGetClients();
@@ -295,6 +296,10 @@ export function OmborTable({ type, items, loading, onHistory, onEdit, onDelete }
                                     </TableCell>
 
                                     <TableCell align="right">
+                                        <IconButton onClick={() => onTransactions(row.id)}>
+                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" />
+                                        </IconButton>
+
                                         <IconButton onClick={() => onHistory(row.id)}>
                                             <Iconify icon="solar:clock-circle-bold" />
                                         </IconButton>

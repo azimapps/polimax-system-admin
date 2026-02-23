@@ -61,6 +61,7 @@ const StanokProducts = lazy(() => import('src/pages/stanok/products'));
 const OddOneOutQuestionsList = lazy(() => import('src/pages/dashboard/odd-one-out/list'));
 // New Sections
 const OmborPage = lazy(() => import('src/pages/ombor/page'));
+const OmborAccounts = lazy(() => import('src/pages/dashboard/ombor-account/list'));
 const FinanceCashPage = lazy(() => import('src/pages/finance/cash'));
 const FinanceTransferPage = lazy(() => import('src/pages/finance/transfer'));
 const FinanceArchivedPage = lazy(() => import('src/pages/finance/archived'));
@@ -169,6 +170,7 @@ export const routesSection: RouteObject[] = [
           { path: 'otxod', element: <OmborPage /> },
           { path: 'finished-products-toshkent', element: <OmborPage /> },
           { path: 'finished-products-angren', element: <OmborPage /> },
+          { path: 'accounts', element: <OmborAccounts /> },
         ],
       },
       {

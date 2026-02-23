@@ -5,7 +5,12 @@
     "create": "Create",
     "update": "Save",
     "required": "This field is required",
+    "error_generic": "An error occurred",
     "form": {
+        "login": "Login",
+        "password": "Password",
+        "password_update_hint": "Enter to change password (leave empty to keep current)",
+        "role": "Role",
         "ombor_type": "Warehouse Type",
         "name": "Name",
         "date": "Date",
@@ -60,5 +65,58 @@
             "tayyor_toshkent": "Finished Product (Tashkent)",
             "tayyor_angren": "Finished Product (Angren)"
         }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "new_kirim": "Add Income (Kirim)",
+        "new_chiqim": "Add Outcome (Chiqim)",
+        "kirim": "Income",
+        "chiqim": "Outcome",
+        "all": "All",
+        "empty": "No transactions found",
+        "table": {
+            "date": "Date",
+            "type": "Type",
+            "quantity": "Quantity",
+            "notes": "Notes",
+            "order_id": "Order ID"
+        },
+        "form": {
+            "quantity_kg": "Quantity (kg)",
+            "quantity_liter": "Quantity (liter)",
+            "quantity_count": "Quantity (count)",
+            "quantity_barrels": "Number of barrels",
+            "order_id": "Order ID",
+            "notes": "Notes"
+        }
+    },
+    "ombor_accounts_title": "Warehouse Accounts",
+    "new_account": "New Account",
+    "edit_account": "Edit Account",
+    "delete_confirm_title": "Delete Account",
+    "delete_confirm_message": "Are you sure you want to delete this account?",
+    "delete_confirm_button": "Delete",
+    "search_placeholder": "Search...",
+    "messages": {
+        "success_create": "Account successfully created",
+        "success_update": "Account successfully updated",
+        "success_delete": "Account successfully deleted"
+    },
+    "role_options": {
+        "ombor_plyonka": "Warehouse Film",
+        "ombor_kraska": "Warehouse Paint",
+        "ombor_suyuq_kraska": "Warehouse Liquid Paint",
+        "ombor_rastvaritel": "Warehouse Solvent",
+        "ombor_rastvaritel_aralashma": "Warehouse Solvent Mix",
+        "ombor_kley": "Warehouse Glue",
+        "ombor_silindr": "Warehouse Cylinder",
+        "ombor_zapchast": "Warehouse Spare Parts",
+        "ombor_tayyor_mahsulotlar_toshkent": "Warehouse Finished Prod. (Tashkent)",
+        "ombor_tayyor_mahsulotlar_angren": "Warehouse Finished Prod. (Angren)"
+    },
+    "table": {
+        "login": "Login",
+        "role": "Role",
+        "actions": "Actions"
     }
 }

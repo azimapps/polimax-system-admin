@@ -21,11 +21,14 @@ import { useTranslate } from 'src/locales';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
+import { useAuthContext } from 'src/auth/hooks';
+
 import { OmborType } from 'src/types/ombor';
 
 import { OmborTable } from '../ombor-table';
 import { OmborDialog } from '../ombor-dialog';
 import { OmborHistoryDialog } from '../ombor-history-dialog';
+import { OmborTransactionsDialog } from '../ombor-transactions-dialog';
 
 
 
@@ -57,7 +60,26 @@ export function OmborListView() {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    const currentTab = PATH_MAP[pathname] || OmborType.PLYONKA;
+    const { user } = useAuthContext();
+    const isAdmin = ['admin', 'ceo', 'manager', 'ombor'].includes(user?.role || '');
+
+    const allowedTabs = Object.values(OmborType).filter(tab => {
+        if (isAdmin) return true;
+        if (tab === OmborType.PLYONKA && user?.role === 'ombor_plyonka') return true;
+        if (tab === OmborType.KRASKA && user?.role === 'ombor_kraska') return true;
+        if (tab === OmborType.SUYUQ_KRASKA && user?.role === 'ombor_suyuq_kraska') return true;
+        if (tab === OmborType.RASTVARITEL && user?.role === 'ombor_rastvaritel') return true;
+        if (tab === OmborType.ARALASHMASI && user?.role === 'ombor_rastvaritel_aralashma') return true;
+        if (tab === OmborType.KLEY && user?.role === 'ombor_kley') return true;
+        if (tab === OmborType.SILINDIR && user?.role === 'ombor_silindr') return true;
+        if (tab === OmborType.ZAPCHASTLAR && user?.role === 'ombor_zapchast') return true;
+        if (tab === OmborType.TAYYOR_TOSHKENT && user?.role === 'ombor_tayyor_mahsulotlar_toshkent') return true;
+        if (tab === OmborType.TAYYOR_ANGREN && user?.role === 'ombor_tayyor_mahsulotlar_angren') return true;
+        return false;
+    });
+
+    const requestedTab = PATH_MAP[pathname] || OmborType.PLYONKA;
+    const currentTab = allowedTabs.includes(requestedTab) ? requestedTab : (allowedTabs[0] || OmborType.PLYONKA);
 
     const { data: items = [], isLoading } = useGetOmborItems({
         ombor_type: currentTab,
@@ -67,9 +89,11 @@ export function OmborListView() {
 
     const dialog = useBoolean();
     const historyDialog = useBoolean();
+    const transactionsDialog = useBoolean();
     const confirmDialog = useBoolean();
     const [selectedId, setSelectedId] = useState<number | undefined>();
     const [historyId, setHistoryId] = useState<number | undefined>();
+    const [transactionsId, setTransactionsId] = useState<number | undefined>();
     const [deleteId, setDeleteId] = useState<number | undefined>();
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,6 +131,14 @@ export function OmborListView() {
             historyDialog.onTrue();
         },
         [historyDialog]
+    );
+
+    const handleTransactionsClick = useCallback(
+        (id: number) => {
+            setTransactionsId(id);
+            transactionsDialog.onTrue();
+        },
+        [transactionsDialog]
     );
 
     const handleDeleteClick = useCallback(
@@ -148,7 +180,7 @@ export function OmborListView() {
                         boxShadow: (theme) => `inset 0 -2px 0 0 ${theme.vars.palette.divider}`,
                     }}
                 >
-                    {Object.values(OmborType).map((tab) => (
+                    {allowedTabs.map((tab) => (
                         <Tab
                             key={tab}
                             iconPosition="end"
@@ -179,6 +211,7 @@ export function OmborListView() {
                     items={items}
                     loading={isLoading}
                     onHistory={handleHistoryClick}
+                    onTransactions={handleTransactionsClick}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
                 />
@@ -195,6 +228,13 @@ export function OmborListView() {
                 open={historyDialog.value}
                 onClose={historyDialog.onFalse}
                 id={historyId}
+                type={currentTab}
+            />
+
+            <OmborTransactionsDialog
+                open={transactionsDialog.value}
+                onClose={transactionsDialog.onFalse}
+                id={transactionsId}
                 type={currentTab}
             />
 

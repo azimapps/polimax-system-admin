@@ -1,4 +1,4 @@
-import type { OmborType, CreateOmborRequest, UpdateOmborRequest } from 'src/types/ombor';
+import type { OmborType, CreateOmborRequest, UpdateOmborRequest, CreateOmborTransactionRequest } from 'src/types/ombor';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -11,6 +11,7 @@ const QUERY_KEYS = {
     item: (type: OmborType, id: number) => ['ombor-item', type, id],
     archived: (type: OmborType) => ['ombor', type, 'archived'],
     history: (type: OmborType, id: number) => ['ombor-item', type, id, 'history'],
+    transactions: (id: number) => ['ombor-transactions', id],
 };
 
 // ----------------------------------------------------------------------
@@ -122,3 +123,25 @@ export function useRevertOmborItem(type: OmborType, id: number) {
     });
 }
 
+// ----------------------------------------------------------------------
+
+export function useGetOmborTransactions(id: number, transaction_type?: string) {
+    return useQuery({
+        queryKey: [...QUERY_KEYS.transactions(id), { transaction_type }],
+        queryFn: () => omborApi.getOmborTransactions(id, transaction_type),
+        enabled: !!id,
+    });
+}
+
+export function useCreateOmborTransaction(id: number, type: OmborType) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: CreateOmborTransactionRequest) => omborApi.createOmborTransaction(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.transactions(id) });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ombor(type) });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.item(type, id) });
+        },
+    });
+}

@@ -5,7 +5,12 @@
     "create": "Создать",
     "update": "Сохранить",
     "required": "Это поле обязательно",
+    "error_generic": "Произошла ошибка",
     "form": {
+        "login": "Логин",
+        "password": "Пароль",
+        "password_update_hint": "Введите для изменения пароля (оставьте пустым чтобы сохранить текущий)",
+        "role": "Роль склада",
         "ombor_type": "Тип Склада",
         "name": "Название",
         "date": "Дата",
@@ -60,5 +65,58 @@
             "tayyor_toshkent": "Готовая продукция (Ташкент)",
             "tayyor_angren": "Готовая продукция (Ангрен)"
         }
+    },
+    "transactions": {
+        "title": "Транзакции",
+        "new_kirim": "Добавить приход (Kirim)",
+        "new_chiqim": "Добавить расход (Chiqim)",
+        "kirim": "Приход",
+        "chiqim": "Расход",
+        "all": "Все",
+        "empty": "Нет транзакций",
+        "table": {
+            "date": "Дата",
+            "type": "Тип",
+            "quantity": "Количество",
+            "notes": "Описание",
+            "order_id": "ID заказа"
+        },
+        "form": {
+            "quantity_kg": "Количество (кг)",
+            "quantity_liter": "Количество (литр)",
+            "quantity_count": "Количество (шт)",
+            "quantity_barrels": "Количество бочек",
+            "order_id": "ID заказа",
+            "notes": "Описание"
+        }
+    },
+    "ombor_accounts_title": "Учетные записи склада",
+    "new_account": "Новая Учетная Запись",
+    "edit_account": "Редактировать Учетную Запись",
+    "delete_confirm_title": "Удалить Учетную Запись",
+    "delete_confirm_message": "Вы уверены, что хотите удалить эту учетную запись?",
+    "delete_confirm_button": "Удалить",
+    "search_placeholder": "Поиск...",
+    "messages": {
+        "success_create": "Учетная запись успешно создана",
+        "success_update": "Учетная запись успешно обновлена",
+        "success_delete": "Учетная запись успешно удалена"
+    },
+    "role_options": {
+        "ombor_plyonka": "Склад Пленка",
+        "ombor_kraska": "Склад Краска",
+        "ombor_suyuq_kraska": "Склад Жидкая Краска",
+        "ombor_rastvaritel": "Склад Растворитель",
+        "ombor_rastvaritel_aralashma": "Склад Смесь Растворителя",
+        "ombor_kley": "Склад Клей",
+        "ombor_silindr": "Склад Цилиндр",
+        "ombor_zapchast": "Склад Запчасти",
+        "ombor_tayyor_mahsulotlar_toshkent": "Склад Готовая Прод. (Ташкент)",
+        "ombor_tayyor_mahsulotlar_angren": "Склад Готовая Прод. (Ангрен)"
+    },
+    "table": {
+        "login": "Логин",
+        "role": "Роль",
+        "actions": "Действия"
     }
 }

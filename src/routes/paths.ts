@@ -28,6 +28,7 @@ export const paths = {
       otxod: '/ombor/otxod',
       finishedProductsToshkent: '/ombor/finished-products-toshkent',
       finishedProductsAngren: '/ombor/finished-products-angren',
+      accounts: '/ombor/accounts',
     },
     klientlar: {
       root: '/klientlar',
