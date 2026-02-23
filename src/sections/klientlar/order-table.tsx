@@ -1,13 +1,15 @@
-
-import type { GridColDef } from '@mui/x-data-grid';
 import type { OrderListItem } from 'src/types/order';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
 import Tooltip from '@mui/material/Tooltip';
-import { DataGrid } from '@mui/x-data-grid';
+import TableRow from '@mui/material/TableRow';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
+import TableContainer from '@mui/material/TableContainer';
 
 import { fDate } from 'src/utils/format-time';
 
@@ -15,6 +17,8 @@ import { useTranslate } from 'src/locales';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
+import { Scrollbar } from 'src/components/scrollbar';
+import { TableNoData, TableSkeleton, TableHeadCustom } from 'src/components/table';
 
 // ----------------------------------------------------------------------
 
@@ -29,191 +33,174 @@ type Props = {
 function OrderTableComponent({ orders, loading, onHistory, onEdit, onDelete }: Props) {
     const { t } = useTranslate('order');
 
-    const columns: GridColDef<OrderListItem>[] = useMemo(
-        () => [
-            {
-                field: 'order_number',
-                headerName: t('form.order_number'),
-                width: 120,
-            },
-            {
-                field: 'date',
-                headerName: t('form.date'),
-                width: 150,
-                renderCell: (params) => fDate(params.row.date),
-            },
-            {
-                field: 'title',
-                headerName: t('form.title'),
-                flex: 1,
-                minWidth: 200,
-            },
-            {
-                field: 'client_id',
-                headerName: t('form.client'),
-                width: 140,
-                renderCell: (params) => (params.row as any).client?.name || params.row.client_id || '-',
-            },
-            {
-                field: 'quantity_kg',
-                headerName: t('form.quantity_kg'),
-                width: 120,
-            },
-            {
-                field: 'material',
-                headerName: t('form.material'),
-                width: 120,
-                renderCell: (params) => (
-                    <Label variant="soft" color="info">
-                        {params.row.material?.toUpperCase() || '-'}
-                    </Label>
-                ),
-            },
-            {
-                field: 'sub_material',
-                headerName: t('form.sub_material'),
-                width: 140,
-                renderCell: (params) => params.row.sub_material ? t(`form.sub_material_options.${params.row.sub_material}`) : '-',
-            },
-            {
-                field: 'film_thickness',
-                headerName: t('form.film_thickness'),
-                width: 130,
-            },
-            {
-                field: 'film_width',
-                headerName: t('form.film_width'),
-                width: 130,
-            },
-            {
-                field: 'cylinder_length',
-                headerName: t('form.cylinder_length'),
-                width: 140,
-            },
-            {
-                field: 'cylinder_count',
-                headerName: t('form.cylinder_count'),
-                width: 120,
-            },
-            {
-                field: 'cylinder_aylanasi',
-                headerName: t('form.cylinder_aylanasi'),
-                width: 140,
-            },
-            {
-                field: 'start_date',
-                headerName: t('form.start_date'),
-                width: 150,
-                renderCell: (params) => params.row.start_date ? fDate(params.row.start_date) : '-',
-            },
-            {
-                field: 'end_date',
-                headerName: t('form.end_date'),
-                width: 150,
-                renderCell: (params) => params.row.end_date ? fDate(params.row.end_date) : '-',
-            },
-            {
-                field: 'price_per_kg',
-                headerName: t('form.price_per_kg'),
-                width: 120,
-            },
-            {
-                field: 'price_currency',
-                headerName: t('form.price_currency'),
-                width: 100,
-                renderCell: (params) => params.row.price_currency?.toUpperCase() || '-',
-            },
-            {
-                field: 'manager_id',
-                headerName: t('form.manager'),
-                width: 150,
-                renderCell: (params) => (params.row as any).manager?.fullname || params.row.manager_id || '-',
-            },
-            {
-                field: 'status',
-                headerName: t('form.status'),
-                width: 120,
-                renderCell: (params) => (
-                    <Label
-                        variant="soft"
-                        color={(params.row.status === 'finished' && 'success') || 'warning'}
-                    >
-                        {t(`form.status_options.${params.row.status}`)}
-                    </Label>
-                ),
-            },
-            {
-                field: 'actions',
-                headerName: '',
-                width: 140,
-                sortable: false,
-                align: 'right',
-                headerAlign: 'right',
-                renderCell: (params) => (
-                    <Box display="flex" justifyContent="flex-end" width="100%">
-                        <Tooltip title={t('details')} arrow>
-                            <IconButton
-                                onMouseDown={(event) => {
-                                    event.stopPropagation();
-                                    onHistory(params.row.id);
-                                }}
-                            >
-                                <Iconify icon="solar:clock-circle-bold" sx={{ pointerEvents: 'none' }} />
-                            </IconButton>
-                        </Tooltip>
+    const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right'; sx?: any }[] = [
+        { id: 'order_number', label: t('form.order_number') },
+        { id: 'date', label: t('form.date') },
+        { id: 'title', label: t('form.title') },
+        { id: 'client_id', label: t('form.client') },
+        { id: 'quantity_kg', label: t('form.quantity_kg'), align: 'center' },
+        { id: 'material', label: t('form.material') },
+        { id: 'sub_material', label: t('form.sub_material') },
+        { id: 'film_thickness', label: t('form.film_thickness') },
+        { id: 'film_width', label: t('form.film_width') },
+        { id: 'cylinder_length', label: t('form.cylinder_length') },
+        { id: 'cylinder_count', label: t('form.cylinder_count'), align: 'center' },
+        { id: 'cylinder_aylanasi', label: t('form.cylinder_aylanasi') },
+        { id: 'start_date', label: t('form.start_date') },
+        { id: 'end_date', label: t('form.end_date') },
+        { id: 'price_per_kg', label: t('form.price_per_kg') },
+        { id: 'price_currency', label: t('form.price_currency'), align: 'center' },
+        { id: 'manager_id', label: t('form.manager') },
+        { id: 'status', label: t('form.status'), align: 'center' },
+        {
+            id: 'actions',
+            label: '',
+            align: 'right',
+            sx: {
+                position: 'sticky',
+                right: 0,
+                backgroundColor: 'background.neutral',
+                zIndex: 1,
+                boxShadow: (theme: any) => `-10px 0 20px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)'}`,
+                borderLeft: (theme: any) => `1px solid ${theme.palette.divider}`,
+            }
+        },
+    ];
 
-                        <Tooltip title={t('edit_item')} arrow>
-                            <IconButton
-                                onMouseDown={(event) => {
-                                    event.stopPropagation();
-                                    onEdit(params.row.id);
-                                }}
-                            >
-                                <Iconify icon="solar:pen-bold" sx={{ pointerEvents: 'none' }} />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title={t('delete_item')} arrow>
-                            <IconButton
-                                color="error"
-                                onMouseDown={(event) => {
-                                    event.stopPropagation();
-                                    onDelete(params.row.id);
-                                }}
-                            >
-                                <Iconify icon="solar:trash-bin-trash-bold" sx={{ pointerEvents: 'none' }} />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                ),
-            },
-        ],
-        [onEdit, onDelete, onHistory, t]
-    );
+    const getClientName = (row: any) => row.client?.name || row.client_id || '-';
+    const getManagerName = (row: any) => row.manager?.fullname || row.manager_id || '-';
 
     return (
-        <DataGrid
-            columns={columns}
-            disableColumnMenu
-            disableRowSelectionOnClick
-            loading={loading}
-            rows={orders}
-            pageSizeOptions={[5, 10, 25]}
-            initialState={{
-                pagination: {
-                    paginationModel: { pageSize: 10 },
-                },
-            }}
-            sx={{
-                '& .MuiDataGrid-cell:focus': {
-                    outline: 'none',
-                },
-                '& .MuiDataGrid-cell:focus-within': {
-                    outline: 'none',
-                },
-                height: orders.length > 0 ? 'auto' : 400,
-            }}
-        />
+        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+            <Scrollbar>
+                <Table size="medium" sx={{ minWidth: 2400 }}>
+                    <TableHeadCustom headCells={TABLE_HEAD} />
+
+                    <TableBody>
+                        {loading ? (
+                            Array.from({ length: 5 }).map((_, index) => (
+                                <TableSkeleton key={index} />
+                            ))
+                        ) : (
+                            orders.map((row) => (
+                                <TableRow key={row.id} hover>
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.order_number}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {fDate(row.date)}
+                                    </TableCell>
+
+                                    <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
+                                        <Box sx={{ fontWeight: 500 }}>{row.title}</Box>
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {getClientName(row)}
+                                    </TableCell>
+
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.quantity_kg || 0}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        <Label variant="soft" color="info">
+                                            {row.material?.toUpperCase() || '-'}
+                                        </Label>
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.sub_material ? t(`form.sub_material_options.${row.sub_material}`) : '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.film_thickness || '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.film_width || '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.cylinder_length || '-'}
+                                    </TableCell>
+
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.cylinder_count || 0}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.cylinder_aylanasi || '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.start_date ? fDate(row.start_date) : '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.end_date ? fDate(row.end_date) : '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.price_per_kg || 0}
+                                    </TableCell>
+
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+                                        {row.price_currency?.toUpperCase() || '-'}
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                        {getManagerName(row)}
+                                    </TableCell>
+
+                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+                                        <Label
+                                            variant="soft"
+                                            color={(row.status === 'finished' && 'success') || 'warning'}
+                                        >
+                                            {t(`form.status_options.${row.status}`)}
+                                        </Label>
+                                    </TableCell>
+
+                                    <TableCell
+                                        align="right"
+                                        sx={{
+                                            position: 'sticky',
+                                            right: 0,
+                                            backgroundColor: 'background.paper',
+                                            boxShadow: (theme) => `-10px 0 20px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)'}`,
+                                            borderLeft: (theme) => `1px solid ${theme.palette.divider}`,
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                    >
+                                        <Tooltip title={t('details')} arrow>
+                                            <IconButton onClick={() => onHistory(row.id)}>
+                                                <Iconify icon="solar:clock-circle-bold" />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip title={t('edit_item')} arrow>
+                                            <IconButton onClick={() => onEdit(row.id)}>
+                                                <Iconify icon="solar:pen-bold" />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip title={t('delete_item')} arrow>
+                                            <IconButton color="error" onClick={() => onDelete(row.id)}>
+                                                <Iconify icon="solar:trash-bin-trash-bold" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+
+                        <TableNoData notFound={!loading && orders.length === 0} />
+                    </TableBody>
+                </Table>
+            </Scrollbar>
+        </TableContainer>
     );
 }
 
