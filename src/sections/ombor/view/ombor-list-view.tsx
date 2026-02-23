@@ -28,6 +28,7 @@ import { OmborType } from 'src/types/ombor';
 import { OmborTable } from '../ombor-table';
 import { OmborDialog } from '../ombor-dialog';
 import { OmborHistoryDialog } from '../ombor-history-dialog';
+import { OmborImportAiDialog } from '../ombor-import-ai-dialog';
 import { OmborTransactionsDialog } from '../ombor-transactions-dialog';
 
 
@@ -88,6 +89,7 @@ export function OmborListView() {
     const { mutateAsync: deleteItem } = useDeleteOmborItem(currentTab);
 
     const dialog = useBoolean();
+    const importAiDialog = useBoolean();
     const historyDialog = useBoolean();
     const transactionsDialog = useBoolean();
     const confirmDialog = useBoolean();
@@ -162,13 +164,23 @@ export function OmborListView() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5 }}>
                 <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{t(`form.types.${currentTab}`)}</Typography>
 
-                <Button
-                    variant="contained"
-                    startIcon={<Iconify icon="mingcute:add-line" />}
-                    onClick={handleCreate}
-                >
-                    {t('new_item')}
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Iconify icon="solar:pen-bold" />}
+                        onClick={importAiDialog.onTrue}
+                    >
+                        AI Import
+                    </Button>
+                    <Button
+                        variant="contained"
+                        startIcon={<Iconify icon="mingcute:add-line" />}
+                        onClick={handleCreate}
+                    >
+                        {t('new_item')}
+                    </Button>
+                </Stack>
             </Stack>
 
             <Card>
@@ -222,6 +234,15 @@ export function OmborListView() {
                 onClose={dialog.onFalse}
                 id={selectedId}
                 type={currentTab}
+            />
+
+            <OmborImportAiDialog
+                open={importAiDialog.value}
+                onClose={importAiDialog.onFalse}
+                type={currentTab}
+                onSuccess={() => {
+                    window.location.reload();
+                }}
             />
 
             <OmborHistoryDialog

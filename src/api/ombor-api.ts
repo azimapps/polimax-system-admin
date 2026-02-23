@@ -84,6 +84,21 @@ export const omborApi = {
     createOmborTransaction: async (id: number, data: CreateOmborTransactionRequest): Promise<OmborTransaction> => {
         const response = await axiosInstance.post(`/ombor/${id}/transactions`, data);
         return response.data;
-    }
-};
+    },
 
+    // AI Sheet Parsing
+    parseSheet: async (type: OmborType, file: File): Promise<any> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await axiosInstance.post(`/ombor/${type}/parse-sheet`, formData);
+        return response.data;
+    },
+
+    answerSheetQuestions: async (type: OmborType, sessionId: number, answers: any[]): Promise<any> => {
+        const response = await axiosInstance.post(`/ombor/${type}/parse-sheet/${sessionId}/answer`, { answers });
+        return response.data;
+    },
+
+    getParsedSheetDownloadUrl: (type: OmborType, sessionId: number): string =>
+        `${axiosInstance.defaults.baseURL}/ombor/${type}/parse-sheet/${sessionId}/download`
+};

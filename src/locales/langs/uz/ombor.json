@@ -79,6 +79,29 @@
             "tayyor_angren": "Tayyor mahsulot (Angren)"
         }
     },
+    "import_ai": {
+        "title": "AI orqali Plyonkalarni yuklash",
+        "upload_zone": "Excel (.xlsx) faylini shu yerga tashlang yoki tanlang",
+        "processing": "AI ma'lumotlarni tahlil qilmoqda...",
+        "analyzing": "Fayl tahlil qilinmoqda...",
+        "questions_needed": "AI bir nechta savollarni aniqlashtirishni so'ramoqda",
+        "complete": "Tahlil yakunlandi! Ma'lumotlarni tekshiring va saqlang.",
+        "download_parsed": "Toza .xlsx faylni yuklab olish",
+        "save_to_system": "Tizimga saqlash",
+        "questions": {
+            "save_answers": "Javoblarni yuborish",
+            "column_mapping": "Ustunlarni moslashtirish",
+            "confirmation": "Tasdiqlash",
+            "value_mapping": "Qiymatlarni moslashtirish",
+            "missing_field": "Yetishmayotgan ma'lumot"
+        },
+        "results": {
+            "total_rows": "Jami qatorlar",
+            "valid_rows": "To'g'ri qatorlar",
+            "errors": "Xatoliklar",
+            "row": "Qator"
+        }
+    },
     "transactions": {
         "title": "Tranzaksiyalar",
         "new_kirim": "Kirim qilish",

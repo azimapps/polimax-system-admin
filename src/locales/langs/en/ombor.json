@@ -79,6 +79,29 @@
             "tayyor_angren": "Finished Product (Angren)"
         }
     },
+    "import_ai": {
+        "title": "Import Film via AI",
+        "upload_zone": "Drop your Excel (.xlsx) file here or select",
+        "processing": "AI is analyzing data...",
+        "analyzing": "Analyzing file...",
+        "questions_needed": "AI needs clarification on a few things",
+        "complete": "Analysis complete! Review and save results.",
+        "download_parsed": "Download cleaned .xlsx",
+        "save_to_system": "Save to System",
+        "questions": {
+            "save_answers": "Send Answers",
+            "column_mapping": "Match Columns",
+            "confirmation": "Confirm Mapping",
+            "value_mapping": "Match Values",
+            "missing_field": "Missing Data"
+        },
+        "results": {
+            "total_rows": "Total Rows",
+            "valid_rows": "Valid Rows",
+            "errors": "Errors",
+            "row": "Row"
+        }
+    },
     "transactions": {
         "title": "Transactions",
         "new_kirim": "Add Income (Kirim)",

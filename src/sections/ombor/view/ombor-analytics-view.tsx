@@ -37,7 +37,7 @@ export function OmborAnalyticsView() {
 
     const [currentTab, setCurrentTab] = useState<OmborType | 'overall'>('overall');
 
-    const { data: items = [], isLoading } = useGetOmborItems({
+    const { data: items = [] } = useGetOmborItems({
         ombor_type: currentTab as OmborType,
     });
 

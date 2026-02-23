@@ -79,6 +79,29 @@
             "tayyor_angren": "Готовая продукция (Ангрен)"
         }
     },
+    "import_ai": {
+        "title": "Импорт Пленки через AI",
+        "upload_zone": "Перетащите Excel (.xlsx) файл сюда или выберите",
+        "processing": "AI анализирует данные...",
+        "analyzing": "Анализ файла...",
+        "questions_needed": "AI просит уточнить детали",
+        "complete": "Анализ завершен! Проверьте и сохраните данные.",
+        "download_parsed": "Скачать чистый .xlsx",
+        "save_to_system": "Сохранить в систему",
+        "questions": {
+            "save_answers": "Отправить ответы",
+            "column_mapping": "Сопоставление колонок",
+            "confirmation": "Подтверждение",
+            "value_mapping": "Сопоставление значений",
+            "missing_field": "Отсутствующие данные"
+        },
+        "results": {
+            "total_rows": "Всего строк",
+            "valid_rows": "Корректные строки",
+            "errors": "Ошибки",
+            "row": "Строка"
+        }
+    },
     "transactions": {
         "title": "Транзакции",
         "new_kirim": "Добавить приход (Kirim)",
