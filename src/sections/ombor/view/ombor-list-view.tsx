@@ -165,14 +165,16 @@ export function OmborListView() {
                 <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{t(`form.types.${currentTab}`)}</Typography>
 
                 <Stack direction="row" spacing={1}>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        startIcon={<Iconify icon="solar:pen-bold" />}
-                        onClick={importAiDialog.onTrue}
-                    >
-                        AI Import
-                    </Button>
+                    {currentTab === OmborType.KRASKA && (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<Iconify icon="solar:pen-bold" />}
+                            onClick={importAiDialog.onTrue}
+                        >
+                            AI Import
+                        </Button>
+                    )}
                     <Button
                         variant="contained"
                         startIcon={<Iconify icon="mingcute:add-line" />}

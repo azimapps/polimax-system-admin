@@ -9,11 +9,9 @@ import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -29,17 +27,6 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 // ----------------------------------------------------------------------
-
-type Question = {
-    id: string;
-    type: 'column_mapping' | 'confirmation' | 'value_mapping' | 'missing_field';
-    text: string;
-    context?: string;
-    header?: string;
-    field?: string;
-    options: { value: string; label: string }[];
-    allow_skip?: boolean;
-};
 
 type ParseResult = {
     total_rows: number;
@@ -60,9 +47,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
 
     const [file, setFile] = useState<File | null>(null);
     const [sessionId, setSessionId] = useState<number | null>(null);
-    const [status, setStatus] = useState<'idle' | 'uploading' | 'questions' | 'complete'>('idle');
-    const [questions, setQuestions] = useState<Question[]>([]);
-    const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [status, setStatus] = useState<'idle' | 'uploading' | 'complete'>('idle');
     const [result, setResult] = useState<ParseResult | null>(null);
 
     const handleDrop = useCallback((acceptedFiles: File[]) => {
@@ -79,44 +64,11 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
         try {
             const res = await omborApi.parseSheet(type, file);
             setSessionId(res.session_id);
-            setStatus(res.status);
-            if (res.status === 'questions') {
-                setQuestions(res.questions);
-                // Pre-fill answers with first option if confirmation
-                const initialAnswers: Record<string, string> = {};
-                res.questions.forEach((q: Question) => {
-                    if (q.type === 'confirmation') initialAnswers[q.id] = 'yes';
-                });
-                setAnswers(initialAnswers);
-            } else if (res.status === 'complete') {
-                setResult(res.result);
-            }
+            setResult(res.result);
+            setStatus('complete');
         } catch (error) {
             console.error(error);
             setStatus('idle');
-        }
-    };
-
-    const handleSubmitAnswers = async () => {
-        if (!sessionId) return;
-
-        setStatus('uploading');
-        try {
-            const formattedAnswers = Object.entries(answers).map(([question_id, selected_value]) => ({
-                question_id,
-                selected_value,
-            }));
-
-            const res = await omborApi.answerSheetQuestions(type, sessionId, formattedAnswers);
-            setStatus(res.status);
-            if (res.status === 'questions') {
-                setQuestions(res.questions);
-            } else if (res.status === 'complete') {
-                setResult(res.result);
-            }
-        } catch (error) {
-            console.error(error);
-            setStatus('questions');
         }
     };
 
@@ -143,57 +95,6 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
             window.open(url, '_blank');
         }
     };
-
-    const renderQuestions = () => (
-        <Stack spacing={3} sx={{ py: 3 }}>
-            <Box>
-                <Alert severity="info" sx={{ mb: 2 }}>{t('import_ai.questions_needed')}</Alert>
-                <Typography variant="body2" color="text.secondary">
-                    {t('import_ai.template_hint') || 'Tip: You can download example files to see the required format.'}
-                </Typography>
-            </Box>
-
-            <Scrollbar sx={{ maxHeight: 400, pr: 1 }}>
-                <Stack spacing={3}>
-                    {questions.map((q) => (
-                        <Box key={q.id}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                {q.text}
-                            </Typography>
-                            {q.context && (
-                                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
-                                    {q.context}
-                                </Typography>
-                            )}
-                            <TextField
-                                fullWidth
-                                select={q.options.length > 0}
-                                size="small"
-                                value={answers[q.id] || ''}
-                                onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                                placeholder={q.text}
-                            >
-                                {q.options.map((opt) => (
-                                    <MenuItem key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Box>
-                    ))}
-                </Stack>
-            </Scrollbar>
-
-            <LoadingButton
-                fullWidth
-                variant="contained"
-                onClick={handleSubmitAnswers}
-                loading={(status as string) === 'uploading'}
-            >
-                {t('import_ai.questions.save_answers') || 'Submit Answers'}
-            </LoadingButton>
-        </Stack>
-    );
 
     const renderResult = () => (
         <Stack spacing={3} sx={{ py: 3 }}>
@@ -290,8 +191,6 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
                         <Typography variant="body2" color="text.secondary">{t('import_ai.analyzing')}</Typography>
                     </Box>
                 )}
-
-                {(status as string) === 'questions' && renderQuestions()}
 
                 {(status as string) === 'complete' && renderResult()}
             </DialogContent>

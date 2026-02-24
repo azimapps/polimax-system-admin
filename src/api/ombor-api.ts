@@ -94,11 +94,6 @@ export const omborApi = {
         return response.data;
     },
 
-    answerSheetQuestions: async (type: OmborType, sessionId: number, answers: any[]): Promise<any> => {
-        const response = await axiosInstance.post(`/ombor/${type}/parse-sheet/${sessionId}/answer`, { answers });
-        return response.data;
-    },
-
     getParsedSheetDownloadUrl: (type: OmborType, sessionId: number): string =>
         `${axiosInstance.defaults.baseURL}/ombor/${type}/parse-sheet/${sessionId}/download`
 };
