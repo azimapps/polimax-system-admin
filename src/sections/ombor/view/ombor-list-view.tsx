@@ -165,7 +165,7 @@ export function OmborListView() {
                 <Typography variant="h4" sx={{ textTransform: 'capitalize' }}>{t(`form.types.${currentTab}`)}</Typography>
 
                 <Stack direction="row" spacing={1}>
-                    {currentTab === OmborType.KRASKA && (
+                    {(currentTab === OmborType.KRASKA || currentTab === OmborType.PLYONKA) && (
                         <Button
                             variant="outlined"
                             color="primary"
