@@ -72,15 +72,12 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
         }
     };
 
-    const handleSaveToSystemByCreatedItems = async () => {
-        if (!result) return;
+    const handleImport = async () => {
+        if (!sessionId) return;
 
         setStatus('uploading');
         try {
-            // Sequential creation to avoid overwhelming backend
-            for (const item of result.items) {
-                await omborApi.createOmborItem(type, item);
-            }
+            await omborApi.importParsedSheet(type, sessionId);
             onSuccess?.();
             onClose();
         } catch (error) {
@@ -158,7 +155,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
                 <Button fullWidth variant="outlined" startIcon={<Iconify icon="solar:download-bold" />} onClick={handleDownload}>
                     {t('import_ai.download_parsed')}
                 </Button>
-                <LoadingButton fullWidth variant="contained" color="success" onClick={handleSaveToSystemByCreatedItems} loading={status === ('uploading' as string)}>
+                <LoadingButton fullWidth variant="contained" color="success" onClick={handleImport} loading={status === ('uploading' as string)}>
                     {t('import_ai.save_to_system')}
                 </LoadingButton>
             </Stack>

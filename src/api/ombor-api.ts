@@ -94,6 +94,11 @@ export const omborApi = {
         return response.data;
     },
 
+    importParsedSheet: async (type: OmborType, sessionId: number): Promise<any> => {
+        const response = await axiosInstance.post(`/ombor/${type}/parse-sheet/${sessionId}/import`);
+        return response.data;
+    },
+
     getParsedSheetDownloadUrl: (type: OmborType, sessionId: number): string =>
         `${axiosInstance.defaults.baseURL}/ombor/${type}/parse-sheet/${sessionId}/download`
 };

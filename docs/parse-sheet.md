@@ -6,7 +6,8 @@ Excel faylni yuklash → AI ustunlarni moslash → toza natija olish. Bir qadam.
 
 ```
 1. POST /ombor/{type}/parse-sheet              → fayl yuklash → darhol natija (status=complete)
-2. GET  /ombor/{type}/parse-sheet/{id}/download → toza .xlsx yuklab olish (public, auth shart emas)
+2. POST /ombor/{type}/parse-sheet/{id}/import  → bulk import → barcha itemlar yaratiladi
+3. GET  /ombor/{type}/parse-sheet/{id}/download → toza .xlsx yuklab olish (public, auth shart emas)
 ```
 
 > Upload har doim `status=complete` qaytaradi. Savollar yo'q.
@@ -75,7 +76,38 @@ AI (Gemini) headerlarni database maydonlariga moslaydi → darhol `status=comple
 
 ---
 
-### 2. Natijani yuklab olish
+### 2. Bulk import
+
+```
+POST /ombor/{type}/parse-sheet/{session_id}/import
+Authorization: Bearer <token>
+```
+
+> Parse natijasidagi barcha itemlarni tizimga import qiladi.
+
+Faqat `status=complete` bo'lgan sessiyalar uchun ishlaydi.
+
+#### Javob: `SheetImportResponse`
+
+```json
+{
+  "session_id": 5,
+  "status": "imported",
+  "imported_count": 61,
+  "item_ids": [101, 102, 103]
+}
+```
+
+| Field | Type | Tavsif |
+|-------|------|--------|
+| `session_id` | int | Sessiya ID |
+| `status` | string | `"imported"` |
+| `imported_count` | int | Yaratilgan itemlar soni |
+| `item_ids` | int[] | Yaratilgan item IDlar |
+
+---
+
+### 4. Natijani yuklab olish
 
 ```
 GET /ombor/{type}/parse-sheet/{session_id}/download
@@ -91,7 +123,7 @@ Fayl nomi: `parsed_{original_filename}.xlsx`
 
 ---
 
-### 3. Savollarga javob (backward compatibility)
+### 5. Savollarga javob (backward compatibility)
 
 ```
 POST /ombor/{type}/parse-sheet/{session_id}/answer
