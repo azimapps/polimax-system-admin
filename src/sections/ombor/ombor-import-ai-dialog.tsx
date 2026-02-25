@@ -22,6 +22,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { useTranslate } from 'src/locales';
 import { omborApi } from 'src/api/ombor-api';
 
+import { toast } from 'src/components/snackbar';
 import { Upload } from 'src/components/upload';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
@@ -68,8 +69,9 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
             if (res.status === 'complete') {
                 setResult(res.result);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            toast.error(error?.response?.data?.detail || error?.message || 'Upload failed');
             setStatus('idle');
         }
     };
@@ -82,8 +84,9 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
             await omborApi.importParsedSheet(type, sessionId);
             onSuccess?.();
             onClose();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            toast.error(error?.response?.data?.detail || error?.message || 'Import failed');
             setStatus('complete');
         }
     }
