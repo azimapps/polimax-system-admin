@@ -47,7 +47,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
 
     const [file, setFile] = useState<File | null>(null);
     const [sessionId, setSessionId] = useState<number | null>(null);
-    const [status, setStatus] = useState<'idle' | 'uploading' | 'complete'>('idle');
+    const [status, setStatus] = useState<'idle' | 'uploading' | 'saving' | 'complete'>('idle');
     const [result, setResult] = useState<ParseResult | null>(null);
 
     const handleDrop = useCallback((acceptedFiles: File[]) => {
@@ -64,8 +64,10 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
         try {
             const res = await omborApi.parseSheet(type, file);
             setSessionId(res.session_id);
-            setResult(res.result);
-            setStatus('complete');
+            setStatus(res.status); // backend now always returns 'complete'
+            if (res.status === 'complete') {
+                setResult(res.result);
+            }
         } catch (error) {
             console.error(error);
             setStatus('idle');
@@ -75,7 +77,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
     const handleImport = async () => {
         if (!sessionId) return;
 
-        setStatus('uploading');
+        setStatus('saving');
         try {
             await omborApi.importParsedSheet(type, sessionId);
             onSuccess?.();
@@ -97,7 +99,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
         <Stack spacing={3} sx={{ py: 3 }}>
             <Box>
                 <Alert severity="success" sx={{ mb: 2 }}>{t('import_ai.complete')}</Alert>
-                {status === ('uploading' as string) && (
+                {status === 'saving' && (
                     <Typography variant="caption" color="primary" sx={{ textAlign: 'center', display: 'block', animate: 'pulse 2s infinite' }}>
                         {t('import_ai.saving_progress') || 'Saving items to system... Please wait.'}
                     </Typography>
@@ -152,10 +154,10 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
             </Scrollbar>
 
             <Stack direction="row" spacing={2}>
-                <Button fullWidth variant="outlined" startIcon={<Iconify icon="solar:download-bold" />} onClick={handleDownload}>
+                <Button fullWidth variant="outlined" startIcon={<Iconify icon="solar:download-bold" />} onClick={handleDownload} disabled={status === 'saving'}>
                     {t('import_ai.download_parsed')}
                 </Button>
-                <LoadingButton fullWidth variant="contained" color="success" onClick={handleImport} loading={status === ('uploading' as string)}>
+                <LoadingButton fullWidth variant="contained" color="success" onClick={handleImport} loading={status === 'saving'}>
                     {t('import_ai.save_to_system')}
                 </LoadingButton>
             </Stack>
@@ -172,7 +174,7 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
             </DialogTitle>
 
             <DialogContent>
-                {(status as string) === 'idle' && (
+                {status === 'idle' && (
                     <Box sx={{ py: 3 }}>
                         <Upload
                             value={file}
@@ -182,26 +184,26 @@ export function OmborImportAiDialog({ open, onClose, type, onSuccess }: Props) {
                     </Box>
                 )}
 
-                {(status as string) === 'uploading' && (
+                {status === 'uploading' && (
                     <Box sx={{ py: 10, textAlign: 'center' }}>
                         <Typography variant="h6" gutterBottom>{t('import_ai.processing')}</Typography>
                         <Typography variant="body2" color="text.secondary">{t('import_ai.analyzing')}</Typography>
                     </Box>
                 )}
 
-                {(status as string) === 'complete' && renderResult()}
+                {(status === 'complete' || status === 'saving') && renderResult()}
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={onClose} color="inherit">{t('cancel')}</Button>
-                {(status as string) === 'idle' && (
+                <Button onClick={onClose} color="inherit" disabled={status === 'saving' || status === 'uploading'}>{t('cancel')}</Button>
+                {(status === 'idle' || status === 'uploading') && (
                     <LoadingButton
                         variant="contained"
                         disabled={!file}
                         onClick={handleUpload}
-                        loading={status === ('uploading' as string)}
+                        loading={status === 'uploading'}
                     >
-                        {t('import_ai.questions.save_answers') || 'Next'}
+                        {t('import_ai.upload') || 'Next'}
                     </LoadingButton>
                 )}
             </DialogActions>
