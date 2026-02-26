@@ -57,7 +57,7 @@ export const useStaffLogin = () => {
   const searchParams = useSearchParams();
   const { t } = useTranslate();
 
-  const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+  const returnTo = searchParams.get('returnTo') || '/worker-panel';
 
   const { isPending, mutateAsync } = useMutation({
     mutationFn: async (value: Record<string, any>) => {

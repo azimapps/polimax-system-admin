@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router';
 import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
+import { SimpleLayout } from 'src/layouts/simple';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
@@ -71,6 +72,8 @@ const ProductionPage = lazy(() => import('src/pages/production/page'));
 const OrderPlanningPage = lazy(() => import('src/pages/order-planning/page'));
 const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
 const SushkaPaneliPage = lazy(() => import('src/pages/sushka-paneli/page'));
+// Worker Panel
+const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -86,6 +89,12 @@ const dashboardLayout = () => (
   <DashboardLayout>
     <SuspenseOutlet />
   </DashboardLayout>
+);
+
+const simpleLayout = () => (
+  <SimpleLayout>
+    <SuspenseOutlet />
+  </SimpleLayout>
 );
 
 // ----------------------------------------------------------------------
@@ -271,6 +280,14 @@ export const routesSection: RouteObject[] = [
           },
         ],
       },
+    ],
+  },
+
+  {
+    path: '/worker-panel',
+    element: <AuthGuard>{simpleLayout()}</AuthGuard>,
+    children: [
+      { index: true, element: <WorkerPanelPage /> },
     ],
   },
 

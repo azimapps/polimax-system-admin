@@ -11,6 +11,7 @@ import { SimpleCompactContent } from './content';
 import { MainSection } from '../core/main-section';
 import { LayoutSection } from '../core/layout-section';
 import { HeaderSection } from '../core/header-section';
+import { AccountDrawer } from '../components/account-drawer';
 import { SettingsButton } from '../components/settings-button';
 
 import type { SimpleCompactContentProps } from './content';
@@ -54,6 +55,9 @@ export function SimpleLayout({
 
           {/** @slot Settings button */}
           <SettingsButton />
+
+          {/** @slot Account drawer */}
+          <AccountDrawer />
         </Box>
       ),
     };
