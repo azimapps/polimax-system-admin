@@ -15,13 +15,10 @@ import { usePathname } from 'src/routes/hooks';
 import { useGetStanoklar, useDeleteStanok } from 'src/hooks/use-stanok';
 
 import { useTranslate } from 'src/locales';
-import { WorkerPanelView } from 'src/sections/worker-panel/worker-panel-view';
 
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
-
-import { useAuthContext } from 'src/auth/hooks';
 
 import { StanokType } from 'src/types/stanok';
 
@@ -32,7 +29,6 @@ import { StanokHistoryDialog } from '../stanok-history-dialog';
 // ----------------------------------------------------------------------
 
 export function StanokListView() {
-    const { user } = useAuthContext();
     const { t } = useTranslate('stanok');
     const pathname = usePathname();
     const [searchQuery, setSearchQuery] = useState('');
@@ -104,10 +100,6 @@ export function StanokListView() {
             setDeleteId(undefined);
         }
     }, [deleteId, deleteStanok, confirmDialog]);
-
-    if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
-        return <WorkerPanelView />;
-    }
 
     return (
         <Container maxWidth="xl">

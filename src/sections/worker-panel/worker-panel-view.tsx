@@ -5,89 +5,208 @@ import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import Alert from '@mui/material/Alert';
+import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import TableContainer from '@mui/material/TableContainer';
 
 import { useGetMyMaterials, useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
 
 import { Iconify } from 'src/components/iconify';
-import { Scrollbar } from 'src/components/scrollbar';
 
 import { useAuthContext } from 'src/auth/hooks';
 
 export function WorkerPanelView() {
     const { user } = useAuthContext();
-    const [currentTab, setCurrentTab] = useState('plan_items');
+    const [currentTab, setCurrentTab] = useState('in_progress');
 
-    const { data: planItems = [], isLoading: isLoadingPlan, error: planError } = useGetMyBrigadaPlanItems({});
+    // Make sure we pass the correct status to fetch exactly what we need
+    const { data: planItems = [], isLoading: isLoadingPlan, error: planError } = useGetMyBrigadaPlanItems(
+        currentTab === 'in_progress' ? { status: 'in_progress' } :
+            currentTab === 'finished' ? { status: 'finished' } : {}
+    );
     const { data: materials = [], isLoading: isLoadingMaterials, error: materialsError } = useGetMyMaterials({});
 
-    return (
-        <Container maxWidth="xl" sx={{ py: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5 }}>
-                <Typography variant="h4">Ishchilar Paneli (My Brigada)</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Iconify icon="solar:user-id-bold" />
-                    <Typography variant="subtitle2">{user?.first_name} {user?.last_name}</Typography>
-                </Box>
-            </Stack>
-
+    const renderTabs = (
+        <Card sx={{ width: 280, flexShrink: 0, p: 2, borderRadius: 2 }}>
+            <Typography variant="overline" sx={{ color: 'text.secondary', display: 'block', mb: 1, pl: 2 }}>
+                PECHAT PANELI
+            </Typography>
             <Tabs
                 value={currentTab}
                 onChange={(e, v) => setCurrentTab(v)}
-                sx={{ mb: 3 }}
+                orientation="vertical"
+                sx={{
+                    '& .MuiTab-root': {
+                        justifyContent: 'flex-start',
+                        minHeight: 48,
+                        borderRadius: 1,
+                        mb: 0.5,
+                        px: 2,
+                        textTransform: 'none',
+                    },
+                    '& .Mui-selected': {
+                        bgcolor: 'action.selected',
+                    },
+                    '& .MuiTabs-indicator': {
+                        display: 'none',
+                    }
+                }}
             >
-                <Tab label="Mening vazifalarim (Plan Items)" value="plan_items" />
-                <Tab label="Mening materiallarim (Ombor)" value="materials" />
+                <Tab icon={<Iconify icon="solar:chart-square-outline" sx={{ mr: 1.5 }} />} iconPosition="start" label="Jarayonda" value="in_progress" />
+                <Tab icon={<Iconify icon="solar:clock-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Yakunlangan" value="finished" />
+                <Tab icon={<Iconify icon="solar:inbox-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Materiallar" value="materials" />
+                <Tab icon={<Iconify icon="solar:info-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Sushka paneli" value="sushka" />
             </Tabs>
+        </Card>
+    );
 
-            {currentTab === 'plan_items' && (
-                <Card sx={{ p: 3 }}>
-                    <Scrollbar>
+    const renderPlanTable = () => (
+        <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
+            <Typography variant="h5" sx={{ mb: 1 }}>Pechat umumiy</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
+                Reja bo&apos;yicha bosmaga biriktirilgan buyurtmalar tanlangan stanok va brigada bo&apos;yicha ko&apos;rinadi.
+            </Typography>
+
+            <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
+                <TextField
+                    label="Stanok"
+                    value={planItems[0] ? `Stanok ${planItems[0].machine_id}` : 'Stanok yuklanmoqda...'}
+                    disabled
+                    fullWidth
+                />
+                <TextField
+                    label="Brigada"
+                    value={planItems[0] ? `Brigada ${planItems[0].brigada_id}` : 'Brigada yuklanmoqda...'}
+                    disabled
+                    fullWidth
+                />
+            </Stack>
+
+            <Alert severity="info" sx={{ mb: 3, bgcolor: 'background.neutral' }}>
+                <Typography variant="body2">
+                    Tanlangan: {planItems[0] ? `stanok ${planItems[0].machine_id} - brigada ${planItems[0].brigada_id}` : '...'}
+                </Typography>
+            </Alert>
+
+            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                <Table>
+                    <TableHead sx={{ bgcolor: 'background.neutral' }}>
+                        <TableRow>
+                            <TableCell>Buyurtma raqami</TableCell>
+                            <TableCell>Mijoz</TableCell>
+                            <TableCell>Nomi</TableCell>
+                            <TableCell>Miqdori (kg)</TableCell>
+                            <TableCell>Sana</TableCell>
+                            <TableCell align="center">Amallar</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
                         {isLoadingPlan ? (
-                            <Typography>Yuklanmoqda...</Typography>
+                            <TableRow><TableCell colSpan={6} align="center">Yuklanmoqda...</TableCell></TableRow>
                         ) : planItems.length === 0 ? (
-                            <Typography color={planError ? 'error.main' : 'text.secondary'}>
-                                {planError ? String((planError as any)?.response?.data?.detail || (planError as Error).message) : 'Vazifalar yo\'q'}
-                            </Typography>
-                        ) : (
-                            <Stack spacing={2}>
-                                {planItems.map(item => (
-                                    <Box key={item.id} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                                        <Typography variant="subtitle1">Vazifa ID: {item.id}</Typography>
-                                        <Typography variant="body2">Holati: {item.status}</Typography>
-                                        <Typography variant="body2">Boshlanish: {new Date(item.start_date).toLocaleString('uz-UZ')}</Typography>
-                                        <Typography variant="body2">Tugash: {new Date(item.end_date).toLocaleString('uz-UZ')}</Typography>
-                                    </Box>
-                                ))}
-                            </Stack>
-                        )}
-                    </Scrollbar>
-                </Card>
-            )}
+                            <TableRow><TableCell colSpan={6} align="center">
+                                <Typography color={planError ? 'error.main' : 'text.secondary'}>
+                                    {planError ? String((planError as any)?.response?.data?.detail || (planError as Error).message) : 'Vazifalar yo\'q'}
+                                </Typography>
+                            </TableCell></TableRow>
+                        ) : planItems.map((item) => (
+                            <TableRow key={item.id} hover>
+                                <TableCell sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+                                    {item.order?.order_number || `ORD-${item.order_id}`}
+                                </TableCell>
+                                <TableCell>
+                                    {item.order?.client_id ? `Mijoz (${item.order?.client_id})` : '-'}
+                                </TableCell>
+                                <TableCell>
+                                    {item.order?.title || `Buyurtma ${item.order_id}`}
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: 'fontWeightMedium' }}>
+                                    0 kg / {item.order?.quantity_kg || 0} kg
+                                </TableCell>
+                                <TableCell>{new Date(item.start_date).toLocaleDateString('uz-UZ')}</TableCell>
+                                <TableCell align="center">
+                                    <IconButton size="small" sx={{ color: 'primary.main', bgcolor: 'primary.lighter' }}>
+                                        <Iconify icon="solar:info-circle-bold" />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Card>
+    );
 
-            {currentTab === 'materials' && (
-                <Card sx={{ p: 3 }}>
-                    <Scrollbar>
+    const renderMaterialsTable = () => (
+        <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
+            <Typography variant="h5" sx={{ mb: 1 }}>Materiallar</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
+                Ombordan stanokga kelib tushgan materiallar ro&apos;yxati.
+            </Typography>
+
+            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+                <Table>
+                    <TableHead sx={{ bgcolor: 'background.neutral' }}>
+                        <TableRow>
+                            <TableCell>Material</TableCell>
+                            <TableCell>Turi</TableCell>
+                            <TableCell>Miqdor</TableCell>
+                            <TableCell>Sana</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
                         {isLoadingMaterials ? (
-                            <Typography>Yuklanmoqda...</Typography>
+                            <TableRow><TableCell colSpan={4} align="center">Yuklanmoqda...</TableCell></TableRow>
                         ) : materials.length === 0 ? (
-                            <Typography color={materialsError ? 'error.main' : 'text.secondary'}>
-                                {materialsError ? String((materialsError as any)?.response?.data?.detail || (materialsError as Error).message) : 'Materiallar yo\'q'}
-                            </Typography>
-                        ) : (
-                            <Stack spacing={2}>
-                                {materials.map(item => (
-                                    <Box key={item.id} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                                        <Typography variant="subtitle1">Material: {item.notes}</Typography>
-                                        <Typography variant="body2">Turi: {item.transaction_type === 'kirim' ? "Kirim (+)" : "Chiqim (-)"}</Typography>
-                                        <Typography variant="body2">Miqdor: {item.quantity_kg ? `${item.quantity_kg} kg` : item.quantity_liter ? `${item.quantity_liter} L` : item.quantity_count ? `${item.quantity_count} dona` : '-'}</Typography>
-                                        <Typography variant="body2">Sana: {new Date(item.date).toLocaleString('uz-UZ')}</Typography>
+                            <TableRow><TableCell colSpan={4} align="center">
+                                <Typography color={materialsError ? 'error.main' : 'text.secondary'}>
+                                    {materialsError ? String((materialsError as any)?.response?.data?.detail || (materialsError as Error).message) : 'Materiallar yo\'q'}
+                                </Typography>
+                            </TableCell></TableRow>
+                        ) : materials.map((item) => (
+                            <TableRow key={item.id} hover>
+                                <TableCell>{item.notes || 'Nomsiz'}</TableCell>
+                                <TableCell>
+                                    <Box sx={{
+                                        color: item.transaction_type === 'kirim' ? 'success.main' : 'error.main',
+                                        bgcolor: item.transaction_type === 'kirim' ? 'success.lighter' : 'error.lighter',
+                                        px: 1, py: 0.5, borderRadius: 1, display: 'inline-flex', fontSize: '0.75rem', fontWeight: 'bold'
+                                    }}>
+                                        {item.transaction_type === 'kirim' ? 'Kirim (+)' : 'Chiqim (-)'}
                                     </Box>
-                                ))}
-                            </Stack>
-                        )}
-                    </Scrollbar>
+                                </TableCell>
+                                <TableCell>
+                                    {item.quantity_kg ? `${item.quantity_kg} kg` :
+                                        item.quantity_liter ? `${item.quantity_liter} L` :
+                                            item.quantity_count ? `${item.quantity_count} dona` : '-'}
+                                </TableCell>
+                                <TableCell>{new Date(item.date).toLocaleString('uz-UZ')}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Card>
+    );
+
+    return (
+        <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
+            {renderTabs}
+
+            {(currentTab === 'in_progress' || currentTab === 'finished') && renderPlanTable()}
+            {currentTab === 'materials' && renderMaterialsTable()}
+            {currentTab === 'sushka' && (
+                <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
+                    <Typography variant="h5">Sushka paneli</Typography>
+                    <Typography color="text.secondary" sx={{ mt: 1 }}>Tez kunda...</Typography>
                 </Card>
             )}
         </Container>

@@ -6,6 +6,7 @@ export interface PlanItem {
     order_id: number;
     brigada_id: number;
     machine_id: number;
+    order?: any;
     start_date: string;
     end_date: string;
     status: PlanItemStatus;
