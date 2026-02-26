@@ -126,9 +126,10 @@ export function StaffForm({ staff, onSuccess, onCancel, fixedType }: Props) {
                 toast.success(t('messages.success_create'));
             }
             onSuccess?.();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error(t('messages.error_generic'));
+            const errorMessage = error?.response?.data?.detail || error?.message || t('messages.error_generic');
+            toast.error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
         }
     });
 
