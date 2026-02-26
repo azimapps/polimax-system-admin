@@ -118,18 +118,33 @@ export function StaffForm({ staff, onSuccess, onCancel, fixedType }: Props) {
 
     const onSubmit = handleSubmit(async (data) => {
         try {
+            const submitData = { ...data };
+            if (submitData.phone_number) {
+                // Strip all spaces, hyphens and parenthesis to prevent backend validation issues
+                submitData.phone_number = submitData.phone_number.replace(/[\s\-()]/g, '');
+            }
+
             if (isEdit) {
-                await updateStaff(data as UpdateStaffRequest);
+                await updateStaff(submitData as UpdateStaffRequest);
                 toast.success(t('messages.success_update'));
             } else {
-                await createStaff(data);
+                await createStaff(submitData);
                 toast.success(t('messages.success_create'));
             }
             onSuccess?.();
         } catch (error: any) {
             console.error(error);
-            const errorMessage = error?.response?.data?.detail || error?.message || t('messages.error_generic');
-            toast.error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+            const detail = error?.response?.data?.detail;
+            let errorMessage = t('messages.error_generic');
+            if (Array.isArray(detail)) {
+                // Parse FastAPI validation errors into a human-readable list
+                errorMessage = detail.map((d: any) => `${d.loc.join('.')} - ${d.msg}`).join('\n');
+            } else if (typeof detail === 'string') {
+                errorMessage = detail;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
         }
     });
 

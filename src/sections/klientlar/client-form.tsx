@@ -75,17 +75,31 @@ export function KlientlarForm({ client, onSuccess }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      const submitData = { ...data };
+      if (submitData.phone_number) {
+        submitData.phone_number = submitData.phone_number.replace(/[\s\-()]/g, '');
+      }
+
       if (isEdit) {
-        await updateClient(data as UpdateClientRequest);
+        await updateClient(submitData as UpdateClientRequest);
         toast.success(t('messages.success_update'));
       } else {
-        await createClient(data);
+        await createClient(submitData);
         toast.success(t('messages.success_create'));
       }
       onSuccess?.();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error(t('messages.error_generic'));
+      const detail = error?.response?.data?.detail;
+      let errorMessage = t('messages.error_generic');
+      if (Array.isArray(detail)) {
+        errorMessage = detail.map((d: any) => `${d.loc.join('.')} - ${d.msg}`).join('\n');
+      } else if (typeof detail === 'string') {
+        errorMessage = detail;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
   });
 
