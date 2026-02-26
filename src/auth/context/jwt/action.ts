@@ -36,13 +36,7 @@ export const useSignIn = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
-      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
-        router.replace('/worker-panel');
-      } else {
-        router.replace(returnTo);
-      }
+      router.replace(returnTo);
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
@@ -70,13 +64,8 @@ export const useStaffLogin = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
-      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
-        router.replace('/worker-panel');
-      } else {
-        router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
-      }
+      const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
+      router.replace(returnTo);
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
