@@ -36,7 +36,13 @@ export const useSignIn = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      router.replace(returnTo);
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
+        router.replace('/worker-panel');
+      } else {
+        router.replace(returnTo);
+      }
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
@@ -57,15 +63,20 @@ export const useStaffLogin = () => {
   const searchParams = useSearchParams();
   const { t } = useTranslate();
 
-  const returnTo = searchParams.get('returnTo') || '/worker-panel';
-
+  // Removed unused returnTo defined here as it is done dynamicly
   const { isPending, mutateAsync } = useMutation({
     mutationFn: async (value: Record<string, any>) => {
       await staffLogin(value);
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      router.replace(returnTo);
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
+        router.replace('/worker-panel');
+      } else {
+        router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
+      }
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail

@@ -19,8 +19,8 @@ export function WorkerPanelView() {
     const { user } = useAuthContext();
     const [currentTab, setCurrentTab] = useState('plan_items');
 
-    const { data: planItems = [], isLoading: isLoadingPlan } = useGetMyBrigadaPlanItems({});
-    const { data: materials = [], isLoading: isLoadingMaterials } = useGetMyMaterials({});
+    const { data: planItems = [], isLoading: isLoadingPlan, error: planError } = useGetMyBrigadaPlanItems({});
+    const { data: materials = [], isLoading: isLoadingMaterials, error: materialsError } = useGetMyMaterials({});
 
     return (
         <Container maxWidth="xl" sx={{ py: 3 }}>
@@ -47,7 +47,9 @@ export function WorkerPanelView() {
                         {isLoadingPlan ? (
                             <Typography>Yuklanmoqda...</Typography>
                         ) : planItems.length === 0 ? (
-                            <Typography color="text.secondary">Vazifalar yo&apos;q</Typography>
+                            <Typography color={planError ? 'error.main' : 'text.secondary'}>
+                                {planError ? String((planError as any)?.response?.data?.detail || (planError as Error).message) : 'Vazifalar yo\'q'}
+                            </Typography>
                         ) : (
                             <Stack spacing={2}>
                                 {planItems.map(item => (
@@ -70,7 +72,9 @@ export function WorkerPanelView() {
                         {isLoadingMaterials ? (
                             <Typography>Yuklanmoqda...</Typography>
                         ) : materials.length === 0 ? (
-                            <Typography color="text.secondary">Materiallar yo&apos;q</Typography>
+                            <Typography color={materialsError ? 'error.main' : 'text.secondary'}>
+                                {materialsError ? String((materialsError as any)?.response?.data?.detail || (materialsError as Error).message) : 'Materiallar yo\'q'}
+                            </Typography>
                         ) : (
                             <Stack spacing={2}>
                                 {materials.map(item => (
