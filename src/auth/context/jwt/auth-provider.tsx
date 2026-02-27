@@ -88,12 +88,19 @@ export function AuthProvider({ children }: Props) {
   const staffLogin = useCallback(
     async (payload: Record<string, any>) => {
       const res = await axiosInstance.post('/staff/login', payload);
-      const { token, account } = res.data;
+      const { token, account, staff } = res.data;
+
+      const userObj = { ...account };
+      if (staff) {
+        userObj.staff = staff;
+        userObj.worker_type = staff.worker_type;
+        userObj.type = staff.type;
+      }
 
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(account));
+      localStorage.setItem('user', JSON.stringify(userObj));
 
-      setState({ user: account });
+      setState({ user: userObj });
     },
     [setState]
   );

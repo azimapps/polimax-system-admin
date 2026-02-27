@@ -14,7 +14,7 @@ export const workerPanelApi = {
     },
 
     getMyMaterials: async (params?: GetMyMaterialsParams): Promise<MyMaterialsTransaction[]> => {
-        const response = await axiosInstance.get('/plan-items/my-materials', { params });
+        const response = await axiosInstance.get('/pechat/my-materials', { params });
         return response.data;
     },
 };
