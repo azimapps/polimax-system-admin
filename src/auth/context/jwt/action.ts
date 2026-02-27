@@ -38,7 +38,12 @@ export const useSignIn = () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : null;
-      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
+      if (
+        user?.type === 'worker' ||
+        user?.role === 'worker' ||
+        user?.worker_type ||
+        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
+      ) {
         router.replace('/worker-panel');
       } else {
         router.replace(returnTo);
@@ -72,7 +77,12 @@ export const useStaffLogin = () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : null;
-      if (user?.type === 'worker' || user?.role === 'worker' || user?.worker_type) {
+      if (
+        user?.type === 'worker' ||
+        user?.role === 'worker' ||
+        user?.worker_type ||
+        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
+      ) {
         router.replace('/worker-panel');
       } else {
         router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
