@@ -9,6 +9,9 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import { AuthGuard } from 'src/auth/guard';
+import { RoleBasedGuard } from 'src/auth/guard/role-based-guard';
+
+import { useAuthContext } from 'src/auth/hooks';
 
 import { mainRoutes } from './main';
 import { usePathname } from '../hooks';
@@ -74,6 +77,18 @@ const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
 const SushkaPaneliPage = lazy(() => import('src/pages/sushka-paneli/page'));
 // Worker Panel
 const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
+
+// ----------------------------------------------------------------------
+
+function WorkerPanelGuard({ children }: { children: React.ReactNode }) {
+  const { user } = useAuthContext();
+  return (
+    <RoleBasedGuard hasContent currentRole={user?.role} allowedRoles={['pechat']}>
+      {children}
+    </RoleBasedGuard>
+  );
+}
+
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -280,14 +295,21 @@ export const routesSection: RouteObject[] = [
           },
         ],
       },
-    ],
-  },
-
-  {
-    path: '/worker-panel',
-    element: <AuthGuard>{simpleLayout()}</AuthGuard>,
-    children: [
-      { index: true, element: <WorkerPanelPage /> },
+      {
+        path: 'worker-panel',
+        element: (
+          <WorkerPanelGuard>
+            <WorkerPanelPage />
+          </WorkerPanelGuard>
+        ),
+        children: [
+          { index: true, element: <WorkerPanelPage /> },
+          { path: 'in-progress', element: <WorkerPanelPage /> },
+          { path: 'finished', element: <WorkerPanelPage /> },
+          { path: 'materials', element: <WorkerPanelPage /> },
+          { path: 'sushka', element: <WorkerPanelPage /> },
+        ],
+      },
     ],
   },
 

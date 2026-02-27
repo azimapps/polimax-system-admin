@@ -78,13 +78,13 @@ export function WorkerPanelView() {
             <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
                 <TextField
                     label="Stanok"
-                    value={planItems[0] ? `Stanok ${planItems[0].machine_id}` : 'Stanok yuklanmoqda...'}
+                    value={planItems[0] ? `Stanok ${planItems[0].machine_id}` : (isLoadingPlan ? 'Stanok yuklanmoqda...' : 'Stanok aniqlanmadi')}
                     disabled
                     fullWidth
                 />
                 <TextField
                     label="Brigada"
-                    value={planItems[0] ? `Brigada ${planItems[0].brigada_id}` : 'Brigada yuklanmoqda...'}
+                    value={planItems[0] ? `Brigada ${planItems[0].brigada_id}` : (isLoadingPlan ? 'Brigada yuklanmoqda...' : 'Brigada aniqlanmadi')}
                     disabled
                     fullWidth
                 />
@@ -100,19 +100,18 @@ export function WorkerPanelView() {
                 <Table>
                     <TableHead sx={{ bgcolor: 'background.neutral' }}>
                         <TableRow>
-                            <TableCell>Buyurtma raqami</TableCell>
-                            <TableCell>Mijoz</TableCell>
-                            <TableCell>Nomi</TableCell>
-                            <TableCell>Miqdori (kg)</TableCell>
-                            <TableCell>Sana</TableCell>
+                            <TableCell>Buyurtma ID</TableCell>
+                            <TableCell>Boshlanish vaqti</TableCell>
+                            <TableCell>Tugash vaqti</TableCell>
+                            <TableCell>Holati</TableCell>
                             <TableCell align="center">Amallar</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isLoadingPlan ? (
-                            <TableRow><TableCell colSpan={6} align="center">Yuklanmoqda...</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={5} align="center">Yuklanmoqda...</TableCell></TableRow>
                         ) : planItems.length === 0 ? (
-                            <TableRow><TableCell colSpan={6} align="center">
+                            <TableRow><TableCell colSpan={5} align="center">
                                 <Typography color={planError ? 'error.main' : 'text.secondary'}>
                                     {planError ? String((planError as any)?.response?.data?.detail || (planError as Error).message) : 'Vazifalar yo\'q'}
                                 </Typography>
@@ -120,18 +119,23 @@ export function WorkerPanelView() {
                         ) : planItems.map((item) => (
                             <TableRow key={item.id} hover>
                                 <TableCell sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-                                    {item.order?.order_number || `ORD-${item.order_id}`}
+                                    {`ORD-${item.order_id}`}
                                 </TableCell>
                                 <TableCell>
-                                    {item.order?.client_id ? `Mijoz (${item.order?.client_id})` : '-'}
+                                    {item.start_date ? new Date(item.start_date).toLocaleString('uz-UZ') : '-'}
                                 </TableCell>
                                 <TableCell>
-                                    {item.order?.title || `Buyurtma ${item.order_id}`}
+                                    {item.end_date ? new Date(item.end_date).toLocaleString('uz-UZ') : '-'}
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 'fontWeightMedium' }}>
-                                    0 kg / {item.order?.quantity_kg || 0} kg
+                                <TableCell>
+                                    <Box sx={{
+                                        color: item.status === 'finished' ? 'success.main' : 'warning.main',
+                                        bgcolor: item.status === 'finished' ? 'success.lighter' : 'warning.lighter',
+                                        px: 1, py: 0.5, borderRadius: 1, display: 'inline-flex', fontSize: '0.75rem', fontWeight: 'bold'
+                                    }}>
+                                        {item.status === 'finished' ? 'Yakunlangan' : 'Jarayonda'}
+                                    </Box>
                                 </TableCell>
-                                <TableCell>{new Date(item.start_date).toLocaleDateString('uz-UZ')}</TableCell>
                                 <TableCell align="center">
                                     <IconButton size="small" sx={{ color: 'primary.main', bgcolor: 'primary.lighter' }}>
                                         <Iconify icon="solar:info-circle-bold" />
