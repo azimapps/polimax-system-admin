@@ -3,15 +3,13 @@ import type { RouteObject } from 'react-router';
 import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
-import { SimpleLayout } from 'src/layouts/simple';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
 import { AuthGuard } from 'src/auth/guard';
-import { RoleBasedGuard } from 'src/auth/guard/role-based-guard';
-
 import { useAuthContext } from 'src/auth/hooks';
+import { RoleBasedGuard } from 'src/auth/guard/role-based-guard';
 
 import { mainRoutes } from './main';
 import { usePathname } from '../hooks';
@@ -104,12 +102,6 @@ const dashboardLayout = () => (
   <DashboardLayout>
     <SuspenseOutlet />
   </DashboardLayout>
-);
-
-const simpleLayout = () => (
-  <SimpleLayout>
-    <SuspenseOutlet />
-  </SimpleLayout>
 );
 
 // ----------------------------------------------------------------------

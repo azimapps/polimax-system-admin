@@ -21,10 +21,7 @@ import { useGetMyMaterials, useGetMyBrigadaPlanItems } from 'src/hooks/use-worke
 
 import { Iconify } from 'src/components/iconify';
 
-import { useAuthContext } from 'src/auth/hooks';
-
 export function WorkerPanelView() {
-    const { user } = useAuthContext();
     const [currentTab, setCurrentTab] = useState('in_progress');
 
     // Make sure we pass the correct status to fetch exactly what we need
