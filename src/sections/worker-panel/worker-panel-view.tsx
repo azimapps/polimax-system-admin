@@ -191,7 +191,8 @@ export function WorkerPanelView() {
                                 <TableCell>
                                     {item.quantity_kg ? `${item.quantity_kg} kg` :
                                         item.quantity_liter ? `${item.quantity_liter} L` :
-                                            item.quantity_count ? `${item.quantity_count} dona` : '-'}
+                                            item.quantity_count ? `${item.quantity_count} dona` :
+                                                item.quantity_barrels ? `${item.quantity_barrels} barrel` : '-'}
                                 </TableCell>
                                 <TableCell>{new Date(item.date).toLocaleString('uz-UZ')}</TableCell>
                             </TableRow>
