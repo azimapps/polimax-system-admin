@@ -80,10 +80,15 @@ const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
 
 function WorkerPanelGuard({ children }: { children: React.ReactNode }) {
   const { user } = useAuthContext();
-  const allowed = user?.role === 'pechat' || user?.worker_type === 'pechat' || user?.type === 'worker';
+  const allowed =
+    ['admin', 'manager', 'ceo'].includes(user?.role) ||
+    user?.role === 'pechat' ||
+    user?.worker_type === 'pechat' ||
+    user?.type === 'worker' ||
+    !!user?.staff; // Allow any telegram staff to at least see it
 
   return (
-    <RoleBasedGuard hasContent currentRole={allowed ? 'worker' : user?.role} allowedRoles={['worker', 'admin']}>
+    <RoleBasedGuard hasContent currentRole={allowed ? 'allowed' : 'denied'} allowedRoles={['allowed']}>
       {children}
     </RoleBasedGuard>
   );
