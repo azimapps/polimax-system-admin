@@ -1,3 +1,5 @@
+import type { PlanItem } from 'src/types/worker-panel';
+
 import { useState } from 'react';
 
 import Box from '@mui/material/Box';
@@ -23,9 +25,12 @@ import { useTranslate } from 'src/locales';
 
 import { Iconify } from 'src/components/iconify';
 
+import { PlanItemDetailsDialog } from './plan-item-details-dialog';
+
 export function WorkerPanelView() {
     const { t } = useTranslate('stanok');
     const [currentTab, setCurrentTab] = useState('in_progress');
+    const [selectedPlanItem, setSelectedPlanItem] = useState<PlanItem | null>(null);
 
     // Make sure we pass the correct status to fetch exactly what we need
     const { data: planItems = [], isLoading: isLoadingPlan, error: planError } = useGetMyBrigadaPlanItems(
@@ -139,7 +144,11 @@ export function WorkerPanelView() {
                                     </Box>
                                 </TableCell>
                                 <TableCell align="center">
-                                    <IconButton size="small" sx={{ color: 'primary.main', bgcolor: 'primary.lighter' }}>
+                                    <IconButton
+                                        size="small"
+                                        sx={{ color: 'primary.main', bgcolor: 'primary.lighter' }}
+                                        onClick={() => setSelectedPlanItem(item)}
+                                    >
                                         <Iconify icon="solar:info-circle-bold" />
                                     </IconButton>
                                 </TableCell>
@@ -218,6 +227,12 @@ export function WorkerPanelView() {
                     <Typography color="text.secondary" sx={{ mt: 1 }}>{t('pechat_panel.sushka.coming_soon')}</Typography>
                 </Card>
             )}
+
+            <PlanItemDetailsDialog
+                open={!!selectedPlanItem}
+                onClose={() => setSelectedPlanItem(null)}
+                planItem={selectedPlanItem}
+            />
         </Container>
     );
 }
