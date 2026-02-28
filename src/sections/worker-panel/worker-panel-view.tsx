@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 
 import { usePathname } from 'src/routes/hooks';
 
+import { MaterialsView } from './view/materials-view';
 import { InProgressView } from './view/in-progress-view';
 
 export function WorkerPanelView() {
@@ -24,13 +25,20 @@ export function WorkerPanelView() {
         );
     }
 
+    if (currentTab === 'materials') {
+        return (
+            <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
+                <MaterialsView />
+            </Container>
+        );
+    }
+
     return (
         <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
             <Box sx={{ flexGrow: 1 }}>
                 <Card sx={{ p: 3, borderRadius: 2, bgcolor: '#1C252E', minHeight: 400 }}>
                     <Typography variant="h5" sx={{ mb: 2 }}>
                         {currentTab === 'finished' && 'Yakunlangan vazifalar'}
-                        {currentTab === 'materials' && 'Materiallar'}
                         {currentTab === 'sushka' && 'Sushka paneli'}
                     </Typography>
                     <Typography color="text.secondary">

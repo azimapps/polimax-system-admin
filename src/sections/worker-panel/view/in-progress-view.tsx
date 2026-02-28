@@ -29,6 +29,8 @@ import { Iconify } from 'src/components/iconify';
 import { StanokType } from 'src/types/stanok';
 import { PlanItemStatus } from 'src/types/plan-item';
 
+import { ActionDialog } from './action-dialog';
+
 export function InProgressView() {
     // 1. Try to fetch MyBrigada (for workers, will fail 403 for admins)
     const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
@@ -40,6 +42,9 @@ export function InProgressView() {
     // 3. Manual selection state
     const [manualStanok, setManualStanok] = useState<number | ''>('');
     const [manualBrigada, setManualBrigada] = useState<number | ''>('');
+
+    // Modal state
+    const [actionDialogTarget, setActionDialogTarget] = useState<number | null>(null);
 
     // Determine final values: Use myData if available, else manual selection
     const hasMyData = !!myData;
@@ -219,7 +224,9 @@ export function InProgressView() {
                                                 {fDate(item.start_date)}
                                             </TableCell>
                                             <TableCell align="right">
-                                                <IconButton sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
+                                                <IconButton
+                                                    onClick={() => setActionDialogTarget(item.id)}
+                                                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
                                                     <Iconify icon="solar:info-circle-bold" />
                                                 </IconButton>
                                             </TableCell>
@@ -231,6 +238,12 @@ export function InProgressView() {
                     </Table>
                 </TableContainer>
             </Card>
+
+            <ActionDialog
+                open={!!actionDialogTarget}
+                onClose={() => setActionDialogTarget(null)}
+                planItemId={actionDialogTarget}
+            />
         </Box>
     );
 }

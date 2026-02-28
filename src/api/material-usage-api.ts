@@ -27,9 +27,9 @@ export const materialUsageApi = {
         return response.data;
     },
 
-    // Calculated stock at leader's machine
-    getMachineStock: async (): Promise<MachineStock[]> => {
-        const response = await axiosInstance.get('/material-usage/machine-stock');
+    // Calculated stock at leader's machine (or specific machine if stanok_id provided)
+    getMachineStock: async (stanok_id?: number): Promise<MachineStock[]> => {
+        const response = await axiosInstance.get('/material-usage/machine-stock', { params: { stanok_id } });
         return response.data;
     },
 

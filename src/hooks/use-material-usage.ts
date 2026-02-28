@@ -10,7 +10,7 @@ export const materialUsageKeys = {
     list: (filters: string) => [...materialUsageKeys.lists(), { filters }] as const,
     details: () => [...materialUsageKeys.all, 'detail'] as const,
     detail: (id: number) => [...materialUsageKeys.details(), id] as const,
-    machineStock: () => [...materialUsageKeys.all, 'machine-stock'] as const,
+    machineStock: (stanok_id?: number) => [...materialUsageKeys.all, 'machine-stock', stanok_id] as const,
     planItemMaterials: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-materials', planItemId] as const,
     planItemTransfers: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-transfers', planItemId] as const,
     myBrigada: () => [...materialUsageKeys.all, 'my-brigada'] as const,
@@ -24,10 +24,11 @@ export function useGetMaterialUsages(params?: GetMaterialUsagesParams) {
     });
 }
 
-export function useGetMachineStock() {
+export function useGetMachineStock(stanok_id?: number) {
     return useQuery({
-        queryKey: materialUsageKeys.machineStock(),
-        queryFn: () => materialUsageApi.getMachineStock(),
+        queryKey: materialUsageKeys.machineStock(stanok_id),
+        queryFn: () => materialUsageApi.getMachineStock(stanok_id),
+        retry: false,
     });
 }
 

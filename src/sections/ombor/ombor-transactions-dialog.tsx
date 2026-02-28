@@ -226,8 +226,10 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                                                 {tx.quantity_count ? `${tx.quantity_count} dona ` : ''}
                                                 {tx.quantity_barrels ? `(${tx.quantity_barrels} bochka)` : ''}
                                             </TableCell>
-                                            <TableCell>{tx.plan_item_id || '-'}</TableCell>
-                                            <TableCell>{tx.stanok_id || '-'}</TableCell>
+                                            <TableCell>{tx.plan_item_id ? `#${tx.plan_item_id}` : '-'}</TableCell>
+                                            <TableCell>
+                                                {tx.stanok_id ? stanoklar.find(s => s.id === tx.stanok_id)?.name || tx.stanok_id : '-'}
+                                            </TableCell>
                                             <TableCell>{tx.notes || '-'}</TableCell>
                                         </TableRow>
                                     ))}
