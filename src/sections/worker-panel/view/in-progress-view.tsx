@@ -17,8 +17,9 @@ import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
 import { useGetStanoklar } from 'src/hooks/use-stanok';
-import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useGetPlanItems } from 'src/hooks/use-plan-items';
+import { useGetMyBrigada } from 'src/hooks/use-material-usage';
+import { useGetBrigadas, useGetBrigadaMembers } from 'src/hooks/use-brigadas';
 
 import { fDate } from 'src/utils/format-time';
 
@@ -28,43 +29,59 @@ import { StanokType } from 'src/types/stanok';
 import { PlanItemStatus } from 'src/types/plan-item';
 
 export function InProgressView() {
-    const [selectedStanok, setSelectedStanok] = useState<number | ''>('');
-    const [selectedBrigada, setSelectedBrigada] = useState<number | ''>('');
+    // 1. Try to fetch MyBrigada (for workers, will fail 403 for admins)
+    const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
 
+    // 2. Fetch all stanoks and brigadas (used as fallback for admins)
     const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT);
-
-    // Auto select first stanok
-    useEffect(() => {
-        if (stanoks.length > 0 && selectedStanok === '') {
-            setSelectedStanok(stanoks[0].id);
-        }
-    }, [stanoks, selectedStanok]);
-
-    // Fetch brigadas for `pechat` type
     const { data: allBrigadas = [] } = useGetBrigadas({ machine_type: StanokType.PECHAT });
 
-    // Filter brigadas by selected stanok
+    // 3. Manual selection state
+    const [manualStanok, setManualStanok] = useState<number | ''>('');
+    const [manualBrigada, setManualBrigada] = useState<number | ''>('');
+
+    // Determine final values: Use myData if available, else manual selection
+    const hasMyData = !!myData;
+    const selectedStanok = hasMyData ? myData.machine?.id : manualStanok;
+    const selectedBrigada = hasMyData ? myData.brigada?.id : manualBrigada;
+
+    // Filter brigadas by selected stanok (for manual selection)
     const filteredBrigadas = allBrigadas.filter((b: any) => b.machine_id === selectedStanok);
 
-    // Auto select first brigada when stanok changes
+    // Auto-select first active Stanok & Brigada if running in manual mode
     useEffect(() => {
-        if (filteredBrigadas.length > 0 && (selectedBrigada === '' || !filteredBrigadas.find((b: any) => b.id === selectedBrigada))) {
-            setSelectedBrigada(filteredBrigadas[0].id);
-        } else if (filteredBrigadas.length === 0) {
-            setSelectedBrigada('');
+        if (!hasMyData && stanoks.length > 0 && manualStanok === '') {
+            setManualStanok(stanoks[0].id);
+        }
+    }, [hasMyData, stanoks, manualStanok]);
+
+    useEffect(() => {
+        if (!hasMyData && manualStanok) {
+            if (filteredBrigadas.length > 0 && (manualBrigada === '' || !filteredBrigadas.find((b: any) => b.id === manualBrigada))) {
+                setManualBrigada(filteredBrigadas[0].id);
+            } else if (filteredBrigadas.length === 0) {
+                setManualBrigada('');
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredBrigadas, selectedStanok]);
+    }, [hasMyData, manualStanok, filteredBrigadas]);
+
+    // Format active names
+    const activeStanokName = hasMyData ? myData.machine?.name : (stanoks.find(s => s.id === selectedStanok)?.name || '...');
+    const activeBrigadaName = hasMyData ? myData.brigada?.name : (allBrigadas.find((b: any) => b.id === selectedBrigada)?.name || '...');
+
+    // Members mapping logic
+    const { data: fetchedMembers = [] } = useGetBrigadaMembers(hasMyData ? 0 : Number(manualBrigada)); // Fetch only if manual mode and has a brigada
+    const members = hasMyData ? (myData.members || []) : fetchedMembers;
 
     // Fetch in_progress plan items using current filters
-    const { data: planItems = [], isLoading } = useGetPlanItems({
+    const { data: planItems = [], isLoading: isLoadingPlans } = useGetPlanItems({
         status: PlanItemStatus.IN_PROGRESS,
         machine_id: selectedStanok || undefined,
         brigada_id: selectedBrigada || undefined,
     });
 
-    const activeStanokName = stanoks.find(s => s.id === selectedStanok)?.name || '...';
-    const activeBrigadaName = allBrigadas.find((b: any) => b.id === selectedBrigada)?.name || '...';
+    const isLoading = isLoadingMyBrigada || isLoadingPlans;
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -80,47 +97,74 @@ export function InProgressView() {
                     <FormControl fullWidth sx={{ maxWidth: 400 }}>
                         <InputLabel>Stanok</InputLabel>
                         <Select
-                            value={selectedStanok}
+                            value={selectedStanok || ''}
                             label="Stanok"
-                            onChange={(e) => setSelectedStanok(e.target.value as number)}
+                            disabled={hasMyData}
+                            onChange={(e) => setManualStanok(e.target.value as number)}
                             sx={{
                                 bgcolor: 'background.paper',
                                 borderRadius: 1,
                             }}
                         >
-                            {stanoks.map(stanok => (
-                                <MenuItem key={stanok.id} value={stanok.id}>
-                                    {stanok.name}
+                            {hasMyData ? (
+                                <MenuItem value={selectedStanok}>
+                                    {activeStanokName}
                                 </MenuItem>
-                            ))}
+                            ) : (
+                                stanoks.map(stanok => (
+                                    <MenuItem key={stanok.id} value={stanok.id}>
+                                        {stanok.name}
+                                    </MenuItem>
+                                ))
+                            )}
                         </Select>
                     </FormControl>
 
                     <FormControl fullWidth sx={{ maxWidth: 400 }}>
                         <InputLabel>Brigada</InputLabel>
                         <Select
-                            value={selectedBrigada}
+                            value={selectedBrigada || ''}
                             label="Brigada"
-                            onChange={(e) => setSelectedBrigada(e.target.value as number)}
+                            disabled={hasMyData}
+                            onChange={(e) => setManualBrigada(e.target.value as number)}
                             sx={{
                                 bgcolor: 'background.paper',
                                 borderRadius: 1
                             }}
                         >
-                            {filteredBrigadas.map((brigada: any) => (
-                                <MenuItem key={brigada.id} value={brigada.id}>
-                                    {brigada.name}
+                            {hasMyData ? (
+                                <MenuItem value={selectedBrigada}>
+                                    {activeBrigadaName}
                                 </MenuItem>
-                            ))}
+                            ) : (
+                                filteredBrigadas.map((brigada: any) => (
+                                    <MenuItem key={brigada.id} value={brigada.id}>
+                                        {brigada.name}
+                                    </MenuItem>
+                                ))
+                            )}
                         </Select>
                     </FormControl>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 1 }}>
-                    <Iconify icon="solar:info-circle-bold" width={20} sx={{ color: 'info.main' }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Tanlangan: <Box component="span" sx={{ color: 'text.primary' }}>{activeStanokName} · {activeBrigadaName}</Box>
-                    </Typography>
+                <Box sx={{ mb: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1 }}>
+                        <Iconify icon="solar:info-circle-bold" width={20} sx={{ color: 'info.main' }} />
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            Tanlangan: <Box component="span" sx={{ color: 'text.primary' }}>{activeStanokName} · {activeBrigadaName}</Box>
+                        </Typography>
+                    </Box>
+                    {members.length > 0 && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 3.5, flexWrap: 'wrap' }}>
+                            <Iconify icon="solar:users-group-rounded-bold" width={18} sx={{ color: 'text.disabled' }} />
+                            <Typography variant="body2" sx={{ color: 'text.disabled' }}>Brigada a&apos;zolari:</Typography>
+                            {members.map((m: any) => (
+                                <Box key={m.id} component="span" sx={{ bgcolor: 'rgba(145, 158, 171, 0.16)', px: 1, py: 0.25, borderRadius: 1, fontSize: '0.75rem', color: m.is_leader || m.position === 'operator' ? 'primary.main' : 'text.primary', fontWeight: 500 }}>
+                                    {m.fullname || m.worker?.first_name || '...'} ({m.position})
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
                 </Box>
 
                 <TableContainer component={Paper} sx={{ bgcolor: 'transparent', boxShadow: 'none' }}>

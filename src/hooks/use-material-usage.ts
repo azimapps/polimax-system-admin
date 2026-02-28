@@ -83,6 +83,7 @@ export function useGetMyBrigada() {
     return useQuery({
         queryKey: materialUsageKeys.myBrigada(),
         queryFn: () => materialUsageApi.getMyBrigada(),
+        retry: false,
     });
 }
 
