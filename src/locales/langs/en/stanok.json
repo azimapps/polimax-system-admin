@@ -76,5 +76,58 @@
             "edit": "Edit",
             "delete": "Delete"
         }
+    },
+    "pechat_panel": {
+        "title": "PRINTING PANEL",
+        "tabs": {
+            "in_progress": "In Progress",
+            "finished": "Finished",
+            "materials": "Materials",
+            "sushka": "Drying Panel"
+        },
+        "plan_items": {
+            "title": "General Print",
+            "description": "Orders assigned to printing according to the plan are displayed for the selected machine and brigade.",
+            "machine": "Machine",
+            "brigada": "Brigade",
+            "loading": "Loading Machine / Brigade...",
+            "selected": "Selected:",
+            "table": {
+                "order_id": "Order ID",
+                "start_date": "Start Time",
+                "end_date": "End Time",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "status": {
+                "in_progress": "In Progress",
+                "finished": "Finished"
+            },
+            "no_data": "No tasks",
+            "error_generic": "An error occurred"
+        },
+        "materials": {
+            "title": "Materials",
+            "description": "List of materials delivered to the machine from the warehouse.",
+            "table": {
+                "material": "Material",
+                "type": "Type",
+                "quantity": "Quantity",
+                "date": "Date"
+            },
+            "type": {
+                "kirim": "Incoming (+)",
+                "chiqim": "Outgoing (-)"
+            },
+            "no_data": "No materials",
+            "unnamed": "Unnamed"
+        },
+        "sushka": {
+            "title": "Drying Panel",
+            "coming_soon": "Coming soon..."
+        },
+        "generic": {
+            "loading": "Loading..."
+        }
     }
 }

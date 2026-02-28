@@ -77,5 +77,58 @@
             "edit": "Tahrirlash",
             "delete": "O'chirish"
         }
+    },
+    "pechat_panel": {
+        "title": "PECHAT PANELI",
+        "tabs": {
+            "in_progress": "Jarayonda",
+            "finished": "Yakunlangan",
+            "materials": "Materiallar",
+            "sushka": "Sushka paneli"
+        },
+        "plan_items": {
+            "title": "Pechat umumiy",
+            "description": "Reja bo'yicha bosmaga biriktirilgan buyurtmalar tanlangan stanok va brigada bo'yicha ko'rinadi.",
+            "machine": "Stanok",
+            "brigada": "Brigada",
+            "loading": "Stanok / Brigada yuklanmoqda...",
+            "selected": "Tanlangan:",
+            "table": {
+                "order_id": "Buyurtma ID",
+                "start_date": "Boshlanish vaqti",
+                "end_date": "Tugash vaqti",
+                "status": "Holati",
+                "actions": "Amallar"
+            },
+            "status": {
+                "in_progress": "Jarayonda",
+                "finished": "Yakunlangan"
+            },
+            "no_data": "Vazifalar yo'q",
+            "error_generic": "Xatolik yuz berdi"
+        },
+        "materials": {
+            "title": "Materiallar",
+            "description": "Ombordan stanokga kelib tushgan materiallar ro'yxati.",
+            "table": {
+                "material": "Material",
+                "type": "Turi",
+                "quantity": "Miqdor",
+                "date": "Sana"
+            },
+            "type": {
+                "kirim": "Kirim (+)",
+                "chiqim": "Chiqim (-)"
+            },
+            "no_data": "Materiallar yo'q",
+            "unnamed": "Nomsiz"
+        },
+        "sushka": {
+            "title": "Sushka paneli",
+            "coming_soon": "Tez kunda..."
+        },
+        "generic": {
+            "loading": "Yuklanmoqda..."
+        }
     }
 }

@@ -19,9 +19,12 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { useGetMyMaterials, useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
 
+import { useTranslate } from 'src/locales';
+
 import { Iconify } from 'src/components/iconify';
 
 export function WorkerPanelView() {
+    const { t } = useTranslate('stanok');
     const [currentTab, setCurrentTab] = useState('in_progress');
 
     // Make sure we pass the correct status to fetch exactly what we need
@@ -34,7 +37,7 @@ export function WorkerPanelView() {
     const renderTabs = (
         <Card sx={{ width: 280, flexShrink: 0, p: 2, borderRadius: 2 }}>
             <Typography variant="overline" sx={{ color: 'text.secondary', display: 'block', mb: 1, pl: 2 }}>
-                PECHAT PANELI
+                {t('pechat_panel.title')}
             </Typography>
             <Tabs
                 value={currentTab}
@@ -57,31 +60,31 @@ export function WorkerPanelView() {
                     }
                 }}
             >
-                <Tab icon={<Iconify icon="solar:chart-square-outline" sx={{ mr: 1.5 }} />} iconPosition="start" label="Jarayonda" value="in_progress" />
-                <Tab icon={<Iconify icon="solar:clock-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Yakunlangan" value="finished" />
-                <Tab icon={<Iconify icon="solar:inbox-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Materiallar" value="materials" />
-                <Tab icon={<Iconify icon="solar:info-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label="Sushka paneli" value="sushka" />
+                <Tab icon={<Iconify icon="solar:chart-square-outline" sx={{ mr: 1.5 }} />} iconPosition="start" label={t('pechat_panel.tabs.in_progress')} value="in_progress" />
+                <Tab icon={<Iconify icon="solar:clock-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label={t('pechat_panel.tabs.finished')} value="finished" />
+                <Tab icon={<Iconify icon="solar:inbox-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label={t('pechat_panel.tabs.materials')} value="materials" />
+                <Tab icon={<Iconify icon="solar:info-circle-bold" sx={{ mr: 1.5 }} />} iconPosition="start" label={t('pechat_panel.tabs.sushka')} value="sushka" />
             </Tabs>
         </Card>
     );
 
     const renderPlanTable = () => (
         <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Pechat umumiy</Typography>
+            <Typography variant="h5" sx={{ mb: 1 }}>{t('pechat_panel.plan_items.title')}</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
-                Reja bo&apos;yicha bosmaga biriktirilgan buyurtmalar tanlangan stanok va brigada bo&apos;yicha ko&apos;rinadi.
+                {t('pechat_panel.plan_items.description')}
             </Typography>
 
             <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
                 <TextField
-                    label="Stanok"
-                    value={planItems[0] ? `Stanok ${planItems[0].machine_id}` : (isLoadingPlan ? 'Stanok yuklanmoqda...' : 'Stanok aniqlanmadi')}
+                    label={t('pechat_panel.plan_items.machine')}
+                    value={planItems[0] ? `${t('pechat_panel.plan_items.machine')} ${planItems[0].machine_id}` : (isLoadingPlan ? t('pechat_panel.plan_items.loading') : '-')}
                     disabled
                     fullWidth
                 />
                 <TextField
-                    label="Brigada"
-                    value={planItems[0] ? `Brigada ${planItems[0].brigada_id}` : (isLoadingPlan ? 'Brigada yuklanmoqda...' : 'Brigada aniqlanmadi')}
+                    label={t('pechat_panel.plan_items.brigada')}
+                    value={planItems[0] ? `${t('pechat_panel.plan_items.brigada')} ${planItems[0].brigada_id}` : (isLoadingPlan ? t('pechat_panel.plan_items.loading') : '-')}
                     disabled
                     fullWidth
                 />
@@ -89,7 +92,7 @@ export function WorkerPanelView() {
 
             <Alert severity="info" sx={{ mb: 3, bgcolor: 'background.neutral' }}>
                 <Typography variant="body2">
-                    Tanlangan: {planItems[0] ? `stanok ${planItems[0].machine_id} - brigada ${planItems[0].brigada_id}` : '...'}
+                    {t('pechat_panel.plan_items.selected')} {planItems[0] ? `${t('pechat_panel.plan_items.machine')} ${planItems[0].machine_id} - ${t('pechat_panel.plan_items.brigada')} ${planItems[0].brigada_id}` : '...'}
                 </Typography>
             </Alert>
 
@@ -97,22 +100,22 @@ export function WorkerPanelView() {
                 <Table>
                     <TableHead sx={{ bgcolor: 'background.neutral' }}>
                         <TableRow>
-                            <TableCell>Buyurtma ID</TableCell>
-                            <TableCell>Boshlanish vaqti</TableCell>
-                            <TableCell>Tugash vaqti</TableCell>
-                            <TableCell>Holati</TableCell>
-                            <TableCell align="center">Amallar</TableCell>
+                            <TableCell>{t('pechat_panel.plan_items.table.order_id')}</TableCell>
+                            <TableCell>{t('pechat_panel.plan_items.table.start_date')}</TableCell>
+                            <TableCell>{t('pechat_panel.plan_items.table.end_date')}</TableCell>
+                            <TableCell>{t('pechat_panel.plan_items.table.status')}</TableCell>
+                            <TableCell align="center">{t('pechat_panel.plan_items.table.actions')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isLoadingPlan ? (
-                            <TableRow><TableCell colSpan={5} align="center">Yuklanmoqda...</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={5} align="center">{t('pechat_panel.generic.loading')}</TableCell></TableRow>
                         ) : planItems.length === 0 ? (
                             <TableRow><TableCell colSpan={5} align="center">
                                 <Typography color={planError ? 'error.main' : 'text.secondary'}>
                                     {planError
-                                        ? ((planError as any)?.response?.data?.detail || (planError as Error)?.message || 'Xatolik yuz berdi')
-                                        : 'Vazifalar yo\'q'}
+                                        ? ((planError as any)?.response?.data?.detail || (planError as Error)?.message || t('pechat_panel.plan_items.error_generic'))
+                                        : t('pechat_panel.plan_items.no_data')}
                                 </Typography>
                             </TableCell></TableRow>
                         ) : planItems.map((item) => (
@@ -132,7 +135,7 @@ export function WorkerPanelView() {
                                         bgcolor: item.status === 'finished' ? 'success.lighter' : 'warning.lighter',
                                         px: 1, py: 0.5, borderRadius: 1, display: 'inline-flex', fontSize: '0.75rem', fontWeight: 'bold'
                                     }}>
-                                        {item.status === 'finished' ? 'Yakunlangan' : 'Jarayonda'}
+                                        {item.status === 'finished' ? t('pechat_panel.plan_items.status.finished') : t('pechat_panel.plan_items.status.in_progress')}
                                     </Box>
                                 </TableCell>
                                 <TableCell align="center">
@@ -150,42 +153,42 @@ export function WorkerPanelView() {
 
     const renderMaterialsTable = () => (
         <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>Materiallar</Typography>
+            <Typography variant="h5" sx={{ mb: 1 }}>{t('pechat_panel.materials.title')}</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
-                Ombordan stanokga kelib tushgan materiallar ro&apos;yxati.
+                {t('pechat_panel.materials.description')}
             </Typography>
 
             <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
                 <Table>
                     <TableHead sx={{ bgcolor: 'background.neutral' }}>
                         <TableRow>
-                            <TableCell>Material</TableCell>
-                            <TableCell>Turi</TableCell>
-                            <TableCell>Miqdor</TableCell>
-                            <TableCell>Sana</TableCell>
+                            <TableCell>{t('pechat_panel.materials.table.material')}</TableCell>
+                            <TableCell>{t('pechat_panel.materials.table.type')}</TableCell>
+                            <TableCell>{t('pechat_panel.materials.table.quantity')}</TableCell>
+                            <TableCell>{t('pechat_panel.materials.table.date')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isLoadingMaterials ? (
-                            <TableRow><TableCell colSpan={4} align="center">Yuklanmoqda...</TableCell></TableRow>
+                            <TableRow><TableCell colSpan={4} align="center">{t('pechat_panel.generic.loading')}</TableCell></TableRow>
                         ) : materials.length === 0 ? (
                             <TableRow><TableCell colSpan={4} align="center">
                                 <Typography color={materialsError ? 'error.main' : 'text.secondary'}>
                                     {materialsError
-                                        ? ((materialsError as any)?.response?.data?.detail || (materialsError as Error)?.message || 'Xatolik yuz berdi')
-                                        : 'Materiallar yo\'q'}
+                                        ? ((materialsError as any)?.response?.data?.detail || (materialsError as Error)?.message || t('pechat_panel.plan_items.error_generic'))
+                                        : t('pechat_panel.materials.no_data')}
                                 </Typography>
                             </TableCell></TableRow>
                         ) : materials.map((item) => (
                             <TableRow key={item.id} hover>
-                                <TableCell>{item.notes || 'Nomsiz'}</TableCell>
+                                <TableCell>{item.notes || t('pechat_panel.materials.unnamed')}</TableCell>
                                 <TableCell>
                                     <Box sx={{
                                         color: item.transaction_type === 'kirim' ? 'success.main' : 'error.main',
                                         bgcolor: item.transaction_type === 'kirim' ? 'success.lighter' : 'error.lighter',
                                         px: 1, py: 0.5, borderRadius: 1, display: 'inline-flex', fontSize: '0.75rem', fontWeight: 'bold'
                                     }}>
-                                        {item.transaction_type === 'kirim' ? 'Kirim (+)' : 'Chiqim (-)'}
+                                        {item.transaction_type === 'kirim' ? t('pechat_panel.materials.type.kirim') : t('pechat_panel.materials.type.chiqim')}
                                     </Box>
                                 </TableCell>
                                 <TableCell>
@@ -211,8 +214,8 @@ export function WorkerPanelView() {
             {currentTab === 'materials' && renderMaterialsTable()}
             {currentTab === 'sushka' && (
                 <Card sx={{ flexGrow: 1, p: 3, borderRadius: 2 }}>
-                    <Typography variant="h5">Sushka paneli</Typography>
-                    <Typography color="text.secondary" sx={{ mt: 1 }}>Tez kunda...</Typography>
+                    <Typography variant="h5">{t('pechat_panel.sushka.title')}</Typography>
+                    <Typography color="text.secondary" sx={{ mt: 1 }}>{t('pechat_panel.sushka.coming_soon')}</Typography>
                 </Card>
             )}
         </Container>
