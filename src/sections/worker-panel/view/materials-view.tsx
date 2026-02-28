@@ -18,11 +18,16 @@ import TableContainer from '@mui/material/TableContainer';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetMyBrigada, useGetMachineStock } from 'src/hooks/use-material-usage';
 
+import { useAuthContext } from 'src/auth/hooks';
+
 import { StanokType } from 'src/types/stanok';
 
 export function MaterialsView() {
+    const { user } = useAuthContext();
+    const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
+
     const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
-    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT);
+    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT, { enabled: isAdmin });
 
     const [manualStanok, setManualStanok] = useState<number | ''>('');
 

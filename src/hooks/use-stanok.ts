@@ -16,10 +16,11 @@ const QUERY_KEYS = {
 
 // ----------------------------------------------------------------------
 
-export function useGetStanoklar(q?: string, type?: StanokType) {
+export function useGetStanoklar(q?: string, type?: StanokType, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: [...QUERY_KEYS.stanokList, { q, type }],
         queryFn: () => stanokApi.getStanoklar(q, type),
+        enabled: options?.enabled,
     });
 }
 

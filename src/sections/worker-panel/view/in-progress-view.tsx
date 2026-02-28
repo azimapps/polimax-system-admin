@@ -20,11 +20,14 @@ import { useGetOrders } from 'src/hooks/use-orders';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
+import { useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
 import { useGetBrigadas, useGetBrigadaMembers } from 'src/hooks/use-brigadas';
 
 import { fDate } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
+
+import { useAuthContext } from 'src/auth/hooks';
 
 import { StanokType } from 'src/types/stanok';
 import { PlanItemStatus } from 'src/types/plan-item';
@@ -32,12 +35,15 @@ import { PlanItemStatus } from 'src/types/plan-item';
 import { ActionDialog } from './action-dialog';
 
 export function InProgressView() {
-    // 1. Try to fetch MyBrigada (for workers, will fail 403 for admins)
+    const { user } = useAuthContext();
+    const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
+
+    // 1. Try to fetch MyBrigada (for workers, will fail 403 for admins, handled correctly by retry: false in useGetMyBrigada usually or we just let it fail gracefully)
     const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
 
     // 2. Fetch all stanoks and brigadas (used as fallback for admins)
-    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT);
-    const { data: allBrigadas = [] } = useGetBrigadas({ machine_type: StanokType.PECHAT });
+    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT, { enabled: isAdmin });
+    const { data: allBrigadas = [] } = useGetBrigadas({ machine_type: StanokType.PECHAT }, { enabled: isAdmin });
 
     // 3. Manual selection state
     const [manualStanok, setManualStanok] = useState<number | ''>('');
@@ -80,15 +86,22 @@ export function InProgressView() {
     const { data: fetchedMembers = [] } = useGetBrigadaMembers(hasMyData ? 0 : Number(manualBrigada)); // Fetch only if manual mode and has a brigada
     const members = hasMyData ? (myData.members || []) : fetchedMembers;
 
-    // Fetch in_progress plan items using current filters
-    const { data: planItems = [], isLoading: isLoadingPlans } = useGetPlanItems({
+    // Fetch in_progress plan items using current filters (Admin UI uses original plan items hook)
+    const { data: adminPlanItems = [], isLoading: isLoadingAdminPlans } = useGetPlanItems({
         status: PlanItemStatus.IN_PROGRESS,
         machine_id: selectedStanok || undefined,
         brigada_id: selectedBrigada || undefined,
-    });
+    }, { enabled: isAdmin });
 
-    // Fetch orders to map plan_item.order_id -> Order details
-    const { data: orders = [] } = useGetOrders();
+    // Workers use useGetMyBrigadaPlanItems specifically
+    // We determine true worker API by user role!
+    const { data: workerPlanItems = [], isLoading: isLoadingWorkerPlans } = useGetMyBrigadaPlanItems({ status: PlanItemStatus.IN_PROGRESS });
+
+    const planItems = isAdmin ? adminPlanItems : workerPlanItems;
+    const isLoadingPlans = isAdmin ? isLoadingAdminPlans : isLoadingWorkerPlans;
+
+    // Fetch orders to map plan_item.order_id -> Order details (Only Admins need this)
+    const { data: orders = [] } = useGetOrders(undefined, { enabled: isAdmin });
 
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
 

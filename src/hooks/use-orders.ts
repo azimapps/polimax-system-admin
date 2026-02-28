@@ -22,10 +22,11 @@ export function useGetOrders(params?: {
     client_id?: number;
     manager_id?: number;
     q?: string;
-}) {
+}, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: [...QUERY_KEYS.orders, params],
         queryFn: () => orderApi.getOrders(params),
+        enabled: options?.enabled,
     });
 }
 

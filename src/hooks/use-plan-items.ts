@@ -15,10 +15,11 @@ const PLAN_ITEM_KEYS = {
     history: (id: number) => [...PLAN_ITEM_KEYS.all, 'history', id] as const,
 };
 
-export function useGetPlanItems(params?: GetPlanItemsParams) {
+export function useGetPlanItems(params?: GetPlanItemsParams, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: PLAN_ITEM_KEYS.list(params),
         queryFn: () => planItemApi.getPlanItems(params),
+        enabled: options?.enabled,
     });
 }
 

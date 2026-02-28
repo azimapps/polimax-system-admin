@@ -17,11 +17,11 @@ const BRIGADA_KEYS = {
     member: (brigadaId: number, memberId: number) => [...BRIGADA_KEYS.members(brigadaId), memberId] as const,
 };
 
-// Brigada Hooks
-export function useGetBrigadas(params?: { q?: string; machine_type?: string }) {
+export function useGetBrigadas(params?: { q?: string; machine_type?: string }, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: BRIGADA_KEYS.list(params),
         queryFn: () => brigadaApi.getBrigadas(params),
+        enabled: options?.enabled,
     });
 }
 
