@@ -26,6 +26,7 @@ import TableContainer from '@mui/material/TableContainer';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
+import { useUpdatePlanItem } from 'src/hooks/use-plan-items';
 import { useGetMyMaterials } from 'src/hooks/use-worker-panel';
 import {
     useLogProduction,
@@ -39,6 +40,8 @@ import {
 import { useTranslate } from 'src/locales';
 
 import { Form, Field } from 'src/components/hook-form';
+
+import { PlanItemStatus } from 'src/types/plan-item';
 
 type Props = {
     open: boolean;
@@ -54,9 +57,18 @@ const UsageSchema = z.object({
     notes: z.string().optional(),
 });
 
-const TransferSchema = z.object({
-    to_brigada_id: z.number().min(1, 'Brigadani tanlang'),
+const DispatchSchema = z.object({
+    destination_type: z.string().min(1, 'Qayerga yuborishni tanlang'),
+    to_brigada_id: z.number().optional(),
     notes: z.string().optional(),
+}).refine(data => {
+    if (data.destination_type !== 'angren_sklad' && (!data.to_brigada_id || data.to_brigada_id === 0)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Stanokni tanlang",
+    path: ["to_brigada_id"]
 });
 
 const ProductionSchema = z.object({
@@ -70,7 +82,7 @@ const ProductionSchema = z.object({
 export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
     const { t } = useTranslate('stanok');
 
-    const [activeTab, setActiveTab] = useState<'materials' | 'usage' | 'production' | 'transfer'>('materials');
+    const [activeTab, setActiveTab] = useState<'materials' | 'usage' | 'production' | 'dispatch'>('materials');
 
     const { data: summary, isLoading: isLoadingSummary } = useGetPlanItemMaterialsSummary(planItem?.id || 0, {
         enabled: !!planItem && open && activeTab === 'materials'
@@ -83,7 +95,7 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
     const planItemTransactions = materialsData?.filter(m => m.plan_item_id === planItem?.id) || [];
 
     const { data: transfers, isLoading: isLoadingTransfers } = useGetPlanItemTransfers(planItem?.id || 0, {
-        enabled: !!planItem && open && activeTab === 'transfer'
+        enabled: !!planItem && open && activeTab === 'dispatch'
     });
 
     const { data: brigadas = [] } = useGetBrigadas();
@@ -93,6 +105,7 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
     const logUsageMutation = useLogMaterialUsage();
     const transferMutation = useTransferPlanItem(planItem?.id || 0);
     const logProductionMutation = useLogProduction();
+    const updatePlanItemMutation = useUpdatePlanItem(planItem?.id || 0);
 
     const usageMethods = useForm<z.infer<typeof UsageSchema>>({
         resolver: zodResolver(UsageSchema),
@@ -104,13 +117,16 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
         }
     });
 
-    const transferMethods = useForm<z.infer<typeof TransferSchema>>({
-        resolver: zodResolver(TransferSchema),
+    const dispatchMethods = useForm<z.infer<typeof DispatchSchema>>({
+        resolver: zodResolver(DispatchSchema),
         defaultValues: {
+            destination_type: '',
             to_brigada_id: 0,
             notes: '',
         }
     });
+
+    const destinationType = dispatchMethods.watch('destination_type');
 
     const productionMethods = useForm<z.infer<typeof ProductionSchema>>({
         resolver: zodResolver(ProductionSchema),
@@ -138,11 +154,19 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
         }
     };
 
-    const onSubmitTransfer = async (data: z.infer<typeof TransferSchema>) => {
+    const onSubmitDispatch = async (data: z.infer<typeof DispatchSchema>) => {
         if (!planItem) return;
         try {
-            await transferMutation.mutateAsync(data);
-            toast.success("Vazifa boshqa brigadaga o'tkazildi!");
+            if (data.destination_type === 'angren_sklad') {
+                await updatePlanItemMutation.mutateAsync({ status: PlanItemStatus.FINISHED });
+                toast.success("Vazifa tugatildi va Angren Skladga yuborildi!");
+            } else {
+                await transferMutation.mutateAsync({
+                    to_brigada_id: data.to_brigada_id as number,
+                    notes: data.notes
+                });
+                toast.success("Vazifa boshqa brigadaga o'tkazildi!");
+            }
             onClose();
         } catch (error: any) {
             toast.error(error?.response?.data?.detail || error.message || 'Xatolik');
@@ -165,7 +189,7 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
 
     const handleClose = () => {
         usageMethods.reset();
-        transferMethods.reset();
+        dispatchMethods.reset();
         productionMethods.reset();
         setActiveTab('materials');
         onClose();
@@ -200,11 +224,11 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
                     Ishlab chiqarish hajmi
                 </Button>
                 <Button
-                    color={activeTab === 'transfer' ? 'warning' : 'inherit'}
-                    onClick={() => setActiveTab('transfer')}
-                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'transfer' ? 2 : 0 }}
+                    color={activeTab === 'dispatch' ? 'success' : 'inherit'}
+                    onClick={() => setActiveTab('dispatch')}
+                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'dispatch' ? 2 : 0 }}
                 >
-                    Boshqa Brigadaga O&apos;tkazish
+                    Yuborish (Dispatch)
                 </Button>
             </Box>
 
@@ -340,25 +364,35 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
                     </Form>
                 )}
 
-                {activeTab === 'transfer' && (
-                    <Form methods={transferMethods} onSubmit={transferMethods.handleSubmit(onSubmitTransfer)}>
+                {activeTab === 'dispatch' && (
+                    <Form methods={dispatchMethods} onSubmit={dispatchMethods.handleSubmit(onSubmitDispatch)}>
                         <Stack spacing={3}>
                             <Alert severity="warning">
-                                Diqqat! Vazifani boshqa brigadaga o&apos;tkazganingizda, stanokdagi barcha qoldiq materiallar ham avtomatik ravishda yangi brigadaga o&apos;tkaziladi.
+                                Diqqat! Vazifani boshqa brigadaga o&apos;tkazganingizda, stanokdagi barcha qoldiq materiallar ham avtomatik ravishda yangi brigadaga o&apos;tkaziladi. Angren Skladga yuborish esa vazifani yakunlaydi.
                             </Alert>
 
-                            <Field.Select name="to_brigada_id" label="Yangi Brigada">
-                                <MenuItem value={0} disabled>Tanlang</MenuItem>
-                                {brigadas.filter(b => b.id !== planItem.brigada_id).map((b) => (
-                                    <MenuItem key={b.id} value={b.id}>{b.name} ({b.machine_type})</MenuItem>
-                                ))}
+                            <Field.Select name="destination_type" label="Qayerga yuborish?">
+                                <MenuItem value="" disabled>Tanlang...</MenuItem>
+                                <MenuItem value="reska">Reska</MenuItem>
+                                <MenuItem value="laminatsiya">Laminatsiya</MenuItem>
+                                <MenuItem value="sushka">Quritish (Sushka)</MenuItem>
+                                <MenuItem value="angren_sklad">Angren Sklad (Tayyor Mahsulotlar)</MenuItem>
                             </Field.Select>
+
+                            {destinationType && destinationType !== 'angren_sklad' && (
+                                <Field.Select name="to_brigada_id" label="Stanok tanlang">
+                                    <MenuItem value={0} disabled>Tanlang...</MenuItem>
+                                    {brigadas.filter(b => b.id !== planItem.brigada_id && b.machine_type === destinationType).map((b) => (
+                                        <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
+                                    ))}
+                                </Field.Select>
+                            )}
 
                             <Field.Text name="notes" label="Izoh (Ixtiyoriy)" multiline rows={3} />
 
                             <Box display="flex" justifyContent="flex-end">
-                                <Button type="submit" color="warning" variant="contained" disabled={transferMutation.isPending}>
-                                    {transferMutation.isPending ? "O'tkazilmoqda..." : "O'tkazish"}
+                                <Button type="submit" color="success" variant="contained" disabled={transferMutation.isPending || updatePlanItemMutation.isPending}>
+                                    {(transferMutation.isPending || updatePlanItemMutation.isPending) ? "Yuborilmoqda..." : "Yuborish (Dispatch)"}
                                 </Button>
                             </Box>
 
