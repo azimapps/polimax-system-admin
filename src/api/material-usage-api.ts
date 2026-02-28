@@ -1,7 +1,11 @@
 import type {
     MachineStock,
     MaterialUsage,
+    ProductionLog,
+    MyBrigadaDetail,
     PlanItemTransfer,
+    ProductionLogSummary,
+    ProductionLogRequest,
     LogMaterialUsageRequest,
     TransferPlanItemRequest,
     GetMaterialUsagesParams,
@@ -50,6 +54,24 @@ export const materialUsageApi = {
     // Get a single usage record by ID
     getUsageById: async (id: number): Promise<MaterialUsage> => {
         const response = await axiosInstance.get(`/material-usage/${id}`);
+        return response.data;
+    },
+
+    // Get My Brigada details
+    getMyBrigada: async (): Promise<MyBrigadaDetail> => {
+        const response = await axiosInstance.get('/material-usage/my-brigada');
+        return response.data;
+    },
+
+    // Log Production Output
+    logProduction: async (data: ProductionLogRequest): Promise<ProductionLog[]> => {
+        const response = await axiosInstance.post('/material-usage/production-log', data);
+        return response.data;
+    },
+
+    // Get Production Log Summary
+    getProductionLogSummary: async (planItemId: number): Promise<ProductionLogSummary> => {
+        const response = await axiosInstance.get(`/material-usage/production-log/${planItemId}`);
         return response.data;
     },
 };

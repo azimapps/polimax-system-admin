@@ -1,4 +1,4 @@
-import type { LogMaterialUsageRequest, TransferPlanItemRequest, GetMaterialUsagesParams } from 'src/types/material-usage';
+import type { ProductionLogRequest, LogMaterialUsageRequest, TransferPlanItemRequest, GetMaterialUsagesParams } from 'src/types/material-usage';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -13,6 +13,8 @@ export const materialUsageKeys = {
     machineStock: () => [...materialUsageKeys.all, 'machine-stock'] as const,
     planItemMaterials: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-materials', planItemId] as const,
     planItemTransfers: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-transfers', planItemId] as const,
+    myBrigada: () => [...materialUsageKeys.all, 'my-brigada'] as const,
+    productionLogs: (planItemId: number) => [...materialUsageKeys.all, 'production-logs', planItemId] as const,
 };
 
 export function useGetMaterialUsages(params?: GetMaterialUsagesParams) {
@@ -73,6 +75,32 @@ export function useTransferPlanItem(planItemId: number) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: materialUsageKeys.all });
             queryClient.invalidateQueries({ queryKey: ['plan-items', 'my-brigada'] }); // Refresh the plan items list
+        },
+    });
+}
+
+export function useGetMyBrigada() {
+    return useQuery({
+        queryKey: materialUsageKeys.myBrigada(),
+        queryFn: () => materialUsageApi.getMyBrigada(),
+    });
+}
+
+export function useGetProductionLogSummary(planItemId: number) {
+    return useQuery({
+        queryKey: materialUsageKeys.productionLogs(planItemId),
+        queryFn: () => materialUsageApi.getProductionLogSummary(planItemId),
+        enabled: !!planItemId,
+    });
+}
+
+export function useLogProduction() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: ProductionLogRequest) => materialUsageApi.logProduction(data),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: materialUsageKeys.productionLogs(variables.plan_item_id) });
         },
     });
 }

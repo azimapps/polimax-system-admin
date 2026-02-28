@@ -27,7 +27,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useGetMyMaterials } from 'src/hooks/use-worker-panel';
-import { useLogMaterialUsage, useTransferPlanItem, useGetPlanItemTransfers, useGetPlanItemMaterialsSummary } from 'src/hooks/use-material-usage';
+import {
+    useLogProduction,
+    useLogMaterialUsage,
+    useTransferPlanItem,
+    useGetPlanItemTransfers,
+    useGetProductionLogSummary,
+    useGetPlanItemMaterialsSummary
+} from 'src/hooks/use-material-usage';
 
 import { useTranslate } from 'src/locales';
 
@@ -43,6 +50,7 @@ const UsageSchema = z.object({
     ombor_transaction_id: z.number().min(1, "Tranzaksiyani tanlang"),
     used_amount: z.number().min(0.01, "Miqdor 0 dan katta bo'lishi kerak"),
     remainder_destination: z.enum(['machine_warehouse', 'main_warehouse']),
+    percentage: z.number().min(0).max(100).optional(),
     notes: z.string().optional(),
 });
 
@@ -51,10 +59,18 @@ const TransferSchema = z.object({
     notes: z.string().optional(),
 });
 
+const ProductionSchema = z.object({
+    meters_produced: z.number().min(0, "Manfiy bo'lishi mumkin emas"),
+    kg_produced: z.number().min(0, "Manfiy bo'lishi mumkin emas"),
+    work_type: z.string().optional(),
+    percentage: z.number().min(0).max(100).optional(),
+    notes: z.string().optional(),
+});
+
 export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
     const { t } = useTranslate('stanok');
 
-    const [activeTab, setActiveTab] = useState<'materials' | 'usage' | 'transfer'>('materials');
+    const [activeTab, setActiveTab] = useState<'materials' | 'usage' | 'production' | 'transfer'>('materials');
 
     const { data: summary, isLoading: isLoadingSummary } = useGetPlanItemMaterialsSummary(planItem?.id || 0, {
         enabled: !!planItem && open && activeTab === 'materials'
@@ -72,8 +88,11 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
 
     const { data: brigadas = [] } = useGetBrigadas();
 
+    const { data: productionSummary, isLoading: isLoadingProduction } = useGetProductionLogSummary(planItem?.id || 0);
+
     const logUsageMutation = useLogMaterialUsage();
     const transferMutation = useTransferPlanItem(planItem?.id || 0);
+    const logProductionMutation = useLogProduction();
 
     const usageMethods = useForm<z.infer<typeof UsageSchema>>({
         resolver: zodResolver(UsageSchema),
@@ -89,6 +108,17 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
         resolver: zodResolver(TransferSchema),
         defaultValues: {
             to_brigada_id: 0,
+            notes: '',
+        }
+    });
+
+    const productionMethods = useForm<z.infer<typeof ProductionSchema>>({
+        resolver: zodResolver(ProductionSchema),
+        defaultValues: {
+            meters_produced: 0,
+            kg_produced: 0,
+            work_type: '',
+            percentage: undefined,
             notes: '',
         }
     });
@@ -119,9 +149,24 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
         }
     };
 
+    const onSubmitProduction = async (data: z.infer<typeof ProductionSchema>) => {
+        if (!planItem) return;
+        try {
+            await logProductionMutation.mutateAsync({
+                ...data,
+                plan_item_id: planItem.id
+            });
+            toast.success("Ishlab chiqarish hajmi kiritildi!");
+            productionMethods.reset();
+        } catch (error: any) {
+            toast.error(error?.response?.data?.detail || error.message || 'Xatolik');
+        }
+    };
+
     const handleClose = () => {
         usageMethods.reset();
         transferMethods.reset();
+        productionMethods.reset();
         setActiveTab('materials');
         onClose();
     };
@@ -146,6 +191,13 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
                     sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'usage' ? 2 : 0 }}
                 >
                     Material Sarfi Kiritish
+                </Button>
+                <Button
+                    color={activeTab === 'production' ? 'primary' : 'inherit'}
+                    onClick={() => setActiveTab('production')}
+                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'production' ? 2 : 0 }}
+                >
+                    Ishlab chiqarish hajmi
                 </Button>
                 <Button
                     color={activeTab === 'transfer' ? 'warning' : 'inherit'}
@@ -211,6 +263,7 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
                                 <MenuItem value="main_warehouse">Asosiy omborga qaytariladi</MenuItem>
                             </Field.Select>
 
+                            <Field.Text name="percentage" label="Foizi (%) (Ixtiyoriy)" type="number" />
                             <Field.Text name="notes" label="Izoh (Ixtiyoriy)" multiline rows={3} />
 
                             <Box display="flex" justifyContent="flex-end">
@@ -218,6 +271,71 @@ export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
                                     {logUsageMutation.isPending ? 'Saqlanmoqda...' : 'Saqlash'}
                                 </Button>
                             </Box>
+                        </Stack>
+                    </Form>
+                )}
+
+                {activeTab === 'production' && (
+                    <Form methods={productionMethods} onSubmit={productionMethods.handleSubmit(onSubmitProduction)}>
+                        <Stack spacing={3}>
+                            <Alert severity="info">
+                                Bu xizmat orqali siz smena davomida qancha mahsulot ishlab chiqarganingizni kiritasiz. Tizim brigadadagi har bir ishchi uchun avtomatik yozuv yaratadi.
+                            </Alert>
+
+                            <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
+                                <Field.Text name="meters_produced" label="Metr (m)" type="number" />
+                                <Field.Text name="kg_produced" label="Og'irligi (kg)" type="number" />
+                            </Box>
+
+                            <Field.Select name="work_type" label="Ish turini tanlang (Ixtiyoriy)">
+                                <MenuItem value="">Tanlang</MenuItem>
+                                <MenuItem value="tayyor_mahsulotlar_reskasi">Tayyor mahsulotlar reskasi</MenuItem>
+                                <MenuItem value="tayyor_mahsulot_peremotkasi">Tayyor mahsulot peremotkasi</MenuItem>
+                                <MenuItem value="plyonka_peremotkasi">Plyonka peremotkasi</MenuItem>
+                                <MenuItem value="reska_3_5_sm">Reska 3-5 sm</MenuItem>
+                                <MenuItem value="asobiy_tarif">Asobiy tarif</MenuItem>
+                            </Field.Select>
+
+                            <Field.Text name="percentage" label="Foizi (%) (Ixtiyoriy)" type="number" />
+                            <Field.Text name="notes" label="Smena / Izoh" />
+
+                            <Box display="flex" justifyContent="flex-end">
+                                <Button type="submit" variant="contained" disabled={logProductionMutation.isPending}>
+                                    {logProductionMutation.isPending ? 'Saqlanmoqda...' : 'Saqlash'}
+                                </Button>
+                            </Box>
+
+                            <Divider />
+                            <Typography variant="subtitle2">Kiritilgan hajmlar tarixi</Typography>
+                            {isLoadingProduction ? (
+                                <CircularProgress size={24} />
+                            ) : (
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Ishchi</TableCell>
+                                            <TableCell>Metr</TableCell>
+                                            <TableCell>Kg</TableCell>
+                                            <TableCell>Foiz/Ish turi</TableCell>
+                                            <TableCell>Qachon</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {productionSummary?.entries?.map((log) => (
+                                            <TableRow key={log.id}>
+                                                <TableCell>{log.worker_fullname}</TableCell>
+                                                <TableCell>{log.meters_produced} m</TableCell>
+                                                <TableCell>{log.kg_produced} kg</TableCell>
+                                                <TableCell>
+                                                    {log.percentage ? `${log.percentage}% ` : ''}
+                                                    {log.work_type ? `(${log.work_type})` : ''}
+                                                </TableCell>
+                                                <TableCell>{new Date(log.created_at).toLocaleString('uz-UZ')}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </Stack>
                     </Form>
                 )}

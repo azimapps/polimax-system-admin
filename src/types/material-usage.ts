@@ -11,6 +11,7 @@ export interface MaterialUsage {
     remainder: number;
     remainder_destination: 'machine_warehouse' | 'main_warehouse';
     return_transaction_id: number | null;
+    percentage: number | null;
     notes: string | null;
     ombor_item_name: string;
     ombor_item_type: string;
@@ -68,6 +69,7 @@ export interface LogMaterialUsageRequest {
     plan_item_id: number;
     used_amount: number;
     remainder_destination: 'machine_warehouse' | 'main_warehouse';
+    percentage?: number;
     notes?: string;
 }
 
@@ -82,4 +84,63 @@ export interface GetMaterialUsagesParams {
     date_to?: string;
     limit?: number;
     offset?: number;
+}
+
+export interface ProductionLogRequest {
+    plan_item_id: number;
+    meters_produced: number;
+    kg_produced: number;
+    work_type?: string;
+    percentage?: number;
+    notes?: string;
+}
+
+export interface ProductionLog {
+    id: number;
+    version: number;
+    plan_item_id: number;
+    brigada_id: number;
+    machine_id: number;
+    worker_id: number;
+    worker_fullname: string;
+    meters_produced: number;
+    kg_produced: number;
+    work_type: string | null;
+    percentage: number | null;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductionLogSummary {
+    plan_item_id: number;
+    total_meters: number;
+    total_kg: number;
+    entries: ProductionLog[];
+}
+
+export interface BrigadaMemberInfo {
+    id: number;
+    worker_id: number;
+    fullname: string;
+    position: string;
+    is_leader: boolean;
+}
+
+export interface MyBrigadaDetail {
+    brigada: {
+        id: number;
+        name: string;
+        machine_type: string;
+        leader_id: number;
+    };
+    machine: {
+        id: number;
+        name: string;
+        country_code: string;
+        type: string;
+    };
+    members: BrigadaMemberInfo[];
+    active_plan_items: number;
+    finished_plan_items: number;
 }
