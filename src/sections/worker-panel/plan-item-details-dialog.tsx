@@ -2,28 +2,19 @@ import type { PlanItem } from 'src/types/worker-panel';
 
 import * as z from 'zod';
 import { toast } from 'sonner';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useMemo } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
-import TableRow from '@mui/material/TableRow';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TableContainer from '@mui/material/TableContainer';
-import CircularProgress from '@mui/material/CircularProgress';
+import InputAdornment from '@mui/material/InputAdornment';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useUpdatePlanItem } from 'src/hooks/use-plan-items';
@@ -32,12 +23,8 @@ import {
     useLogProduction,
     useLogMaterialUsage,
     useTransferPlanItem,
-    useGetPlanItemTransfers,
-    useGetProductionLogSummary,
     useGetPlanItemMaterialsSummary
 } from 'src/hooks/use-material-usage';
-
-import { useTranslate } from 'src/locales';
 
 import { Form, Field } from 'src/components/hook-form';
 
@@ -49,20 +36,14 @@ type Props = {
     planItem: PlanItem | null;
 };
 
-const UsageSchema = z.object({
-    ombor_transaction_id: z.number().min(1, "Tranzaksiyani tanlang"),
-    used_amount: z.number().min(0.01, "Miqdor 0 dan katta bo'lishi kerak"),
-    remainder_destination: z.enum(['machine_warehouse', 'main_warehouse']),
-    percentage: z.number().min(0).max(100).optional(),
-    notes: z.string().optional(),
-});
-
-const DispatchSchema = z.object({
-    destination_type: z.string().min(1, 'Qayerga yuborishni tanlang'),
+const StatusSchema = z.object({
+    materials: z.record(z.string(), z.number().min(0)),
+    meters_produced: z.number().min(0).optional(),
+    kg_produced: z.number().min(0).optional(),
+    destination_type: z.string().optional(),
     to_brigada_id: z.number().optional(),
-    notes: z.string().optional(),
 }).refine(data => {
-    if (data.destination_type !== 'angren_sklad' && (!data.to_brigada_id || data.to_brigada_id === 0)) {
+    if (data.destination_type && data.destination_type !== 'angren_sklad' && (!data.to_brigada_id || data.to_brigada_id === 0)) {
         return false;
     }
     return true;
@@ -71,363 +52,252 @@ const DispatchSchema = z.object({
     path: ["to_brigada_id"]
 });
 
-const ProductionSchema = z.object({
-    meters_produced: z.number().min(0, "Manfiy bo'lishi mumkin emas"),
-    kg_produced: z.number().min(0, "Manfiy bo'lishi mumkin emas"),
-    work_type: z.string().optional(),
-    percentage: z.number().min(0).max(100).optional(),
-    notes: z.string().optional(),
-});
-
 export function PlanItemDetailsDialog({ open, onClose, planItem }: Props) {
-    const { t } = useTranslate('stanok');
-
-    const [activeTab, setActiveTab] = useState<'materials' | 'usage' | 'production' | 'dispatch'>('materials');
-
-    const { data: summary, isLoading: isLoadingSummary } = useGetPlanItemMaterialsSummary(planItem?.id || 0, {
-        enabled: !!planItem && open && activeTab === 'materials'
+    const { data: summary } = useGetPlanItemMaterialsSummary(planItem?.id || 0, {
+        enabled: !!planItem && open
     });
 
-    const { data: materialsData, isLoading: isLoadingMaterials } = useGetMyMaterials({
+    const { data: materialsData } = useGetMyMaterials({
         transaction_type: 'kirim'
     });
-    // Filter materials belonging to this plan item to show in dropdown
-    const planItemTransactions = materialsData?.filter(m => m.plan_item_id === planItem?.id) || [];
 
-    const { data: transfers, isLoading: isLoadingTransfers } = useGetPlanItemTransfers(planItem?.id || 0, {
-        enabled: !!planItem && open && activeTab === 'dispatch'
-    });
+    // Group transactions by item ID to safely find the transaction ID later
+    const planItemTransactions = useMemo(() => materialsData?.filter(m => m.plan_item_id === planItem?.id) || [], [materialsData, planItem?.id]);
 
     const { data: brigadas = [] } = useGetBrigadas();
-
-    const { data: productionSummary, isLoading: isLoadingProduction } = useGetProductionLogSummary(planItem?.id || 0);
 
     const logUsageMutation = useLogMaterialUsage();
     const transferMutation = useTransferPlanItem(planItem?.id || 0);
     const logProductionMutation = useLogProduction();
     const updatePlanItemMutation = useUpdatePlanItem(planItem?.id || 0);
 
-    const usageMethods = useForm<z.infer<typeof UsageSchema>>({
-        resolver: zodResolver(UsageSchema),
+    const methods = useForm<z.infer<typeof StatusSchema>>({
+        resolver: zodResolver(StatusSchema),
         defaultValues: {
-            ombor_transaction_id: 0,
-            used_amount: 0,
-            remainder_destination: 'machine_warehouse',
-            notes: '',
-        }
-    });
-
-    const dispatchMethods = useForm<z.infer<typeof DispatchSchema>>({
-        resolver: zodResolver(DispatchSchema),
-        defaultValues: {
-            destination_type: '',
-            to_brigada_id: 0,
-            notes: '',
-        }
-    });
-
-    const destinationType = dispatchMethods.watch('destination_type');
-
-    const productionMethods = useForm<z.infer<typeof ProductionSchema>>({
-        resolver: zodResolver(ProductionSchema),
-        defaultValues: {
+            materials: {},
             meters_produced: 0,
             kg_produced: 0,
-            work_type: '',
-            percentage: undefined,
-            notes: '',
+            destination_type: '',
+            to_brigada_id: 0,
         }
     });
 
-    const onSubmitUsage = async (data: z.infer<typeof UsageSchema>) => {
-        if (!planItem) return;
-        try {
-            await logUsageMutation.mutateAsync({
-                ...data,
-                plan_item_id: planItem.id
-            });
-            toast.success("Material sarfi saqlandi!");
-            usageMethods.reset();
-            setActiveTab('materials');
-        } catch (error: any) {
-            toast.error(error?.response?.data?.detail || error.message || 'Xatolik');
-        }
-    };
+    const { handleSubmit, watch, reset, setValue, control } = methods;
+    const destinationType = watch('destination_type');
 
-    const onSubmitDispatch = async (data: z.infer<typeof DispatchSchema>) => {
+    const isSubmitting = logUsageMutation.isPending || transferMutation.isPending || logProductionMutation.isPending || updatePlanItemMutation.isPending;
+
+    const onSubmit = async (data: z.infer<typeof StatusSchema>) => {
         if (!planItem) return;
+
         try {
-            if (data.destination_type === 'angren_sklad') {
-                await updatePlanItemMutation.mutateAsync({ status: PlanItemStatus.FINISHED });
-                toast.success("Vazifa tugatildi va Angren Skladga yuborildi!");
-            } else {
-                await transferMutation.mutateAsync({
-                    to_brigada_id: data.to_brigada_id as number,
-                    notes: data.notes
+            // 1. Log Material Usages
+            const materialPromises = Object.entries(data.materials).map(async ([itemIdStr, amount]) => {
+                if (amount > 0) {
+                    const itemId = Number(itemIdStr);
+                    // Find matching transaction
+                    const tx = planItemTransactions.find(t => t.ombor_item_id === itemId);
+
+                    if (tx) {
+                        return logUsageMutation.mutateAsync({
+                            ombor_transaction_id: tx.id,
+                            plan_item_id: planItem.id,
+                            used_amount: amount,
+                            remainder_destination: 'machine_warehouse', // default
+                        });
+                    }
+                }
+                return Promise.resolve();
+            });
+            await Promise.all(materialPromises);
+
+            // 2. Log Production
+            if ((data.meters_produced && data.meters_produced > 0) || (data.kg_produced && data.kg_produced > 0)) {
+                await logProductionMutation.mutateAsync({
+                    plan_item_id: planItem.id,
+                    meters_produced: data.meters_produced || 0,
+                    kg_produced: data.kg_produced || 0,
                 });
-                toast.success("Vazifa boshqa brigadaga o'tkazildi!");
             }
-            onClose();
-        } catch (error: any) {
-            toast.error(error?.response?.data?.detail || error.message || 'Xatolik');
-        }
-    };
 
-    const onSubmitProduction = async (data: z.infer<typeof ProductionSchema>) => {
-        if (!planItem) return;
-        try {
-            await logProductionMutation.mutateAsync({
-                ...data,
-                plan_item_id: planItem.id
-            });
-            toast.success("Ishlab chiqarish hajmi kiritildi!");
-            productionMethods.reset();
+            // 3. Handle Dispatch
+            if (data.destination_type) {
+                if (data.destination_type === 'angren_sklad') {
+                    await updatePlanItemMutation.mutateAsync({ status: PlanItemStatus.FINISHED });
+                } else if (data.to_brigada_id) {
+                    await transferMutation.mutateAsync({
+                        to_brigada_id: data.to_brigada_id,
+                    });
+                }
+            }
+
+            toast.success("Status yangilandi!");
+            handleClose();
         } catch (error: any) {
-            toast.error(error?.response?.data?.detail || error.message || 'Xatolik');
+            toast.error(error?.response?.data?.detail || error.message || 'Xatolik yuz berdi');
         }
     };
 
     const handleClose = () => {
-        usageMethods.reset();
-        dispatchMethods.reset();
-        productionMethods.reset();
-        setActiveTab('materials');
+        reset();
         onClose();
+    };
+
+    const handleTakeAll = () => {
+        if (summary?.materials) {
+            const newMaterialsMap: Record<string, number> = {};
+            summary.materials.forEach(mat => {
+                if (mat.remaining > 0) {
+                    newMaterialsMap[mat.ombor_item_id.toString()] = mat.remaining;
+                }
+            });
+            setValue('materials', newMaterialsMap, { shouldValidate: true });
+        }
     };
 
     if (!planItem) return null;
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle>Vazifa Tafsilotlari: ORD-{planItem.order_id}</DialogTitle>
+        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: 'background.default', borderRadius: 2 } }}>
+            <Box sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ mb: 3 }}>Statusni yangilash</Typography>
 
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 3, display: 'flex', gap: 2 }}>
-                <Button
-                    color={activeTab === 'materials' ? 'primary' : 'inherit'}
-                    onClick={() => setActiveTab('materials')}
-                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'materials' ? 2 : 0 }}
-                >
-                    Materiallar Holati
-                </Button>
-                <Button
-                    color={activeTab === 'usage' ? 'primary' : 'inherit'}
-                    onClick={() => setActiveTab('usage')}
-                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'usage' ? 2 : 0 }}
-                >
-                    Material Sarfi Kiritish
-                </Button>
-                <Button
-                    color={activeTab === 'production' ? 'primary' : 'inherit'}
-                    onClick={() => setActiveTab('production')}
-                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'production' ? 2 : 0 }}
-                >
-                    Ishlab chiqarish hajmi
-                </Button>
-                <Button
-                    color={activeTab === 'dispatch' ? 'success' : 'inherit'}
-                    onClick={() => setActiveTab('dispatch')}
-                    sx={{ pb: 1, borderRadius: 0, borderBottom: activeTab === 'dispatch' ? 2 : 0 }}
-                >
-                    Yuborish (Dispatch)
-                </Button>
-            </Box>
+                <Form methods={methods} onSubmit={handleSubmit(onSubmit)}>
+                    <Stack spacing={4}>
 
-            <DialogContent sx={{ py: 3 }}>
-                {activeTab === 'materials' && (
-                    <Stack spacing={3}>
-                        {isLoadingSummary ? (
-                            <Box display="flex" justifyContent="center" py={3}><CircularProgress /></Box>
-                        ) : (
-                            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                                <Table size="small">
-                                    <TableHead sx={{ bgcolor: 'background.neutral' }}>
-                                        <TableRow>
-                                            <TableCell>Material</TableCell>
-                                            <TableCell align="right">Olingan (Kirim)</TableCell>
-                                            <TableCell align="right">Ishlatilgan</TableCell>
-                                            <TableCell align="right">Qoldiq</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {summary?.materials.length === 0 ? (
-                                            <TableRow><TableCell colSpan={4} align="center">Ma&apos;lumot topilmadi</TableCell></TableRow>
-                                        ) : summary?.materials.map((mat) => (
-                                            <TableRow key={mat.ombor_item_id}>
-                                                <TableCell>{mat.ombor_item_name}</TableCell>
-                                                <TableCell align="right">{mat.total_received}</TableCell>
-                                                <TableCell align="right" sx={{ color: 'error.main' }}>{mat.total_used}</TableCell>
-                                                <TableCell align="right" sx={{ color: mat.remaining > 0 ? 'success.main' : 'text.secondary', fontWeight: 'bold' }}>
-                                                    {mat.remaining}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        )}
-                    </Stack>
-                )}
-
-                {activeTab === 'usage' && (
-                    <Form methods={usageMethods} onSubmit={usageMethods.handleSubmit(onSubmitUsage)}>
-                        <Stack spacing={3}>
-                            <Field.Select name="ombor_transaction_id" label="Qaysi materialdan (Kirim)">
-                                <MenuItem value={0} disabled>Tanlang</MenuItem>
-                                {planItemTransactions.map((tr) => (
-                                    <MenuItem key={tr.id} value={tr.id}>
-                                        {tr.notes || 'Nomsiz'} (Mavjud: {tr.quantity_kg || tr.quantity_liter || tr.quantity_count} {tr.quantity_kg ? 'kg' : tr.quantity_liter ? 'L' : 'dona'} - Sana: {new Date(tr.date).toLocaleDateString()})
-                                    </MenuItem>
-                                ))}
-                            </Field.Select>
-
-                            <Field.Text name="used_amount" label="Ishlatilgan Miqdor" type="number" />
-
-                            <Field.Select name="remainder_destination" label="Qoldiq Qayerda Qoladi?">
-                                <MenuItem value="machine_warehouse">Stanokda qoladi (Kuting)</MenuItem>
-                                <MenuItem value="main_warehouse">Asosiy omborga qaytariladi</MenuItem>
-                            </Field.Select>
-
-                            <Field.Text name="percentage" label="Foizi (%) (Ixtiyoriy)" type="number" />
-                            <Field.Text name="notes" label="Izoh (Ixtiyoriy)" multiline rows={3} />
-
-                            <Box display="flex" justifyContent="flex-end">
-                                <Button type="submit" variant="contained" disabled={logUsageMutation.isPending}>
-                                    {logUsageMutation.isPending ? 'Saqlanmoqda...' : 'Saqlash'}
-                                </Button>
-                            </Box>
-                        </Stack>
-                    </Form>
-                )}
-
-                {activeTab === 'production' && (
-                    <Form methods={productionMethods} onSubmit={productionMethods.handleSubmit(onSubmitProduction)}>
-                        <Stack spacing={3}>
-                            <Alert severity="info">
-                                Bu xizmat orqali siz smena davomida qancha mahsulot ishlab chiqarganingizni kiritasiz. Tizim brigadadagi har bir ishchi uchun avtomatik yozuv yaratadi.
-                            </Alert>
-
-                            <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
-                                <Field.Text name="meters_produced" label="Metr (m)" type="number" />
-                                <Field.Text name="kg_produced" label="Og'irligi (kg)" type="number" />
-                            </Box>
-
-                            <Field.Select name="work_type" label="Ish turini tanlang (Ixtiyoriy)">
-                                <MenuItem value="">Tanlang</MenuItem>
-                                <MenuItem value="tayyor_mahsulotlar_reskasi">Tayyor mahsulotlar reskasi</MenuItem>
-                                <MenuItem value="tayyor_mahsulot_peremotkasi">Tayyor mahsulot peremotkasi</MenuItem>
-                                <MenuItem value="plyonka_peremotkasi">Plyonka peremotkasi</MenuItem>
-                                <MenuItem value="reska_3_5_sm">Reska 3-5 sm</MenuItem>
-                                <MenuItem value="asobiy_tarif">Asobiy tarif</MenuItem>
-                            </Field.Select>
-
-                            <Field.Text name="percentage" label="Foizi (%) (Ixtiyoriy)" type="number" />
-                            <Field.Text name="notes" label="Smena / Izoh" />
-
-                            <Box display="flex" justifyContent="flex-end">
-                                <Button type="submit" variant="contained" disabled={logProductionMutation.isPending}>
-                                    {logProductionMutation.isPending ? 'Saqlanmoqda...' : 'Saqlash'}
+                        {/* EXISTING MATERIALS BOX */}
+                        <Card sx={{ p: 3, bgcolor: '#1C252E', border: '1px solid', borderColor: 'divider' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                                <Typography variant="subtitle2">Mavjud materiallar</Typography>
+                                <Button size="small" variant="outlined" color="inherit" onClick={handleTakeAll}>
+                                    Hammasini olish
                                 </Button>
                             </Box>
 
-                            <Divider />
-                            <Typography variant="subtitle2">Kiritilgan hajmlar tarixi</Typography>
-                            {isLoadingProduction ? (
-                                <CircularProgress size={24} />
-                            ) : (
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Ishchi</TableCell>
-                                            <TableCell>Metr</TableCell>
-                                            <TableCell>Kg</TableCell>
-                                            <TableCell>Foiz/Ish turi</TableCell>
-                                            <TableCell>Qachon</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {productionSummary?.entries?.map((log) => (
-                                            <TableRow key={log.id}>
-                                                <TableCell>{log.worker_fullname}</TableCell>
-                                                <TableCell>{log.meters_produced} m</TableCell>
-                                                <TableCell>{log.kg_produced} kg</TableCell>
-                                                <TableCell>
-                                                    {log.percentage ? `${log.percentage}% ` : ''}
-                                                    {log.work_type ? `(${log.work_type})` : ''}
-                                                </TableCell>
-                                                <TableCell>{new Date(log.created_at).toLocaleString('uz-UZ')}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            )}
-                        </Stack>
-                    </Form>
-                )}
+                            <Stack spacing={2}>
+                                {summary?.materials.map((mat) => {
+                                    const unit = mat.ombor_item_type === 'rastvaritel' ? 'L' : 'kg';
+                                    return (
+                                        <Box key={mat.ombor_item_id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+                                            <Typography variant="body2" sx={{ color: 'text.secondary', flex: 1, minWidth: 200 }}>
+                                                {mat.ombor_item_name}
+                                            </Typography>
 
-                {activeTab === 'dispatch' && (
-                    <Form methods={dispatchMethods} onSubmit={dispatchMethods.handleSubmit(onSubmitDispatch)}>
-                        <Stack spacing={3}>
-                            <Alert severity="warning">
-                                Diqqat! Vazifani boshqa brigadaga o&apos;tkazganingizda, stanokdagi barcha qoldiq materiallar ham avtomatik ravishda yangi brigadaga o&apos;tkaziladi. Angren Skladga yuborish esa vazifani yakunlaydi.
-                            </Alert>
+                                            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+                                                <Typography variant="body2" sx={{ color: 'warning.main', fontWeight: 600 }}>
+                                                    {mat.price_per_unit} {mat.price_currency === 'usd' ? 'USD' : mat.price_currency === 'eur' ? 'EUR' : 'UZS'} / {unit}
+                                                </Typography>
+                                                <Typography variant="body2" sx={{ fontWeight: 600, width: 60, textAlign: 'right' }}>
+                                                    {mat.remaining} {unit}
+                                                </Typography>
 
-                            <Field.Select name="destination_type" label="Qayerga yuborish?">
-                                <MenuItem value="" disabled>Tanlang...</MenuItem>
-                                <MenuItem value="reska">Reska</MenuItem>
-                                <MenuItem value="laminatsiya">Laminatsiya</MenuItem>
-                                <MenuItem value="sushka">Quritish (Sushka)</MenuItem>
-                                <MenuItem value="angren_sklad">Angren Sklad (Tayyor Mahsulotlar)</MenuItem>
-                            </Field.Select>
+                                                <Controller
+                                                    name={`materials.${mat.ombor_item_id}`}
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            size="small"
+                                                            type="number"
+                                                            placeholder="0"
+                                                            value={field.value || ''}
+                                                            onChange={(e) => field.onChange(Number(e.target.value))}
+                                                            InputProps={{
+                                                                endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
+                                                                sx: { width: 120, bgcolor: 'background.neutral' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Box>
+                                        </Box>
+                                    );
+                                })}
+                                {(!summary?.materials || summary.materials.length === 0) && (
+                                    <Typography variant="body2" color="text.secondary">Mavjud materiallar yo&apos;q</Typography>
+                                )}
+                            </Stack>
+                        </Card>
 
-                            {destinationType && destinationType !== 'angren_sklad' && (
-                                <Field.Select name="to_brigada_id" label="Stanok tanlang">
-                                    <MenuItem value={0} disabled>Tanlang...</MenuItem>
-                                    {brigadas.filter(b => b.id !== planItem.brigada_id && b.machine_type === destinationType).map((b) => (
-                                        <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
-                                    ))}
+                        {/* PRODUCTION ADDITIONS BOX */}
+                        <Box>
+                            <Typography variant="subtitle2" sx={{ mb: 1 }}>Jami ishlab chiqarilgan (Ushbu smena/partiya)</Typography>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+                                Kiritilgan miqdor umumiy soniga qo&apos;shiladi (+).
+                            </Typography>
+
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Field.Text
+                                    name="meters_produced"
+                                    label="Metr (Qo'shish +)"
+                                    type="number"
+                                    sx={{ flex: 1 }}
+                                    InputProps={{
+                                        sx: { bgcolor: 'background.neutral' }
+                                    }}
+                                />
+                                <Field.Text
+                                    name="kg_produced"
+                                    label="Kg (Qo'shish +)"
+                                    type="number"
+                                    sx={{ flex: 1 }}
+                                    InputProps={{
+                                        sx: { bgcolor: 'background.neutral' }
+                                    }}
+                                />
+                            </Box>
+                        </Box>
+
+                        {/* DISPATCH BOX */}
+                        <Card sx={{ p: 3, bgcolor: '#1C252E', border: '1px solid', borderColor: 'divider' }}>
+                            <Typography variant="subtitle2" sx={{ color: 'success.main', mb: 2 }}>Yuborish (Dispatch)</Typography>
+
+                            <Stack spacing={3}>
+                                <Field.Select
+                                    name="destination_type"
+                                    label="Qayerga yuborish?"
+                                    sx={{ bgcolor: 'background.neutral' }}
+                                >
+                                    <MenuItem value="" disabled>Tanlang...</MenuItem>
+                                    <MenuItem value="reska">Reska</MenuItem>
+                                    <MenuItem value="laminatsiya">Laminatsiya</MenuItem>
+                                    <MenuItem value="sushka">Quritish (Sushka)</MenuItem>
+                                    <MenuItem value="angren_sklad">Angren Sklad (Tayyor Mahsulotlar)</MenuItem>
                                 </Field.Select>
-                            )}
 
-                            <Field.Text name="notes" label="Izoh (Ixtiyoriy)" multiline rows={3} />
-
-                            <Box display="flex" justifyContent="flex-end">
-                                <Button type="submit" color="success" variant="contained" disabled={transferMutation.isPending || updatePlanItemMutation.isPending}>
-                                    {(transferMutation.isPending || updatePlanItemMutation.isPending) ? "Yuborilmoqda..." : "Yuborish (Dispatch)"}
-                                </Button>
-                            </Box>
-
-                            <Divider />
-                            <Typography variant="subtitle2">O&apos;tkazmalar tarixi</Typography>
-                            {isLoadingTransfers ? (
-                                <CircularProgress size={24} />
-                            ) : (
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Qachon</TableCell>
-                                            <TableCell>Qayerdan</TableCell>
-                                            <TableCell>Qayerga</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {transfers?.map(tr => (
-                                            <TableRow key={tr.id}>
-                                                <TableCell>{new Date(tr.created_at).toLocaleString('uz-UZ')}</TableCell>
-                                                <TableCell>Brigada {tr.from_brigada_id} (Stanok {tr.from_machine_id})</TableCell>
-                                                <TableCell>Brigada {tr.to_brigada_id} (Stanok {tr.to_machine_id})</TableCell>
-                                            </TableRow>
+                                {destinationType && destinationType !== 'angren_sklad' && (
+                                    <Field.Select
+                                        name="to_brigada_id"
+                                        label="Stanok tanlang"
+                                        sx={{ bgcolor: 'background.neutral' }}
+                                    >
+                                        <MenuItem value={0} disabled>Tanlang...</MenuItem>
+                                        {brigadas.filter(b => b.id !== planItem.brigada_id && b.machine_type === destinationType).map((b) => (
+                                            <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
                                         ))}
-                                    </TableBody>
-                                </Table>
-                            )}
-                        </Stack>
-                    </Form>
-                )}
-            </DialogContent>
+                                    </Field.Select>
+                                )}
+                            </Stack>
+                        </Card>
 
-            <DialogActions>
-                <Button onClick={handleClose}>Yopish</Button>
-            </DialogActions>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                            <Button variant="outlined" color="inherit" onClick={handleClose}>
+                                Bekor qilish
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Saqlanmoqda...' : 'Saqlash'}
+                            </Button>
+                        </Box>
+
+                    </Stack>
+                </Form>
+            </Box>
         </Dialog>
     );
 }
+
