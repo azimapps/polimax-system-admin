@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
+import { useGetOrders } from 'src/hooks/use-orders';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
@@ -80,6 +81,9 @@ export function InProgressView() {
         machine_id: selectedStanok || undefined,
         brigada_id: selectedBrigada || undefined,
     });
+
+    // Fetch orders to map plan_item.order_id -> Order details
+    const { data: orders = [] } = useGetOrders();
 
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
 
@@ -193,30 +197,35 @@ export function InProgressView() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                planItems.map((item: any) => (
-                                    <TableRow key={item.id} sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
-                                        <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
-                                            {item.order?.order_number || '-'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.order?.client?.fullname || item.order?.client?.first_name || item.order?.client_id || '-'}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.order?.title || '-'}
-                                        </TableCell>
-                                        <TableCell>
-                                            0 kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {item.order?.quantity_kg || 0} kg</Box>
-                                        </TableCell>
-                                        <TableCell>
-                                            {fDate(item.start_date)}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                                                <Iconify icon="solar:info-circle-bold" />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
+                                planItems.map((item: any) => {
+                                    // Try to use the embedded order object if the backend provides it, otherwise search via useGetOrders array
+                                    const matchedOrder = item.order || orders.find((o) => o.id === item.order_id);
+
+                                    return (
+                                        <TableRow key={item.id} sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
+                                            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
+                                                {matchedOrder?.order_number || '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {matchedOrder?.client?.fullname || matchedOrder?.client?.first_name || matchedOrder?.client_id || '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {matchedOrder?.title || '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                0 kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {matchedOrder?.quantity_kg || 0} kg</Box>
+                                            </TableCell>
+                                            <TableCell>
+                                                {fDate(item.start_date)}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <IconButton sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
+                                                    <Iconify icon="solar:info-circle-bold" />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
                             )}
                         </TableBody>
                     </Table>
