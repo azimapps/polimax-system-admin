@@ -80,8 +80,10 @@ const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
 
 function WorkerPanelGuard({ children }: { children: React.ReactNode }) {
   const { user } = useAuthContext();
+  const allowed = user?.role === 'pechat' || user?.worker_type === 'pechat' || user?.type === 'worker';
+
   return (
-    <RoleBasedGuard hasContent currentRole={user?.role} allowedRoles={['pechat']}>
+    <RoleBasedGuard hasContent currentRole={allowed ? 'worker' : user?.role} allowedRoles={['worker', 'admin']}>
       {children}
     </RoleBasedGuard>
   );
@@ -287,21 +289,25 @@ export const routesSection: RouteObject[] = [
           },
         ],
       },
-      {
-        path: 'pechat-panel',
-        element: (
-          <WorkerPanelGuard>
-            <WorkerPanelPage />
-          </WorkerPanelGuard>
-        ),
-        children: [
-          { index: true, element: <WorkerPanelPage /> },
-          { path: 'in-progress', element: <WorkerPanelPage /> },
-          { path: 'finished', element: <WorkerPanelPage /> },
-          { path: 'materials', element: <WorkerPanelPage /> },
-          { path: 'sushka', element: <WorkerPanelPage /> },
-        ],
-      },
+    ],
+  },
+
+  // Worker standalone panel
+  {
+    path: '/pechat-panel',
+    element: (
+      <AuthGuard>
+        <WorkerPanelGuard>
+          <WorkerPanelPage />
+        </WorkerPanelGuard>
+      </AuthGuard>
+    ),
+    children: [
+      { index: true, element: <WorkerPanelPage /> },
+      { path: 'in-progress', element: <WorkerPanelPage /> },
+      { path: 'finished', element: <WorkerPanelPage /> },
+      { path: 'materials', element: <WorkerPanelPage /> },
+      { path: 'sushka', element: <WorkerPanelPage /> },
     ],
   },
 
