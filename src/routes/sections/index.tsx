@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
 import { DashboardLayout } from 'src/layouts/dashboard';
+import { PechatPanelLayout } from 'src/layouts/pechat-panel/pechat-panel-layout';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -109,6 +110,12 @@ const dashboardLayout = () => (
   <DashboardLayout>
     <SuspenseOutlet />
   </DashboardLayout>
+);
+
+const pechatPanelLayout = () => (
+  <PechatPanelLayout>
+    <SuspenseOutlet />
+  </PechatPanelLayout>
 );
 
 // ----------------------------------------------------------------------
@@ -303,13 +310,13 @@ export const routesSection: RouteObject[] = [
     element: (
       <AuthGuard>
         <WorkerPanelGuard>
-          <WorkerPanelPage />
+          {pechatPanelLayout()}
         </WorkerPanelGuard>
       </AuthGuard>
     ),
     children: [
       { index: true, element: <WorkerPanelPage /> },
-      { path: 'in-progress', element: <WorkerPanelPage /> },
+      { path: 'jarayonda', element: <WorkerPanelPage /> },
       { path: 'finished', element: <WorkerPanelPage /> },
       { path: 'materials', element: <WorkerPanelPage /> },
       { path: 'sushka', element: <WorkerPanelPage /> },

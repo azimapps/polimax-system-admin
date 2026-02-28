@@ -91,6 +91,10 @@ export const paths = {
     },
     pechatPanel: {
       root: '/pechat-panel',
+      jarayonda: '/pechat-panel/jarayonda',
+      finished: '/pechat-panel/finished',
+      materials: '/pechat-panel/materials',
+      sushka: '/pechat-panel/sushka',
     },
     mixingStation: {
       root: '/mixing-station',
