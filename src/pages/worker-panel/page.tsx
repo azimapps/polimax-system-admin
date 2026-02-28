@@ -9,7 +9,7 @@ export default function Page() {
     return (
         <>
             <Helmet>
-                <title> {`Ishchilar Paneli - ${CONFIG.appName}`}</title>
+                <title> {`Pechat Paneli - ${CONFIG.appName}`}</title>
             </Helmet>
 
             <WorkerPanelView />

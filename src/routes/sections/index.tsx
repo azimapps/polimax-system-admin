@@ -288,7 +288,7 @@ export const routesSection: RouteObject[] = [
         ],
       },
       {
-        path: 'worker-panel',
+        path: 'pechat-panel',
         element: (
           <WorkerPanelGuard>
             <WorkerPanelPage />

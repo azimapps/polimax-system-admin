@@ -87,6 +87,18 @@ export const useNavData = (): NavSectionProps['data'] => {
             ],
           },
 
+          // Pechat Paneli (Worker Panel)
+          {
+            title: t('pechat_paneli'),
+            path: '/pechat-panel',
+            allowedRoles: ['pechat'],
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 12v3H8v-3h8zm2-4.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM18 11h1v2h-1z" />
+              </svg>
+            ),
+          },
+
           // Sushka Paneli (Drying Panel) - Sun/Heat Icon
           {
             title: t('sushka_paneli'),

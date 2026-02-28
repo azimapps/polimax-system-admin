@@ -89,6 +89,9 @@ export const paths = {
       inProgress: '/order-planning/in-progress',
       finished: '/order-planning/finished',
     },
+    pechatPanel: {
+      root: '/pechat-panel',
+    },
     mixingStation: {
       root: '/mixing-station',
     },

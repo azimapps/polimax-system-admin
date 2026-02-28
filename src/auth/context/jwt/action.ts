@@ -1,6 +1,7 @@
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 
+import { paths } from 'src/routes/paths';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/global-config';
@@ -44,7 +45,7 @@ export const useSignIn = () => {
         user?.worker_type ||
         ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
       ) {
-        router.replace('/worker-panel');
+        router.replace(paths.dashboard.pechatPanel.root);
       } else {
         router.replace(returnTo);
       }
@@ -83,7 +84,7 @@ export const useStaffLogin = () => {
         user?.worker_type ||
         ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
       ) {
-        router.replace('/worker-panel');
+        router.replace(paths.dashboard.pechatPanel.root);
       } else {
         router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
       }
