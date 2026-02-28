@@ -110,7 +110,9 @@ export function WorkerPanelView() {
                         ) : planItems.length === 0 ? (
                             <TableRow><TableCell colSpan={5} align="center">
                                 <Typography color={planError ? 'error.main' : 'text.secondary'}>
-                                    {planError ? String((planError as any)?.response?.data?.detail || (planError as Error).message) : 'Vazifalar yo\'q'}
+                                    {planError
+                                        ? ((planError as any)?.response?.data?.detail || (planError as Error)?.message || 'Xatolik yuz berdi')
+                                        : 'Vazifalar yo\'q'}
                                 </Typography>
                             </TableCell></TableRow>
                         ) : planItems.map((item) => (
@@ -169,7 +171,9 @@ export function WorkerPanelView() {
                         ) : materials.length === 0 ? (
                             <TableRow><TableCell colSpan={4} align="center">
                                 <Typography color={materialsError ? 'error.main' : 'text.secondary'}>
-                                    {materialsError ? String((materialsError as any)?.response?.data?.detail || (materialsError as Error).message) : 'Materiallar yo\'q'}
+                                    {materialsError
+                                        ? ((materialsError as any)?.response?.data?.detail || (materialsError as Error)?.message || 'Xatolik yuz berdi')
+                                        : 'Materiallar yo\'q'}
                                 </Typography>
                             </TableCell></TableRow>
                         ) : materials.map((item) => (
