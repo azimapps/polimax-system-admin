@@ -15,6 +15,7 @@ import { useGetStaff } from 'src/hooks/use-staff';
 import { useCreateBrigada, useUpdateBrigada, useGetAssignedWorkers } from 'src/hooks/use-brigadas';
 
 import { useTranslate } from 'src/locales';
+import { brigadaApi } from 'src/api/brigada-api';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
@@ -58,6 +59,7 @@ export function BrigadaForm({ brigada, machineId, machineType, onSuccess }: Prop
         () => ({
             name: brigada?.name || '',
             leader: brigada?.leader || '',
+            leader_id: brigada?.leader_id || undefined,
             machine_id: machineId,
             machine_type: machineType,
         }),
@@ -73,11 +75,36 @@ export function BrigadaForm({ brigada, machineId, machineType, onSuccess }: Prop
 
     const onSubmit = handleSubmit(async (data) => {
         try {
+            const selectedWorker = workers.find((w) => w.fullname === data.leader);
+            if (selectedWorker) {
+                data.leader_id = selectedWorker.id;
+            }
+
             if (isEdit) {
                 await updateBrigada(data as UpdateBrigadaRequest);
+                if (data.leader_id && brigada?.leader_id !== data.leader_id) {
+                    try {
+                        await brigadaApi.addBrigadaMember(brigada!.id, {
+                            worker_id: data.leader_id,
+                            position: 'operator',
+                        });
+                    } catch (e) {
+                        console.error('Failed to add new leader as member', e);
+                    }
+                }
                 toast.success(t('messages.success_update'));
             } else {
-                await createBrigada(data);
+                const newBrigada = await createBrigada(data);
+                if (newBrigada?.id && data.leader_id) {
+                    try {
+                        await brigadaApi.addBrigadaMember(newBrigada.id, {
+                            worker_id: data.leader_id,
+                            position: 'operator',
+                        });
+                    } catch (e) {
+                        console.error('Failed to add leader as member', e);
+                    }
+                }
                 toast.success(t('messages.success_create'));
             }
             onSuccess?.();

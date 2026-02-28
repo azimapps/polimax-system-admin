@@ -8,6 +8,7 @@ export type Brigada = {
     version: number;
     name: string;
     leader: string;
+    leader_id: number | null;
     machine_id: number | null;
     machine_type: StanokType;
     created_at: string;
@@ -24,6 +25,7 @@ export type BrigadaListItem = Pick<Brigada, 'id' | 'version' | 'name' | 'leader'
 export type CreateBrigadaRequest = {
     name: string;
     leader?: string;
+    leader_id?: number;
     machine_id?: number;
     machine_type: StanokType;
 };
