@@ -28,7 +28,7 @@ import { getPlanItemSchema } from './order-planning-schema';
 
 type Props = {
     planItem?: PlanItem;
-    onSuccess?: () => void;
+    onSuccess?: (id?: number) => void;
 };
 
 export function OrderPlanningForm({ planItem, onSuccess }: Props) {
@@ -95,13 +95,14 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
     const onSubmit = handleSubmit(async (data: any) => {
         try {
             if (isEdit) {
-                await updatePlanItem(data as UpdatePlanItemRequest);
+                const response = await updatePlanItem(data as UpdatePlanItemRequest);
                 toast.success(t('messages.success_update'));
+                onSuccess?.(response.id);
             } else {
-                await createPlanItem(data as CreatePlanItemRequest);
+                const response = await createPlanItem(data as CreatePlanItemRequest);
                 toast.success(t('messages.success_create'));
+                onSuccess?.(response.id);
             }
-            onSuccess?.();
         } catch (error) {
             console.error(error);
             toast.error(t('messages.error_generic'));
@@ -161,7 +162,7 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
                 </Box>
 
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
-                    <Button variant="outlined" color="inherit" onClick={onSuccess}>
+                    <Button variant="outlined" color="inherit" onClick={() => onSuccess?.()}>
                         {t('form.cancel')}
                     </Button>
                     <LoadingButton type="submit" variant="contained" loading={isPending}>

@@ -44,9 +44,14 @@ export function useUpdatePlanItem(id: number) {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (data: UpdatePlanItemRequest) => planItemApi.updatePlanItem(id, data),
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: PLAN_ITEM_KEYS.lists() });
-            queryClient.invalidateQueries({ queryKey: PLAN_ITEM_KEYS.detail(id) });
+            // The backend returns a NEW record (immutable versioning).
+            // Cache the response against both the new ID (for future use) 
+            // and the old ID (to elegantly prevent 404s while dialogs are unmounting)
+            queryClient.setQueryData(PLAN_ITEM_KEYS.detail(id), data);
+            queryClient.setQueryData(PLAN_ITEM_KEYS.detail(data.id), data);
+            queryClient.invalidateQueries({ queryKey: PLAN_ITEM_KEYS.detail(data.id) });
         },
     });
 }
