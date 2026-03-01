@@ -16,7 +16,6 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
-import { useGetOrder } from 'src/hooks/use-orders';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
 import { useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
@@ -40,11 +39,12 @@ function PlanItemRow({ item, isAdmin, onAction }: { item: any, isAdmin: boolean,
     // If the backend magically embedded it with actual object data
     const hasEmbeddedOrder = item.order && typeof item.order === 'object' && 'order_number' in item.order;
 
-    // Fetch the full Order details directly if not embedded properly
-    const { data: fetchedOrder } = useGetOrder(item.order_id, { enabled: !hasEmbeddedOrder && !!item.order_id });
+    // Fetch the full PlanItem details which the backend Guarantees has an .order property nested inside.
+    // We cannot use /orders/:id because workers might get 403 Forbidden! They must fetch /plan-items/:id
+    const { data: fetchedPlanItem } = useGetPlanItem(item.id, { enabled: !hasEmbeddedOrder && !!item.id });
 
     // Extract the order object
-    const matchedOrder = hasEmbeddedOrder ? item.order : fetchedOrder;
+    const matchedOrder = hasEmbeddedOrder ? item.order : fetchedPlanItem?.order;
 
     return (
         <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
