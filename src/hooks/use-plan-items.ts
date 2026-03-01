@@ -23,11 +23,11 @@ export function useGetPlanItems(params?: GetPlanItemsParams, options?: { enabled
     });
 }
 
-export function useGetPlanItem(id: number) {
+export function useGetPlanItem(id: number, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: PLAN_ITEM_KEYS.detail(id),
         queryFn: () => planItemApi.getPlanItem(id),
-        enabled: !!id,
+        enabled: !!id && (options?.enabled !== false),
     });
 }
 

@@ -16,11 +16,10 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
-import { useGetOrder } from 'src/hooks/use-orders';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
-import { useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
 import { useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
+import { useGetPlanItem, useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetBrigadas, useGetBrigadaMembers } from 'src/hooks/use-brigadas';
 
 import { fDate } from 'src/utils/format-time';
@@ -37,22 +36,19 @@ import { ActionDialog } from './action-dialog';
 // ----------------------------------------------------------------------
 
 function PlanItemRow({ item, isAdmin, onAction }: { item: any, isAdmin: boolean, onAction: (id: number) => void }) {
-    // If the backend magically embedded it, use it directly (currently backend does not do this)
+    // If the backend magically embedded it, use it directly (currently backend does not do this for lists)
     const embeddedOrder = item.order;
 
-    // For Admins, we individually fetch the order by its exact ID so we don't miss Paginated/Old orders!
-    // Workers are forbidden from /orders/:id by the backend, so we disable it for them.
-    const { data: fetchedOrder } = useGetOrder(item.order_id, { enabled: isAdmin && !embeddedOrder });
+    // Fetch the full PlanItem details which is 100% guaranteed to have the embedded .order object!
+    const { data: fetchedPlanItem } = useGetPlanItem(item.id, { enabled: !embeddedOrder });
 
-    const matchedOrder = embeddedOrder || fetchedOrder;
+    // Extract the order object
+    const matchedOrder = embeddedOrder || fetchedPlanItem?.order;
 
     return (
         <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
             <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
                 {matchedOrder?.order_number || '-'}
-            </TableCell>
-            <TableCell>
-                {matchedOrder?.client?.fullname || matchedOrder?.client?.first_name || matchedOrder?.client_id || '-'}
             </TableCell>
             <TableCell>
                 {matchedOrder?.title || '-'}
@@ -121,7 +117,7 @@ export function InProgressView() {
     }, [hasMyData, manualStanok, filteredBrigadas]);
 
     // Format active names
-    const activeStanokName = hasMyData ? myData.machine?.name : (stanoks.find(s => s.id === selectedStanok)?.name || '...');
+    const activeStanokName = hasMyData ? myData.machine?.name : (stanoks.find((s: any) => s.id === selectedStanok)?.name || '...');
     const activeBrigadaName = hasMyData ? myData.brigada?.name : (allBrigadas.find((b: any) => b.id === selectedBrigada)?.name || '...');
 
     // Members mapping logic
@@ -179,7 +175,7 @@ export function InProgressView() {
                                     {activeStanokName}
                                 </MenuItem>
                             ) : (
-                                stanoks.map(stanok => (
+                                stanoks.map((stanok: any) => (
                                     <MenuItem key={stanok.id} value={stanok.id}>
                                         {stanok.name}
                                     </MenuItem>
@@ -240,7 +236,6 @@ export function InProgressView() {
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>
                                 <TableCell>Buyurtma raqami</TableCell>
-                                <TableCell>Mijoz</TableCell>
                                 <TableCell>Nomi</TableCell>
                                 <TableCell>Miqdori (kg)</TableCell>
                                 <TableCell>Sana</TableCell>
