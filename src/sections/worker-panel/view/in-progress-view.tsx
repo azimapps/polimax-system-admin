@@ -105,6 +105,13 @@ export function InProgressView() {
 
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
 
+    // Debugging log so the developer can see the exact backend payload
+    useEffect(() => {
+        if (planItems.length > 0) {
+            console.log("API response planItems:", planItems);
+        }
+    }, [planItems]);
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h4" sx={{ mb: 1, fontWeight: 'bold' }}>
