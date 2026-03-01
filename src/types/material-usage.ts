@@ -86,6 +86,14 @@ export interface GetMaterialUsagesParams {
     offset?: number;
 }
 
+export interface ProductionLogMaterial {
+    ombor_transaction_id: number;
+    used_amount: number;
+    remainder_destination: 'machine_warehouse' | 'main_warehouse';
+    percentage?: number;
+    notes?: string;
+}
+
 export interface ProductionLogRequest {
     plan_item_id: number;
     meters_produced: number;
@@ -93,6 +101,7 @@ export interface ProductionLogRequest {
     work_type?: string;
     percentage?: number;
     notes?: string;
+    materials?: ProductionLogMaterial[];
 }
 
 export interface ProductionLog {

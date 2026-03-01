@@ -15,7 +15,8 @@ import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
-import { useLogProduction, useGetMachineStock, useTransferPlanItem, useLogMaterialUsage } from 'src/hooks/use-material-usage';
+import { useGetMyMaterials } from 'src/hooks/use-worker-panel';
+import { useLogProduction, useGetMachineStock, useTransferPlanItem } from 'src/hooks/use-material-usage';
 
 type Props = {
     open: boolean;
@@ -26,6 +27,7 @@ type Props = {
 export function ActionDialog({ open, onClose, planItemId }: Props) {
     const { data: stock = [], isLoading: isStockLoading } = useGetMachineStock();
     const { data: brigadas = [] } = useGetBrigadas();
+    const { data: latestMaterials = [] } = useGetMyMaterials({ limit: 200 });
 
     // Form state
     const [usageAmounts, setUsageAmounts] = useState<Record<number, string>>({});
@@ -35,23 +37,38 @@ export function ActionDialog({ open, onClose, planItemId }: Props) {
 
     const logProd = useLogProduction();
     const trans = useTransferPlanItem(planItemId || 0);
-    const logUsage = useLogMaterialUsage();
 
     if (!planItemId) return null;
 
     const handleSave = async () => {
         try {
-            // Log Production if filled
-            if (meters || kg) {
+            // Build materials array
+            const materialsPayload = Object.entries(usageAmounts)
+                .map(([matId, amount]) => {
+                    const parsedAmount = Number(amount);
+                    if (!parsedAmount || parsedAmount <= 0) return null;
+
+                    // Find a matching chiqim transaction for this material to use its ID
+                    const tx = latestMaterials.find((m: any) => m.ombor_item_id === Number(matId) && m.transaction_type === 'chiqim');
+                    if (!tx) return null;
+
+                    return {
+                        ombor_transaction_id: tx.id,
+                        used_amount: parsedAmount,
+                        remainder_destination: 'machine_warehouse' as const,
+                    };
+                })
+                .filter(Boolean) as any[];
+
+            // Log Production (and materials if any) if filled
+            if (meters || kg || materialsPayload.length > 0) {
                 await logProd.mutateAsync({
                     plan_item_id: planItemId,
                     meters_produced: Number(meters) || 0,
                     kg_produced: Number(kg) || 0,
+                    materials: materialsPayload.length > 0 ? materialsPayload : undefined,
                 });
             }
-
-            // In real app we also map over usageAmounts and fire logUsage.mutateAsync() here.
-            // But we need ombor_transaction_id. For now, doing just production and transfer.
 
             // Transfer if dispatch chosen
             if (dispatchTo) {
@@ -66,7 +83,7 @@ export function ActionDialog({ open, onClose, planItemId }: Props) {
         }
     };
 
-    const isSaving = logProd.isPending || trans.isPending || logUsage.isPending;
+    const isSaving = logProd.isPending || trans.isPending;
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: '#212B36', backgroundImage: 'none', borderRadius: 2 } }}>
