@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
-import { useGetOrders } from 'src/hooks/use-orders';
+import { useGetOrder } from 'src/hooks/use-orders';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
@@ -33,6 +33,48 @@ import { StanokType } from 'src/types/stanok';
 import { PlanItemStatus } from 'src/types/plan-item';
 
 import { ActionDialog } from './action-dialog';
+
+// ----------------------------------------------------------------------
+
+function PlanItemRow({ item, isAdmin, onAction }: { item: any, isAdmin: boolean, onAction: (id: number) => void }) {
+    // If the backend magically embedded it, use it directly (currently backend does not do this)
+    const embeddedOrder = item.order;
+
+    // For Admins, we individually fetch the order by its exact ID so we don't miss Paginated/Old orders!
+    // Workers are forbidden from /orders/:id by the backend, so we disable it for them.
+    const { data: fetchedOrder } = useGetOrder(item.order_id, { enabled: isAdmin && !embeddedOrder });
+
+    const matchedOrder = embeddedOrder || fetchedOrder;
+
+    return (
+        <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
+            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
+                {matchedOrder?.order_number || '-'}
+            </TableCell>
+            <TableCell>
+                {matchedOrder?.client?.fullname || matchedOrder?.client?.first_name || matchedOrder?.client_id || '-'}
+            </TableCell>
+            <TableCell>
+                {matchedOrder?.title || '-'}
+            </TableCell>
+            <TableCell>
+                0 kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {matchedOrder?.quantity_kg || 0} kg</Box>
+            </TableCell>
+            <TableCell>
+                {fDate(item.start_date)}
+            </TableCell>
+            <TableCell align="right">
+                <IconButton
+                    onClick={() => onAction(item.id)}
+                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
+                    <Iconify icon="solar:info-circle-bold" />
+                </IconButton>
+            </TableCell>
+        </TableRow>
+    );
+}
+
+// ----------------------------------------------------------------------
 
 export function InProgressView() {
     const { user } = useAuthContext();
@@ -99,9 +141,6 @@ export function InProgressView() {
 
     const planItems = isAdmin ? adminPlanItems : workerPlanItems;
     const isLoadingPlans = isAdmin ? isLoadingAdminPlans : isLoadingWorkerPlans;
-
-    // Fetch orders to map plan_item.order_id -> Order details (Only Admins need this)
-    const { data: orders = [] } = useGetOrders(undefined, { enabled: isAdmin });
 
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
 
@@ -222,37 +261,9 @@ export function InProgressView() {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                planItems.map((item: any) => {
-                                    // Try to use the embedded order object if the backend provides it, otherwise search via useGetOrders array
-                                    const matchedOrder = item.order || orders.find((o) => o.id === item.order_id);
-
-                                    return (
-                                        <TableRow key={item.id} sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
-                                            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
-                                                {matchedOrder?.order_number || '-'}
-                                            </TableCell>
-                                            <TableCell>
-                                                {matchedOrder?.client?.fullname || matchedOrder?.client?.first_name || matchedOrder?.client_id || '-'}
-                                            </TableCell>
-                                            <TableCell>
-                                                {matchedOrder?.title || '-'}
-                                            </TableCell>
-                                            <TableCell>
-                                                0 kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {matchedOrder?.quantity_kg || 0} kg</Box>
-                                            </TableCell>
-                                            <TableCell>
-                                                {fDate(item.start_date)}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                <IconButton
-                                                    onClick={() => setActionDialogTarget(item.id)}
-                                                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                                                    <Iconify icon="solar:info-circle-bold" />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })
+                                planItems.map((item: any) => (
+                                    <PlanItemRow key={item.id} item={item} isAdmin={isAdmin} onAction={setActionDialogTarget} />
+                                ))
                             )}
                         </TableBody>
                     </Table>

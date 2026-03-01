@@ -30,11 +30,11 @@ export function useGetOrders(params?: {
     });
 }
 
-export function useGetOrder(id: number) {
+export function useGetOrder(id: number, options?: { enabled?: boolean }) {
     return useQuery({
         queryKey: QUERY_KEYS.order(id),
         queryFn: () => orderApi.getOrder(id),
-        enabled: !!id,
+        enabled: !!id && (options?.enabled !== false),
     });
 }
 
