@@ -164,6 +164,7 @@ export const useNavData = (): NavSectionProps['data'] => {
             children: [
               { title: t('cash'), path: '/finance/cash' },
               { title: t('transfer'), path: '/finance/transfer' },
+              { title: t('staff_debt', { defaultValue: 'Xodimlar Qarzi' }), path: '/finance/staff-debt' },
             ],
           },
 

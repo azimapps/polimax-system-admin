@@ -69,6 +69,7 @@ const OmborAccounts = lazy(() => import('src/pages/dashboard/ombor-account/list'
 const FinanceCashPage = lazy(() => import('src/pages/finance/cash'));
 const FinanceTransferPage = lazy(() => import('src/pages/finance/transfer'));
 const FinanceArchivedPage = lazy(() => import('src/pages/finance/archived'));
+const FinanceStaffDebtPage = lazy(() => import('src/pages/finance/staff-debt'));
 // Production
 const ProductionPage = lazy(() => import('src/pages/production/page'));
 const OrderPlanningPage = lazy(() => import('src/pages/order-planning/page'));
@@ -214,6 +215,7 @@ export const routesSection: RouteObject[] = [
           { index: true, element: <FinanceCashPage /> },
           { path: 'cash', element: <FinanceCashPage /> },
           { path: 'transfer', element: <FinanceTransferPage /> },
+          { path: 'staff-debt', element: <FinanceStaffDebtPage /> },
           { path: 'archived', element: <FinanceArchivedPage /> },
         ],
       },
