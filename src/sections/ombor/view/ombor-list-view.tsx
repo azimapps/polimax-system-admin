@@ -62,7 +62,7 @@ export function OmborListView() {
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
     const { user } = useAuthContext();
-    const isAdmin = ['admin', 'ceo', 'manager', 'ombor'].includes(user?.role || '');
+    const isAdmin = ['admin', 'ceo', 'manager', 'ombor', 'accountant'].includes(user?.role || '');
 
     const allowedTabs = Object.values(OmborType).filter(tab => {
         if (isAdmin) return true;
