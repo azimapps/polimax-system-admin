@@ -363,27 +363,29 @@ function OmborTableComponent({ type, items, loading, onHistory, onTransactions, 
                                             borderLeft: (theme) => `1px solid ${theme.palette.divider}`,
                                             whiteSpace: 'nowrap'
                                         }}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        onClick={(e) => e.stopPropagation()}
                                     >
                                         <Tooltip title={t('transactions.title')} arrow>
-                                            <IconButton onClick={() => onTransactions(row.id)}>
+                                            <IconButton onClick={(e) => { e.stopPropagation(); e.preventDefault(); onTransactions(row.id); }}>
                                                 <Iconify icon="solar:transfer-horizontal-bold-duotone" />
                                             </IconButton>
                                         </Tooltip>
 
                                         <Tooltip title="History" arrow>
-                                            <IconButton onClick={() => onHistory(row.id)}>
+                                            <IconButton onClick={(e) => { e.stopPropagation(); e.preventDefault(); onHistory(row.id); }}>
                                                 <Iconify icon="solar:clock-circle-bold" />
                                             </IconButton>
                                         </Tooltip>
 
                                         <Tooltip title={t('edit')} arrow>
-                                            <IconButton onClick={() => onEdit(row.id)}>
+                                            <IconButton onClick={(e) => { e.stopPropagation(); e.preventDefault(); onEdit(row.id); }}>
                                                 <Iconify icon="solar:pen-bold" />
                                             </IconButton>
                                         </Tooltip>
 
                                         <Tooltip title={t('delete')} arrow>
-                                            <IconButton color="error" onClick={() => onDelete(row.id)}>
+                                            <IconButton color="error" onClick={(e) => { e.stopPropagation(); e.preventDefault(); onDelete(row.id); }}>
                                                 <Iconify icon="solar:trash-bin-trash-bold" />
                                             </IconButton>
                                         </Tooltip>
