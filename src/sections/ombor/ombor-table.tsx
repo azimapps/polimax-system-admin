@@ -1,7 +1,10 @@
 import type { OmborItem } from 'src/types/ombor';
 
+import { memo } from 'react';
+
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -34,7 +37,7 @@ type Props = {
     onDelete: (id: number) => void;
 };
 
-export function OmborTable({ type, items, loading, onHistory, onTransactions, onEdit, onDelete }: Props) {
+function OmborTableComponent({ type, items, loading, onHistory, onTransactions, onEdit, onDelete }: Props) {
     const { t, currentLang } = useTranslate('ombor');
     const isCyrillic = currentLang.value === 'ru' || currentLang.value === 'uz-Cyrl';
     const { data: partners = [] } = useGetPartners();
@@ -358,23 +361,32 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                                             backgroundColor: 'background.paper',
                                             boxShadow: (theme) => `-10px 0 20px -10px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)'}`,
                                             borderLeft: (theme) => `1px solid ${theme.palette.divider}`,
+                                            whiteSpace: 'nowrap'
                                         }}
                                     >
-                                        <IconButton onClick={() => onTransactions(row.id)}>
-                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" />
-                                        </IconButton>
+                                        <Tooltip title={t('transactions.title')} arrow>
+                                            <IconButton onClick={() => onTransactions(row.id)}>
+                                                <Iconify icon="solar:transfer-horizontal-bold-duotone" />
+                                            </IconButton>
+                                        </Tooltip>
 
-                                        <IconButton onClick={() => onHistory(row.id)}>
-                                            <Iconify icon="solar:clock-circle-bold" />
-                                        </IconButton>
+                                        <Tooltip title="History" arrow>
+                                            <IconButton onClick={() => onHistory(row.id)}>
+                                                <Iconify icon="solar:clock-circle-bold" />
+                                            </IconButton>
+                                        </Tooltip>
 
-                                        <IconButton onClick={() => onEdit(row.id)}>
-                                            <Iconify icon="solar:pen-bold" />
-                                        </IconButton>
+                                        <Tooltip title={t('edit')} arrow>
+                                            <IconButton onClick={() => onEdit(row.id)}>
+                                                <Iconify icon="solar:pen-bold" />
+                                            </IconButton>
+                                        </Tooltip>
 
-                                        <IconButton color="error" onClick={() => onDelete(row.id)}>
-                                            <Iconify icon="solar:trash-bin-trash-bold" />
-                                        </IconButton>
+                                        <Tooltip title={t('delete')} arrow>
+                                            <IconButton color="error" onClick={() => onDelete(row.id)}>
+                                                <Iconify icon="solar:trash-bin-trash-bold" />
+                                            </IconButton>
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -387,3 +399,5 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
         </TableContainer>
     );
 }
+
+export const OmborTable = memo(OmborTableComponent);
