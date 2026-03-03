@@ -44,7 +44,8 @@ type Props = {
 };
 
 export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
-    const { t } = useTranslate('ombor');
+    const { t, currentLang } = useTranslate('ombor');
+    const isCyrillic = currentLang.value === 'ru' || currentLang.value === 'uz-Cyrl';
 
     const activeType = item?.ombor_type || type;
     let partnerCategory: string | undefined = undefined;
@@ -96,6 +97,8 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
         price_per_liter: item?.price_per_liter || null,
         price: item?.price || null,
 
+        number_identifier: item?.number_identifier || '',
+
         // Silindr
         seriya_number: item?.seriya_number || '',
         origin: item?.origin || null,
@@ -125,12 +128,48 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
     const currentType = watchForm('ombor_type');
     const currentPlyonkaCategory = watchForm('plyonka_category');
+    const currentPlyonkaSubcategory = watchForm('plyonka_subcategory');
+
+    useEffect(() => {
+        if (currentType === OmborType.PLYONKA && currentPlyonkaCategory) {
+            const cat = currentPlyonkaCategory;
+            const cyrillicCat =
+                cat === 'bopp'
+                    ? 'бопп'
+                    : cat === 'cpp'
+                      ? 'спп'
+                      : cat === 'pe'
+                        ? 'пэ'
+                        : cat === 'pet'
+                          ? 'пэт'
+                          : cat === 'tvist'
+                            ? 'твист'
+                            : cat;
+
+            const sub = currentPlyonkaSubcategory || '';
+            let cyrillicSub = sub;
+            if (sub === 'prazrachniy') cyrillicSub = 'прозрачный';
+            else if (sub === 'metal') cyrillicSub = 'металл';
+            else if (sub === 'jemchuk') cyrillicSub = 'жемчуг';
+            else if (sub === 'jemchuk metal') cyrillicSub = 'жемчуг металл';
+            else if (sub === 'beliy') cyrillicSub = 'белый';
+            else if (sub === 'jemchuk etiketochnaya' || sub === 'etiketochnaya') cyrillicSub = 'жемчуг этикеточная';
+            else if (sub === 'prazrachniy etiketochnaya') cyrillicSub = 'пр.этикеточная';
+            else if (sub === 'matovaya') cyrillicSub = 'матовая';
+
+            const latinName = `${cat.toUpperCase()} ${sub.toUpperCase()}`.trim();
+            const cyrillicName = `${cyrillicCat.toUpperCase()} ${cyrillicSub.toUpperCase()}`.trim();
+
+            methods.setValue('name', `${latinName} / ${cyrillicName}`);
+        }
+    }, [currentType, currentPlyonkaCategory, currentPlyonkaSubcategory, methods]);
 
     const plyonkaSubcategories = useMemo(() => {
-        if (currentPlyonkaCategory === PlyonkaCategory.BOPP) return ['prazrachniy', 'metal', 'jemchuk', 'jemchuk metal'];
-        if (currentPlyonkaCategory === PlyonkaCategory.CPP) return ['prazrachniy', 'beliy', 'metal'];
-        if (currentPlyonkaCategory === PlyonkaCategory.PE) return ['prazrachniy', 'beliy'];
-        if (currentPlyonkaCategory === PlyonkaCategory.PET) return ['prazrachniy', 'metal', 'beliy'];
+        if (currentPlyonkaCategory === PlyonkaCategory.BOPP) return ['prazrachniy', 'metal', 'jemchuk', 'jemchuk metal', 'jemchuk etiketochnaya', 'prazrachniy etiketochnaya', 'matovaya'];
+        if (currentPlyonkaCategory === PlyonkaCategory.CPP) return ['prazrachniy', 'beliy', 'metal', 'jemchuk etiketochnaya', 'prazrachniy etiketochnaya', 'matovaya'];
+        if (currentPlyonkaCategory === PlyonkaCategory.PE) return ['prazrachniy', 'beliy', 'jemchuk etiketochnaya', 'prazrachniy etiketochnaya', 'matovaya'];
+        if (currentPlyonkaCategory === PlyonkaCategory.PET) return ['prazrachniy', 'metal', 'beliy', 'jemchuk etiketochnaya', 'prazrachniy etiketochnaya', 'matovaya'];
+        if (currentPlyonkaCategory === PlyonkaCategory.TVIST) return ['prazrachniy', 'metal', 'beliy', 'prazrachniy etiketochnaya', 'matovaya'];
         return [];
     }, [currentPlyonkaCategory]);
 
@@ -165,13 +204,14 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
     const renderCommonFields = (
         <>
-            <Field.Text
-
-                name="name"
-                label={t('form.name')}
-                InputLabelProps={{ shrink: true }}
-                required
-            />
+            {currentType !== OmborType.PLYONKA && (
+                <Field.Text
+                    name="name"
+                    label={t('form.name')}
+                    InputLabelProps={{ shrink: true }}
+                    required
+                />
+            )}
 
             <Field.DatePicker
                 name="date"
@@ -183,24 +223,23 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                     },
                 }}
             />
-
-            {!isDavaldiylik && (
-                <Field.Select
-                    name="price_currency"
-                    label={t('form.price_currency')}
-                    InputLabelProps={{ shrink: true }}
-                >
-                    {Object.values(PriceCurrency).map((currency) => (
-                        <MenuItem key={currency} value={currency}>
-                            {currency.toUpperCase()}
-                        </MenuItem>
-                    ))}
-                </Field.Select>
-            )}
-
         </>
     );
 
+
+    const currencyField = !isDavaldiylik && (
+        <Field.Select
+            name="price_currency"
+            label={t('form.price_currency')}
+            InputLabelProps={{ shrink: true }}
+        >
+            {Object.values(PriceCurrency).map((currency) => (
+                <MenuItem key={currency} value={currency}>
+                    {currency.toUpperCase()}
+                </MenuItem>
+            ))}
+        </Field.Select>
+    );
 
     const renderPlyonkaFields = (
         <>
@@ -210,11 +249,26 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 required
             >
-                {Object.values(PlyonkaCategory).map((cat) => (
-                    <MenuItem key={cat} value={cat}>
-                        {cat.toUpperCase()}
-                    </MenuItem>
-                ))}
+                {Object.values(PlyonkaCategory).map((cat) => {
+                    const cyrillicCat =
+                        cat === 'bopp'
+                            ? 'бопп'
+                            : cat === 'cpp'
+                              ? 'спп'
+                              : cat === 'pe'
+                                ? 'пэ'
+                                : cat === 'pet'
+                                  ? 'пэт'
+                                  : cat === 'tvist'
+                                    ? 'твист'
+                                    : cat;
+                    const displayCat = isCyrillic ? cyrillicCat.toUpperCase() : cat.toUpperCase();
+                    return (
+                        <MenuItem key={cat} value={cat}>
+                            {displayCat}
+                        </MenuItem>
+                    );
+                })}
             </Field.Select>
             <Field.Select
                 name="plyonka_subcategory"
@@ -222,11 +276,25 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
             >
                 <MenuItem value="">{/* Bo'sh qoldirish uchun */}</MenuItem>
-                {plyonkaSubcategories.map((sub) => (
-                    <MenuItem key={sub} value={sub}>
-                        {sub}
-                    </MenuItem>
-                ))}
+                {plyonkaSubcategories.map((sub) => {
+                    let displaySub = sub;
+                    if (isCyrillic) {
+                        if (sub === 'prazrachniy') displaySub = 'прозрачный';
+                        else if (sub === 'metal') displaySub = 'металл';
+                        else if (sub === 'jemchuk') displaySub = 'жемчуг';
+                        else if (sub === 'jemchuk metal') displaySub = 'жемчуг металл';
+                        else if (sub === 'beliy') displaySub = 'белый';
+                        else if (sub === 'jemchuk etiketochnaya' || sub === 'etiketochnaya') displaySub = 'жемчуг этикеточная';
+                        else if (sub === 'prazrachniy etiketochnaya') displaySub = 'пр.этикеточная';
+                        else if (sub === 'matovaya') displaySub = 'матовая';
+                    }
+                    
+                    return (
+                        <MenuItem key={sub} value={sub}>
+                            {displaySub.charAt(0).toUpperCase() + displaySub.slice(1)}
+                        </MenuItem>
+                    );
+                })}
             </Field.Select>
             <Field.Text
                 name="thickness"
@@ -241,6 +309,17 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 type="number"
             />
             <Field.Text
+                name="number_identifier"
+                label={t('form.invoice')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
+                name="quantity"
+                label={t('form.rolls')}
+                InputLabelProps={{ shrink: true }}
+                type="number"
+            />
+            <Field.Text
                 name="total_kg"
                 label={t('form.total_kg')}
                 InputLabelProps={{ shrink: true }}
@@ -248,13 +327,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price_per_kg"
-                    label={t('form.price_per_kg')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price_per_kg"
+                        label={t('form.price_per_kg')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
             <Field.Text
                 name="seriya_number"
@@ -294,29 +376,31 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 label={t('form.marka')}
                 InputLabelProps={{ shrink: true }}
             />
-            <Field.Text
-                name="barrels"
-                label={t('form.barrels')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-            />
-            <Field.Text
-                name="total_kg"
-                label={t('form.total_kg')}
-                InputLabelProps={{ shrink: true }}
-                type="number"
-                required
-            />
-            {!isDavaldiylik && (
-                <Field.Text
-                    name="price_per_kg"
-                    label={t('form.price_per_kg')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
-            )}
-            <Field.Text
+                            <Field.Text
+                                name="barrels"
+                                label={t('form.barrels')}
+                                InputLabelProps={{ shrink: true }}
+                                type="number"
+                            />
+                            <Field.Text
+                                name="total_kg"
+                                label={t('form.total_kg')}
+                                InputLabelProps={{ shrink: true }}
+                                type="number"
+                                required
+                            />
+                            {!isDavaldiylik && (
+                                <>
+                                    <Field.Text
+                                        name="price_per_kg"
+                                        label={t('form.price_per_kg')}
+                                        InputLabelProps={{ shrink: true }}
+                                        type="number"
+                                        required
+                                    />
+                                    {currencyField}
+                                </>
+                            )}            <Field.Text
                 name="seriya_number"
                 label={t('form.seriya_number')}
                 InputLabelProps={{ shrink: true }}
@@ -351,6 +435,11 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
 
             </Field.Select>
             <Field.Text
+                name="seriya_number"
+                label={t('form.seriya_number')}
+                InputLabelProps={{ shrink: true }}
+            />
+            <Field.Text
                 name="total_liter"
                 label={t('form.total_liter')}
                 InputLabelProps={{ shrink: true }}
@@ -358,19 +447,17 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price_per_liter"
-                    label={t('form.price_per_liter')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price_per_liter"
+                        label={t('form.price_per_liter')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
-            <Field.Text
-                name="seriya_number"
-                label={t('form.seriya_number')}
-                InputLabelProps={{ shrink: true }}
-            />
             {!isDavaldiylik && (
                 <Field.Select name="supplier_id" label={t('form.supplier_id')} InputLabelProps={{ shrink: true }}>
                     <MenuItem value="">None</MenuItem>
@@ -414,6 +501,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                         InputLabelProps={{ shrink: true }}
                         type="number"
                     />
+                    {currencyField}
                 </>
             )}
             <Field.Text
@@ -495,13 +583,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price"
-                    label={t('form.price')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price"
+                        label={t('form.price')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
             <Field.Text
                 name="usage"
@@ -551,13 +642,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price"
-                    label={t('form.price')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price"
+                        label={t('form.price')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
             <Field.Text
                 name="net_weight"
@@ -620,6 +714,7 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 InputLabelProps={{ shrink: true }}
                 type="number"
             />
+            {currencyField}
             <Field.Text
                 name="number_identifier"
                 label={t('form.number_identifier')}
@@ -673,13 +768,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price"
-                    label={t('form.price')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price"
+                        label={t('form.price')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
         </>
     );
@@ -694,13 +792,16 @@ export function OmborForm({ type, item, onSuccess, onCancel }: Props) {
                 required
             />
             {!isDavaldiylik && (
-                <Field.Text
-                    name="price_per_kg"
-                    label={t('form.price_per_kg')}
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    required
-                />
+                <>
+                    <Field.Text
+                        name="price_per_kg"
+                        label={t('form.price_per_kg')}
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        required
+                    />
+                    {currencyField}
+                </>
             )}
         </>
     );

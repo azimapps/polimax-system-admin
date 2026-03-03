@@ -18,6 +18,8 @@ export const getOmborSchema = (t: any) =>
             supplier_id: z.number().optional().nullable(),
             davaldiylik_id: z.number().optional().nullable(),
             seriya_number: z.string().optional().nullable(),
+            number_identifier: z.string().optional().nullable(),
+            quantity: z.number().optional().nullable(),
             plyonka_subcategory: z.string().optional().nullable(),
             thickness: z.number().optional().nullable(),
             width: z.number().optional().nullable(),

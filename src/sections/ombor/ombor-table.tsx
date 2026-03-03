@@ -35,7 +35,8 @@ type Props = {
 };
 
 export function OmborTable({ type, items, loading, onHistory, onTransactions, onEdit, onDelete }: Props) {
-    const { t } = useTranslate('ombor');
+    const { t, currentLang } = useTranslate('ombor');
+    const isCyrillic = currentLang.value === 'ru' || currentLang.value === 'uz-Cyrl';
     const { data: partners = [] } = useGetPartners();
     const { data: clients = [] } = useGetClients();
     const { data: materials = [] } = useGetMaterials();
@@ -48,9 +49,6 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
         }
         if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.ZAPCHASTLAR, OmborType.OTXOT, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type)) {
             cols.push({ id: 'davaldiylik_id', label: t('form.client_id') });
-        }
-        if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type)) {
-            cols.push({ id: 'seriya_number', label: t('form.seriya_number') });
         }
         if ([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type)) {
             cols.push({ id: 'price_per_kg', label: t('form.price_per_kg') });
@@ -65,7 +63,9 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                     { id: 'plyonka_category', label: t('form.plyonka_category') },
                     { id: 'plyonka_subcategory', label: t('form.plyonka_subcategory') },
                     { id: 'thickness', label: t('form.thickness') },
-                    { id: 'width', label: t('form.width') }
+                    { id: 'width', label: t('form.width') },
+                    { id: 'number_identifier', label: t('form.invoice') },
+                    { id: 'rolls', label: t('form.rolls') }
                 );
                 break;
             case OmborType.KRASKA:
@@ -110,9 +110,10 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
 
     const TABLE_HEAD: { id: string; label: string; align?: 'left' | 'center' | 'right'; sx?: any }[] = [
         { id: 'date', label: t('form.date') },
-        { id: 'name', label: t('form.name') },
+        ...([OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) ? [{ id: 'seriya_number', label: t('form.seriya_number') }] : []),
+        ...(type !== OmborType.PLYONKA ? [{ id: 'name', label: t('form.name') }] : []),
         ...extraColumns,
-        { id: 'quantity', label: t('form.quantity'), align: 'center' },
+        ...(type !== OmborType.PLYONKA ? [{ id: 'quantity', label: t('form.quantity'), align: 'center' }] : []),
         { id: 'price', label: t('form.price'), align: 'center' },
         { id: 'description', label: t('form.description') },
         {
@@ -130,7 +131,7 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
         },
     ];
 
-    const tableMinWidth = 800 + (extraColumns.length * 150);
+    const tableMinWidth = 1200 + (extraColumns.length * 150);
 
     const getQuantityDisplay = (item: OmborItem) => {
         switch (item.ombor_type) {
@@ -164,12 +165,13 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
             }
         }
 
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
+        const formattedPrice = new Intl.NumberFormat('en-US', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
         }).format(price || 0);
+
+        const currency = item.price_currency ? item.price_currency.toUpperCase() : 'USD';
+        return `${formattedPrice} ${currency}`;
     };
 
     const renderExtraCells = (row: OmborItem) => {
@@ -201,33 +203,62 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                 {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR, OmborType.KLEY, OmborType.ZAPCHASTLAR, OmborType.OTXOT, OmborType.TAYYOR_TOSHKENT, OmborType.TAYYOR_ANGREN].includes(type) && (
                     <TableCell sx={cellSx}>{getClientName(row.client_id, row.davaldiylik_id)}</TableCell>
                 )}
-                {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
-                    <TableCell sx={cellSx}>{row.seriya_number || '-'}</TableCell>
-                )}
                 {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.OTXOT].includes(type) && (
                     <TableCell sx={cellSx}>
-                        {row.price_per_kg ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row.price_per_kg) : '-'}
+                        {row.price_per_kg ? `${new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(row.price_per_kg)} ${row.price_currency?.toUpperCase() || 'USD'}` : '-'}
                     </TableCell>
                 )}
                 {[OmborType.RASTVARITEL, OmborType.ARALASHMASI].includes(type) && (
                     <TableCell sx={cellSx}>
-                        {row.price_per_liter ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row.price_per_liter) : '-'}
+                        {row.price_per_liter ? `${new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(row.price_per_liter)} ${row.price_currency?.toUpperCase() || 'USD'}` : '-'}
                     </TableCell>
                 )}
             </>
         );
 
         switch (type) {
-            case OmborType.PLYONKA:
+            case OmborType.PLYONKA: {
+                const cat = row.plyonka_category;
+                const cyrillicCat =
+                    cat === 'bopp'
+                        ? 'бопп'
+                        : cat === 'cpp'
+                          ? 'спп'
+                          : cat === 'pe'
+                            ? 'пэ'
+                            : cat === 'pet'
+                              ? 'пэт'
+                              : cat === 'tvist'
+                                ? 'твист'
+                                : cat;
+                const displayCat = cat ? (isCyrillic ? cyrillicCat?.toUpperCase() : cat.toUpperCase()) : '-';
+
+                let displaySubcat = row.plyonka_subcategory || '-';
+                if (isCyrillic && displaySubcat && !displaySubcat.includes('/')) {
+                    if (displaySubcat === 'prazrachniy') displaySubcat = 'прозрачный';
+                    else if (displaySubcat === 'metal') displaySubcat = 'металл';
+                    else if (displaySubcat === 'jemchuk') displaySubcat = 'жемчуг';
+                    else if (displaySubcat === 'jemchuk metal') displaySubcat = 'жемчуг металл';
+                    else if (displaySubcat === 'beliy') displaySubcat = 'белый';
+                    else if (displaySubcat === 'jemchuk etiketochnaya' || displaySubcat === 'etiketochnaya') displaySubcat = 'жемчуг этикеточная';
+                    else if (displaySubcat === 'prazrachniy etiketochnaya') displaySubcat = 'пр.этикеточная';
+                    else if (displaySubcat === 'matovaya') displaySubcat = 'матовая';
+                }
+
                 return (
                     <>
                         {renderCommonCells()}
-                        <TableCell sx={cellSx}>{row.plyonka_category ? row.plyonka_category.toUpperCase() : '-'}</TableCell>
-                        <TableCell sx={cellSx}>{row.plyonka_subcategory || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{displayCat}</TableCell>
+                        <TableCell sx={cellSx}>
+                            {displaySubcat !== '-' ? displaySubcat.charAt(0).toUpperCase() + displaySubcat.slice(1) : '-'}
+                        </TableCell>
                         <TableCell sx={cellSx}>{row.thickness ? `${row.thickness} mkm` : '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.width ? `${row.width} mm` : '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.quantity || '-'}</TableCell>
                     </>
                 );
+            }
             case OmborType.KRASKA:
             case OmborType.SUYUQ_KRASKA:
                 return (
@@ -293,15 +324,23 @@ export function OmborTable({ type, items, loading, onHistory, onTransactions, on
                                         {fDate(row.date)}
                                     </TableCell>
 
-                                    <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
-                                        <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
-                                    </TableCell>
+                                    {[OmborType.PLYONKA, OmborType.KRASKA, OmborType.SUYUQ_KRASKA, OmborType.RASTVARITEL, OmborType.SILINDIR].includes(type) && (
+                                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.seriya_number || '-'}</TableCell>
+                                    )}
+
+                                    {type !== OmborType.PLYONKA && (
+                                        <TableCell sx={{ minWidth: 200, whiteSpace: 'nowrap' }}>
+                                            <Box sx={{ fontWeight: 500 }}>{row.name}</Box>
+                                        </TableCell>
+                                    )}
 
                                     {renderExtraCells(row)}
 
-                                    <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
-                                        {getQuantityDisplay(row)}
-                                    </TableCell>
+                                    {type !== OmborType.PLYONKA && (
+                                        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
+                                            {getQuantityDisplay(row)}
+                                        </TableCell>
+                                    )}
 
                                     <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
                                         {getPriceDisplay(row)}

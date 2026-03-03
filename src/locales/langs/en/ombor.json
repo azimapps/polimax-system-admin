@@ -45,6 +45,8 @@
         "plyonka_subcategory": "Film Subcategory",
         "thickness": "Thickness",
         "width": "Width",
+        "invoice": "Invoice",
+        "rolls": "Rolls",
         "color_name": "Color Name",
         "color_hex": "Color Hex",
         "marka": "Brand",

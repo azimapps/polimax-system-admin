@@ -45,6 +45,8 @@
         "plyonka_subcategory": "Подкатегория пленки",
         "thickness": "Толщина",
         "width": "Ширина",
+        "invoice": "Инвойс",
+        "rolls": "Рулоны",
         "color_name": "Название цвета",
         "color_hex": "Код цвета",
         "marka": "Марка",

@@ -21,7 +21,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useRevertOmborItem, useGetOmborItemHistory } from 'src/hooks/use-ombor';
 
 import { fDate } from 'src/utils/format-time';
-import { fCurrency } from 'src/utils/format-number';
 
 import { useTranslate } from 'src/locales';
 
@@ -79,7 +78,13 @@ export function OmborHistoryDialog({ open, onClose, id, type }: Props) {
             }
         }
 
-        return `${fCurrency(price)} ${item.price_currency?.toUpperCase() || ''}`;
+        const formattedPrice = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+        }).format(price || 0);
+
+        const currency = item.price_currency ? item.price_currency.toUpperCase() : 'USD';
+        return `${formattedPrice} ${currency}`;
     };
 
     const handleRevertClick = useCallback(

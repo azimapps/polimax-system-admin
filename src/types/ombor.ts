@@ -25,6 +25,7 @@ export enum PlyonkaCategory {
     CPP = 'cpp',
     PE = 'pe',
     PET = 'pet',
+    TVIST = 'tvist',
 }
 
 export enum SolventType {
