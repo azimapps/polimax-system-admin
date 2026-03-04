@@ -1,4 +1,4 @@
-import type { ProductionLogRequest, LogMaterialUsageRequest, TransferPlanItemRequest, GetMaterialUsagesParams } from 'src/types/material-usage';
+import type { ProductionLogRequest, LogMaterialUsageRequest, TransferPlanItemRequest, GetMaterialUsagesParams, GetMyStepsParams } from 'src/types/material-usage';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -14,6 +14,9 @@ export const materialUsageKeys = {
     planItemMaterials: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-materials', planItemId] as const,
     planItemTransfers: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-transfers', planItemId] as const,
     myBrigada: () => [...materialUsageKeys.all, 'my-brigada'] as const,
+    mySteps: (filters: string) => [...materialUsageKeys.all, 'my-steps', { filters }] as const,
+    planItemSteps: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-steps', planItemId] as const,
+    planItemSends: (planItemId: number) => [...materialUsageKeys.all, 'plan-item-sends', planItemId] as const,
     productionLogs: (planItemId: number) => [...materialUsageKeys.all, 'production-logs', planItemId] as const,
 };
 
@@ -88,6 +91,29 @@ export function useGetMyBrigada() {
     });
 }
 
+export function useGetMySteps(params?: GetMyStepsParams) {
+    return useQuery({
+        queryKey: materialUsageKeys.mySteps(JSON.stringify(params)),
+        queryFn: () => materialUsageApi.getMySteps(params),
+    });
+}
+
+export function useGetPlanItemSteps(planItemId: number, options = { enabled: true }) {
+    return useQuery({
+        queryKey: materialUsageKeys.planItemSteps(planItemId),
+        queryFn: () => materialUsageApi.getPlanItemSteps(planItemId),
+        enabled: options.enabled && !!planItemId,
+    });
+}
+
+export function useGetPlanItemSends(planItemId: number, options = { enabled: true }) {
+    return useQuery({
+        queryKey: materialUsageKeys.planItemSends(planItemId),
+        queryFn: () => materialUsageApi.getPlanItemSends(planItemId),
+        enabled: options.enabled && !!planItemId,
+    });
+}
+
 export function useGetProductionLogSummary(planItemId: number) {
     return useQuery({
         queryKey: materialUsageKeys.productionLogs(planItemId),
@@ -103,6 +129,9 @@ export function useLogProduction() {
         mutationFn: (data: ProductionLogRequest) => materialUsageApi.logProduction(data),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: materialUsageKeys.productionLogs(variables.plan_item_id) });
+            queryClient.invalidateQueries({ queryKey: materialUsageKeys.planItemSteps(variables.plan_item_id) });
+            queryClient.invalidateQueries({ queryKey: materialUsageKeys.planItemSends(variables.plan_item_id) });
+            queryClient.invalidateQueries({ queryKey: materialUsageKeys.mySteps('') });
         },
     });
 }

@@ -94,6 +94,15 @@ export interface ProductionLogMaterial {
     notes?: string;
 }
 
+export interface ProductionLogSend {
+    to_brigada_id: number;
+    kg_sent: number;
+    meters_sent: number;
+    kg_waste?: number;
+    kg_ostatok?: number;
+    notes?: string;
+}
+
 export interface ProductionLogRequest {
     plan_item_id: number;
     meters_produced: number;
@@ -102,6 +111,7 @@ export interface ProductionLogRequest {
     percentage?: number;
     notes?: string;
     materials?: ProductionLogMaterial[];
+    send?: ProductionLogSend;
 }
 
 export interface ProductionLog {
@@ -126,6 +136,59 @@ export interface ProductionLogSummary {
     total_meters: number;
     total_kg: number;
     entries: ProductionLog[];
+}
+
+export type StepType = 'reska' | 'pechat' | 'sushka' | 'laminatsiya' | 'tayyor';
+export type StepStatus = 'pending' | 'in_progress' | 'completed';
+
+export interface PlanItemStep {
+    id: number;
+    plan_item_id: number;
+    step_number: number;
+    step_type: StepType;
+    status: StepStatus;
+    brigada_id: number | null;
+    machine_id: number | null;
+    started_at: string | null;
+    completed_at: string | null;
+    kg_received: number | null;
+    kg_produced: number | null;
+    kg_waste: number | null;
+    kg_ostatok: number | null;
+    meters_produced: number | null;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface MyStep extends PlanItemStep {
+    plan_item: {
+        id: number;
+        order_id: number;
+        order_title: string;
+        plan_type: string;
+        status: string;
+    };
+}
+
+export interface ProductionSend {
+    id: number;
+    plan_item_id: number;
+    from_step_id: number;
+    to_step_id: number;
+    from_brigada_id: number;
+    to_brigada_id: number | null;
+    kg_sent: number;
+    meters_sent: number;
+    sent_by: number;
+    notes: string | null;
+    created_at: string;
+    tayyor_ombor_item_id?: number;
+    tayyor_transaction_id?: number;
+}
+
+export interface GetMyStepsParams {
+    status?: StepStatus;
 }
 
 export interface BrigadaMemberInfo {

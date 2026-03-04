@@ -1,9 +1,13 @@
 import type {
+    MyStep,
     MachineStock,
     MaterialUsage,
+    PlanItemStep,
     ProductionLog,
+    ProductionSend,
     MyBrigadaDetail,
     PlanItemTransfer,
+    GetMyStepsParams,
     ProductionLogSummary,
     ProductionLogRequest,
     LogMaterialUsageRequest,
@@ -60,6 +64,24 @@ export const materialUsageApi = {
     // Get My Brigada details
     getMyBrigada: async (): Promise<MyBrigadaDetail> => {
         const response = await axiosInstance.get('/material-usage/my-brigada');
+        return response.data;
+    },
+
+    // Get my steps (brigada's assigned pipeline steps)
+    getMySteps: async (params?: GetMyStepsParams): Promise<MyStep[]> => {
+        const response = await axiosInstance.get('/material-usage/my-steps', { params });
+        return response.data;
+    },
+
+    // Get all pipeline steps for a plan item
+    getPlanItemSteps: async (planItemId: number): Promise<PlanItemStep[]> => {
+        const response = await axiosInstance.get(`/material-usage/plan-item/${planItemId}/steps`);
+        return response.data;
+    },
+
+    // Get all send records for a plan item
+    getPlanItemSends: async (planItemId: number): Promise<ProductionSend[]> => {
+        const response = await axiosInstance.get(`/material-usage/plan-item/${planItemId}/sends`);
         return response.data;
     },
 
