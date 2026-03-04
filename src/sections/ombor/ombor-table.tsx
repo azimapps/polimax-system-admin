@@ -68,7 +68,8 @@ function OmborTableComponent({ type, items, loading, onHistory, onTransactions, 
                     { id: 'thickness', label: t('form.thickness') },
                     { id: 'width', label: t('form.width') },
                     { id: 'number_identifier', label: t('form.invoice') },
-                    { id: 'rolls', label: t('form.rolls') }
+                    { id: 'rolls', label: t('form.rolls') },
+                    { id: 'total_kg', label: t('form.total_kg') }
                 );
                 break;
             case OmborType.KRASKA:
@@ -226,14 +227,14 @@ function OmborTableComponent({ type, items, loading, onHistory, onTransactions, 
                     cat === 'bopp'
                         ? 'бопп'
                         : cat === 'cpp'
-                          ? 'спп'
-                          : cat === 'pe'
-                            ? 'пэ'
-                            : cat === 'pet'
-                              ? 'пэт'
-                              : cat === 'tvist'
-                                ? 'твист'
-                                : cat;
+                            ? 'спп'
+                            : cat === 'pe'
+                                ? 'пэ'
+                                : cat === 'pet'
+                                    ? 'пэт'
+                                    : cat === 'tvist'
+                                        ? 'твист'
+                                        : cat;
                 const displayCat = cat ? (isCyrillic ? cyrillicCat?.toUpperCase() : cat.toUpperCase()) : '-';
 
                 let displaySubcat = row.plyonka_subcategory || '-';
@@ -259,6 +260,7 @@ function OmborTableComponent({ type, items, loading, onHistory, onTransactions, 
                         <TableCell sx={cellSx}>{row.width ? `${row.width} mm` : '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.number_identifier || '-'}</TableCell>
                         <TableCell sx={cellSx}>{row.quantity || '-'}</TableCell>
+                        <TableCell sx={cellSx}>{row.total_kg ? `${row.total_kg} kg` : '-'}</TableCell>
                     </>
                 );
             }
