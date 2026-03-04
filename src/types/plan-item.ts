@@ -3,6 +3,18 @@ export enum PlanItemStatus {
     FINISHED = 'finished',
 }
 
+export enum PlanType {
+    PECHAT_FIRST = 'pechat_first',
+    FULL_CYCLE = 'full_cycle',
+    NO_FINAL_RESKA = 'no_final_reska',
+}
+
+export const PLAN_TYPE_FIRST_STEP: Record<PlanType, string> = {
+    [PlanType.PECHAT_FIRST]: 'pechat',
+    [PlanType.FULL_CYCLE]: 'reska',
+    [PlanType.NO_FINAL_RESKA]: 'reska',
+};
+
 export type PlanItem = {
     id: number;
     version: number;
@@ -12,6 +24,7 @@ export type PlanItem = {
     start_date: string;
     end_date: string;
     status: PlanItemStatus;
+    plan_type: PlanType;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
@@ -26,7 +39,7 @@ export type PlanItem = {
     machine?: any;
 };
 
-export type PlanItemListItem = Pick<PlanItem, 'id' | 'version' | 'order_id' | 'brigada_id' | 'machine_id' | 'start_date' | 'end_date' | 'status'>;
+export type PlanItemListItem = Pick<PlanItem, 'id' | 'version' | 'order_id' | 'brigada_id' | 'machine_id' | 'start_date' | 'end_date' | 'status' | 'plan_type'>;
 
 export type CreatePlanItemRequest = {
     order_id: number;
@@ -35,6 +48,7 @@ export type CreatePlanItemRequest = {
     start_date: string;
     end_date: string;
     status?: PlanItemStatus;
+    plan_type: PlanType;
 };
 
 export type UpdatePlanItemRequest = Partial<CreatePlanItemRequest>;

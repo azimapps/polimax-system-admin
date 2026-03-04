@@ -35,6 +35,18 @@
         "status_options": {
             "in_progress": "В процессе",
             "finished": "Завершено"
+        },
+        "vtulka": "Втулка (мм)",
+        "vtulka_options": {
+            "76": "76 мм",
+            "152": "152 мм"
+        },
+        "napravlenie": "Направление",
+        "napravlenie_options": {
+            "type_1": "Тип 1",
+            "type_2": "Тип 2",
+            "type_3": "Тип 3",
+            "type_4": "Тип 4"
         }
     }
 }

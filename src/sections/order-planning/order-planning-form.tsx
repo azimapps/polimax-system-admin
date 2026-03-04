@@ -1,4 +1,4 @@
-import type { PlanItem, CreatePlanItemRequest, UpdatePlanItemRequest } from 'src/types/plan-item';
+import type { PlanItem, PlanType, CreatePlanItemRequest, UpdatePlanItemRequest } from 'src/types/plan-item';
 
 import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import { useGetOrders } from 'src/hooks/use-orders';
@@ -21,6 +22,7 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
 import { StanokType } from 'src/types/stanok';
+import { PLAN_TYPE_FIRST_STEP } from 'src/types/plan-item';
 
 import { getPlanItemSchema } from './order-planning-schema';
 
@@ -48,6 +50,7 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
     const defaultValues = useMemo(
         () => ({
             order_id: planItem?.order_id || 0,
+            plan_type: planItem?.plan_type || '',
             machine_type: planItem?.machine?.type || '',
             machine_id: planItem?.machine_id || 0,
             brigada_id: planItem?.brigada_id || 0,
@@ -66,15 +69,21 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
     const { handleSubmit, watch, setValue } = methods;
 
     const values = watch();
+    const planType = (values as any).plan_type;
     const machineType = (values as any).machine_type;
     const machineId = values.machine_id;
 
+    // Auto-derive machine_type from plan_type
     useEffect(() => {
-        if (!isEdit && machineType) {
-            setValue('machine_id', 0);
-            setValue('brigada_id', 0);
+        if (!isEdit && planType) {
+            const derived = PLAN_TYPE_FIRST_STEP[planType as PlanType];
+            if (derived && derived !== machineType) {
+                setValue('machine_type' as any, derived);
+                setValue('machine_id', 0);
+                setValue('brigada_id', 0);
+            }
         }
-    }, [machineType, isEdit, setValue]);
+    }, [planType, isEdit, setValue, machineType]);
 
     useEffect(() => {
         if (!isEdit && machineId) {
@@ -94,12 +103,15 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
 
     const onSubmit = handleSubmit(async (data: any) => {
         try {
+            const { machine_type, ...apiData } = data;
+            void machine_type;
+
             if (isEdit) {
-                const response = await updatePlanItem(data as UpdatePlanItemRequest);
+                const response = await updatePlanItem(apiData as UpdatePlanItemRequest);
                 toast.success(t('messages.success_update'));
                 onSuccess?.(response.id);
             } else {
-                const response = await createPlanItem(data as CreatePlanItemRequest);
+                const response = await createPlanItem(apiData as CreatePlanItemRequest);
                 toast.success(t('messages.success_create'));
                 onSuccess?.(response.id);
             }
@@ -130,7 +142,35 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
                         ))}
                     </Field.Select>
 
-                    <Field.Select name="machine_type" label={t('form.machine_type')} required>
+                    <Field.Select name="plan_type" label={t('form.plan_type')} required disabled={isEdit}>
+                        <MenuItem value="" disabled sx={{ display: 'none' }}>{t('form.plan_type')}</MenuItem>
+                        <MenuItem value="pechat_first">
+                            <Stack>
+                                <Typography variant="body2" fontWeight={600}>{t('form.plan_type_pechat_first')}</Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    pechat → sushka → laminatsiya → sushka → reska → tayyor
+                                </Typography>
+                            </Stack>
+                        </MenuItem>
+                        <MenuItem value="full_cycle">
+                            <Stack>
+                                <Typography variant="body2" fontWeight={600}>{t('form.plan_type_full_cycle')}</Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    reska → pechat → sushka → laminatsiya → sushka → reska → tayyor
+                                </Typography>
+                            </Stack>
+                        </MenuItem>
+                        <MenuItem value="no_final_reska">
+                            <Stack>
+                                <Typography variant="body2" fontWeight={600}>{t('form.plan_type_no_final_reska')}</Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    reska → pechat → sushka → laminatsiya → sushka → tayyor
+                                </Typography>
+                            </Stack>
+                        </MenuItem>
+                    </Field.Select>
+
+                    <Field.Select name="machine_type" label={t('form.machine_type')} disabled>
                         <MenuItem value="">{t('form.machine_type')}</MenuItem>
                         <MenuItem value={StanokType.PECHAT}>{tStanok('type.pechat')}</MenuItem>
                         <MenuItem value={StanokType.RESKA}>{tStanok('type.reska')}</MenuItem>

@@ -21,6 +21,18 @@ export enum OrderStatus {
   FINISHED = 'finished',
 }
 
+export enum OrderVtulka {
+  V76 = '76',
+  V152 = '152',
+}
+
+export enum OrderNapravlenie {
+  TYPE_1 = 'type_1',
+  TYPE_2 = 'type_2',
+  TYPE_3 = 'type_3',
+  TYPE_4 = 'type_4',
+}
+
 export enum OrderCurrency {
   UZS = 'uzs',
   USD = 'usd',
@@ -49,6 +61,8 @@ export type Order = {
   price_currency: OrderCurrency;
   manager_id: number;
   status: OrderStatus;
+  vtulka: OrderVtulka;
+  napravlenie: OrderNapravlenie;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

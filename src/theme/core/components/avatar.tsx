@@ -57,11 +57,15 @@ const avatarColors: Record<string, ComponentsVariants<Theme>['MuiAvatar']> = {
 
 const MuiAvatar: Components<Theme>['MuiAvatar'] = {
   /** **************************************
+   * VARIANTS
+   *************************************** */
+  variants: [...(avatarColors.defaultColor ?? []), ...(avatarColors.colors ?? [])],
+
+  /** **************************************
    * STYLE
    *************************************** */
   styleOverrides: {
-    root: { variants: [avatarColors.defaultColor, avatarColors.colors].flat() },
-    rounded: ({ theme }) => ({ borderRadius: theme.shape.borderRadius * 1.5 }),
+    rounded: ({ theme }) => ({ borderRadius: Number(theme.shape.borderRadius) * 1.5 }),
     colorDefault: ({ ownerState, theme }) => {
       const color = colorByName(ownerState.alt);
 

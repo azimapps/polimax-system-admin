@@ -64,18 +64,20 @@ const softVariant: Record<string, ComponentsVariants<Theme>['MuiPagination']> = 
 
 const MuiPagination: Components<Theme>['MuiPagination'] = {
   /** **************************************
+   * VARIANTS
+   *************************************** */
+  variants: [
+    /**
+     * @variant soft
+     */
+    ...(softVariant.standardColor ?? []),
+    ...(softVariant.colors ?? []),
+  ],
+
+  /** **************************************
    * STYLE
    *************************************** */
   styleOverrides: {
-    root: {
-      variants: [
-        /**
-         * @variant soft
-         */
-        softVariant.standardColor,
-        softVariant.colors,
-      ].flat(),
-    },
     /**
      * @variant text
      */

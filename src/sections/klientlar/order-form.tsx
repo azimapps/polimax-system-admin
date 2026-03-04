@@ -21,7 +21,7 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
 import { StaffType } from 'src/types/staff';
-import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial } from 'src/types/order';
+import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial, OrderVtulka, OrderNapravlenie } from 'src/types/order';
 
 import { getOrderSchema } from './order-schema';
 
@@ -63,6 +63,8 @@ export function OrderBookForm({ order, onSuccess }: Props) {
             price_currency: order?.price_currency || OrderCurrency.UZS,
             manager_id: order?.manager_id || 0,
             status: order?.status || OrderStatus.IN_PROGRESS,
+            vtulka: order?.vtulka || OrderVtulka.V76,
+            napravlenie: order?.napravlenie || OrderNapravlenie.TYPE_1,
         }),
         [order]
     );
@@ -138,6 +140,22 @@ export function OrderBookForm({ order, onSuccess }: Props) {
                     <Field.Text name="cylinder_length" label={t('form.cylinder_length')} type="number" required />
                     <Field.Text name="cylinder_count" label={t('form.cylinder_count')} type="number" required />
                     <Field.Text name="cylinder_aylanasi" label={t('form.cylinder_aylanasi')} type="number" required />
+
+                    <Field.Select name="vtulka" label={t('form.vtulka')} required>
+                        {Object.values(OrderVtulka).map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {t(`form.vtulka_options.${option}`)}
+                            </MenuItem>
+                        ))}
+                    </Field.Select>
+
+                    <Field.Select name="napravlenie" label={t('form.napravlenie')} required>
+                        {Object.values(OrderNapravlenie).map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {t(`form.napravlenie_options.${option}`)}
+                            </MenuItem>
+                        ))}
+                    </Field.Select>
 
                     <Field.DatePicker name="start_date" label={t('form.start_date')} />
                     <Field.DatePicker name="end_date" label={t('form.end_date')} />

@@ -35,6 +35,18 @@
         "status_options": {
             "in_progress": "Jarayonda",
             "finished": "Yakunlangan"
+        },
+        "vtulka": "Vtulka (mm)",
+        "vtulka_options": {
+            "76": "76 mm",
+            "152": "152 mm"
+        },
+        "napravlenie": "Yo'nalish",
+        "napravlenie_options": {
+            "type_1": "Tur 1",
+            "type_2": "Tur 2",
+            "type_3": "Tur 3",
+            "type_4": "Tur 4"
         }
     }
 }

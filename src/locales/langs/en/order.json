@@ -35,6 +35,18 @@
         "status_options": {
             "in_progress": "In Progress",
             "finished": "Finished"
+        },
+        "vtulka": "Tube Size (mm)",
+        "vtulka_options": {
+            "76": "76 mm",
+            "152": "152 mm"
+        },
+        "napravlenie": "Direction",
+        "napravlenie_options": {
+            "type_1": "Type 1",
+            "type_2": "Type 2",
+            "type_3": "Type 3",
+            "type_4": "Type 4"
         }
     }
 }

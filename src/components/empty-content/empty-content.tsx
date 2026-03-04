@@ -110,7 +110,7 @@ const ContentRoot = styled('div', {
   justifyContent: 'center',
   padding: theme.spacing(0, 3),
   ...(filled && {
-    borderRadius: theme.shape.borderRadius * 2,
+    borderRadius: Number(theme.shape.borderRadius) * 2,
     backgroundColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.04),
     border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)}`,
   }),

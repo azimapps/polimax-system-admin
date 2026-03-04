@@ -1,7 +1,7 @@
 
 import { z } from 'zod';
 
-import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial } from 'src/types/order';
+import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial, OrderVtulka, OrderNapravlenie } from 'src/types/order';
 
 // ----------------------------------------------------------------------
 
@@ -25,4 +25,6 @@ export const getOrderSchema = (t: any) =>
         price_currency: z.nativeEnum(OrderCurrency, { required_error: t('required') }),
         manager_id: z.number().min(1, { message: t('required') }),
         status: z.nativeEnum(OrderStatus, { required_error: t('required') }),
+        vtulka: z.nativeEnum(OrderVtulka, { required_error: t('required') }),
+        napravlenie: z.nativeEnum(OrderNapravlenie, { required_error: t('required') }),
     });

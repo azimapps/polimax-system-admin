@@ -23,6 +23,10 @@
     "form": {
         "order": "Buyurtma ID",
         "brigada": "Brigada",
+        "plan_type": "Reja turi",
+        "plan_type_pechat_first": "Avval pechat",
+        "plan_type_full_cycle": "To'liq tsikl",
+        "plan_type_no_final_reska": "Oxirgi reskasiz",
         "machine_type": "Uskuna turi",
         "machine": "Uskuna",
         "start_date": "Boshlanish",
@@ -36,5 +40,10 @@
     },
     "delete_confirm_title": "O'chirish",
     "delete_confirm_message": "Haqiqatan ham ushbu rejani o'chirib tashlamoqchimisiz?",
-    "delete_confirm_button": "O'chirish"
+    "delete_confirm_button": "O'chirish",
+    "messages": {
+        "success_create": "Reja muvaffaqiyatli yaratildi",
+        "success_update": "Reja muvaffaqiyatli yangilandi",
+        "error_generic": "Xatolik yuz berdi"
+    }
 }

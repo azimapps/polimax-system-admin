@@ -176,33 +176,29 @@ const MuiFab: Components<Theme>['MuiFab'] = {
   defaultProps: { color: 'primary' },
 
   /** **************************************
-   * STYLE
+   * VARIANTS
    *************************************** */
-  styleOverrides: {
-    root: {
-      variants: [
-        /**
-         * @variant filled
-         */
-        filledVariant.base,
-        filledVariant.colors,
-        /**
-         * @variant outlined
-         */
-        outlinedVariant.base,
-        outlinedVariant.colors,
-        /**
-         * @variant soft
-         */
-        softVariant.base,
-        softVariant.colors,
-        /**
-         * @sizes
-         */
-        sizes,
-      ].flat(),
-    },
-  },
+  variants: [
+    /**
+     * @variant filled
+     */
+    ...(filledVariant.base ?? []),
+    ...(filledVariant.colors ?? []),
+    /**
+     * @variant outlined
+     */
+    ...(outlinedVariant.base ?? []),
+    ...(outlinedVariant.colors ?? []),
+    /**
+     * @variant soft
+     */
+    ...(softVariant.base ?? []),
+    ...(softVariant.colors ?? []),
+    /**
+     * @sizes
+     */
+    ...(sizes ?? []),
+  ],
 };
 
 // ----------------------------------------------------------------------

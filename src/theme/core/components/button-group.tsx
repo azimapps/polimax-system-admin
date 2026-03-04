@@ -91,18 +91,20 @@ const MuiButtonGroup: Components<Theme>['MuiButtonGroup'] = {
   defaultProps: { disableElevation: true },
 
   /** **************************************
+   * VARIANTS
+   *************************************** */
+  variants: [
+    /**
+     * @variant soft
+     */
+    ...(softVariant.base ?? []),
+    ...(softVariant.colors ?? []),
+  ],
+
+  /** **************************************
    * STYLE
    *************************************** */
   styleOverrides: {
-    root: {
-      variants: [
-        /**
-         * @variant soft
-         */
-        softVariant.base,
-        softVariant.colors,
-      ].flat(),
-    },
     /**
      * @variant contained
      */

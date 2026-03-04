@@ -85,6 +85,17 @@ const MuiChip: Components<Theme>['MuiChip'] = {
   defaultProps: { deleteIcon: <ChipDeleteIcon /> },
 
   /** **************************************
+   * VARIANTS
+   *************************************** */
+  variants: [
+    /**
+     * @variant soft
+     */
+    ...(softVariant.inheritColor ?? []),
+    ...(softVariant.colors ?? []),
+  ],
+
+  /** **************************************
    * STYLE
    *************************************** */
   styleOverrides: {
@@ -116,13 +127,6 @@ const MuiChip: Components<Theme>['MuiChip'] = {
       };
 
       return {
-        variants: [
-          /**
-           * @variant soft
-           */
-          softVariant.inheritColor,
-          softVariant.colors,
-        ].flat(),
         ...styled.colors,
         ...styled.disabled,
       };
@@ -137,7 +141,7 @@ const MuiChip: Components<Theme>['MuiChip'] = {
     /**
      * @sizes
      */
-    sizeMedium: ({ theme }) => ({ borderRadius: theme.shape.borderRadius * 1.25 }),
+    sizeMedium: ({ theme }) => ({ borderRadius: Number(theme.shape.borderRadius) * 1.25 }),
     sizeSmall: ({ theme }) => ({ borderRadius: theme.shape.borderRadius }),
     /**
      * @variant filled

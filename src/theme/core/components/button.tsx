@@ -80,10 +80,14 @@ const MuiButton: Components<Theme>['MuiButton'] = {
   defaultProps: { color: 'inherit', disableElevation: true },
 
   /** **************************************
+   * VARIANTS
+   *************************************** */
+  variants: [...(softVariant.base ?? []), ...(softVariant.colors ?? [])],
+
+  /** **************************************
    * STYLE
    *************************************** */
   styleOverrides: {
-    root: { variants: [softVariant.base, softVariant.colors].flat() },
     /**
      * @variant contained
      */

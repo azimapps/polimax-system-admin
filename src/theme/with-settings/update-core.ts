@@ -64,7 +64,7 @@ export function updateCoreWithSettings(
     };
 
     return {
-      ...colorSchemes,
+      ...(colorSchemes as object),
       palette: updatedPalette,
       customShadows: updatedCustomShadows,
     };
