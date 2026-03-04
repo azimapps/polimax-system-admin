@@ -9,6 +9,8 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import { useGetStaff } from 'src/hooks/use-staff';
@@ -24,6 +26,51 @@ import { StaffType } from 'src/types/staff';
 import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial, OrderVtulka, OrderNapravlenie } from 'src/types/order';
 
 import { getOrderSchema } from './order-schema';
+
+// ----------------------------------------------------------------------
+
+function NapravlenieIcon({ type, color }: { type: string; color: string }) {
+    const size = 64;
+    // Each type shows a roll with arrow direction + text orientation
+    // type_1: unwind right, text normal    type_2: unwind left, text normal
+    // type_3: unwind right, text flipped   type_4: unwind left, text flipped
+    const isLeft = type === 'type_2' || type === 'type_4';
+    const isFlipped = type === 'type_3' || type === 'type_4';
+
+    return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+            {/* Roll/cylinder */}
+            <ellipse cx="32" cy="32" rx="10" ry="22" stroke={color} strokeWidth="2.5" fill="none" />
+            <ellipse cx="32" cy="32" rx="4" ry="9" stroke={color} strokeWidth="1.5" fill="none" opacity="0.4" />
+
+            {/* Arrow showing unwind direction */}
+            {isLeft ? (
+                <>
+                    <line x1="18" y1="14" x2="6" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+                    <polyline points="11,9 6,14 11,19" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </>
+            ) : (
+                <>
+                    <line x1="46" y1="14" x2="58" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+                    <polyline points="53,9 58,14 53,19" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </>
+            )}
+
+            {/* Text indicator "A" showing orientation */}
+            <text
+                x="32"
+                y="58"
+                textAnchor="middle"
+                fontSize="11"
+                fontWeight="bold"
+                fill={color}
+                transform={isFlipped ? 'scale(-1,1) translate(-64,0)' : undefined}
+            >
+                A
+            </text>
+        </svg>
+    );
+}
 
 // ----------------------------------------------------------------------
 
@@ -74,7 +121,9 @@ export function OrderBookForm({ order, onSuccess }: Props) {
         defaultValues,
     });
 
-    const { handleSubmit } = methods;
+    const { handleSubmit, watch, setValue } = methods;
+
+    const napravlenie = watch('napravlenie' as any);
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -149,13 +198,47 @@ export function OrderBookForm({ order, onSuccess }: Props) {
                         ))}
                     </Field.Select>
 
-                    <Field.Select name="napravlenie" label={t('form.napravlenie')} required>
-                        {Object.values(OrderNapravlenie).map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {t(`form.napravlenie_options.${option}`)}
-                            </MenuItem>
-                        ))}
-                    </Field.Select>
+                    <Box sx={{ gridColumn: 'span 2' }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+                            {t('form.napravlenie')} *
+                        </Typography>
+                        <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={1.5}>
+                            {Object.values(OrderNapravlenie).map((option) => {
+                                const isSelected = napravlenie === option;
+                                return (
+                                    <ButtonBase
+                                        key={option}
+                                        onClick={() => setValue('napravlenie' as any, option, { shouldValidate: true })}
+                                        sx={{
+                                            p: 2,
+                                            borderRadius: 1.5,
+                                            border: '2px solid',
+                                            borderColor: isSelected ? 'success.main' : 'divider',
+                                            bgcolor: isSelected ? 'success.lighter' : 'background.neutral',
+                                            transition: 'all 0.2s ease',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            gap: 1,
+                                            '&:hover': {
+                                                borderColor: isSelected ? 'success.main' : 'text.secondary',
+                                                bgcolor: isSelected ? 'success.lighter' : 'action.hover',
+                                            },
+                                        }}
+                                    >
+                                        <NapravlenieIcon type={option} color={isSelected ? '#22c55e' : '#919eab'} />
+                                        <Typography
+                                            variant="caption"
+                                            fontWeight={600}
+                                            sx={{ color: isSelected ? 'success.darker' : 'text.secondary' }}
+                                        >
+                                            {t(`form.napravlenie_options.${option}`)}
+                                        </Typography>
+                                    </ButtonBase>
+                                );
+                            })}
+                        </Box>
+                    </Box>
 
                     <Field.DatePicker name="start_date" label={t('form.start_date')} />
                     <Field.DatePicker name="end_date" label={t('form.end_date')} />
