@@ -30,44 +30,42 @@ import { getOrderSchema } from './order-schema';
 // ----------------------------------------------------------------------
 
 function NapravlenieIcon({ type, color }: { type: string; color: string }) {
-    const size = 64;
-    // Each type shows a roll with arrow direction + text orientation
-    // type_1: unwind right, text normal    type_2: unwind left, text normal
-    // type_3: unwind right, text flipped   type_4: unwind left, text flipped
-    const isLeft = type === 'type_2' || type === 'type_4';
-    const isFlipped = type === 'type_3' || type === 'type_4';
+    // Circle (roll) on top, hand-drawn "A" shape below in 4 orientations:
+    // type_1: A normal        type_2: A upside down (180°)
+    // type_3: A rotated 90° CW   type_4: A rotated 90° CCW
+
+    const rotations: Record<string, number> = {
+        type_1: 0,
+        type_2: 180,
+        type_3: 90,
+        type_4: 270,
+    };
+    const deg = rotations[type] ?? 0;
 
     return (
-        <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-            {/* Roll/cylinder */}
-            <ellipse cx="32" cy="32" rx="10" ry="22" stroke={color} strokeWidth="2.5" fill="none" />
-            <ellipse cx="32" cy="32" rx="4" ry="9" stroke={color} strokeWidth="1.5" fill="none" opacity="0.4" />
-
-            {/* Arrow showing unwind direction */}
-            {isLeft ? (
-                <>
-                    <line x1="18" y1="14" x2="6" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-                    <polyline points="11,9 6,14 11,19" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                </>
-            ) : (
-                <>
-                    <line x1="46" y1="14" x2="58" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-                    <polyline points="53,9 58,14 53,19" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                </>
-            )}
-
-            {/* Text indicator "A" showing orientation */}
-            <text
-                x="32"
-                y="58"
-                textAnchor="middle"
-                fontSize="11"
-                fontWeight="bold"
-                fill={color}
-                transform={isFlipped ? 'scale(-1,1) translate(-64,0)' : undefined}
-            >
-                A
-            </text>
+        <svg width={56} height={72} viewBox="0 0 56 72" fill="none">
+            {/* Roll core circle */}
+            <circle cx="28" cy="14" r="10" stroke={color} strokeWidth="2.5" fill="none" />
+            <circle cx="28" cy="14" r="3.5" stroke={color} strokeWidth="1.5" fill="none" opacity="0.5" />
+            {/* "A" drawn as path, rotated around center of A area */}
+            <g transform={`rotate(${deg}, 28, 50)`}>
+                {/* Two legs */}
+                <path
+                    d="M16,64 L28,34 L40,64"
+                    stroke={color}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                />
+                {/* Crossbar */}
+                <line
+                    x1="20" y1="53" x2="36" y2="53"
+                    stroke={color}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                />
+            </g>
         </svg>
     );
 }
