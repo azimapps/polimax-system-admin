@@ -1,6 +1,8 @@
-import type { OmborItem, OmborType, OmborTransaction, CreateOmborRequest, UpdateOmborRequest, CreateOmborTransactionRequest } from 'src/types/ombor';
+import type { OmborItem, OmborTransaction, CreateOmborRequest, UpdateOmborRequest, CreateOmborTransactionRequest } from 'src/types/ombor';
 
 import axiosInstance from 'src/lib/axios';
+
+import { OmborType } from 'src/types/ombor';
 
 // ----------------------------------------------------------------------
 
@@ -13,7 +15,15 @@ export const omborApi = {
         q?: string;
     }): Promise<OmborItem[]> => {
         const response = await axiosInstance.get(`/ombor/${type}`, { params });
-        return response.data;
+        let data = response.data;
+        if (type === OmborType.PLYONKA && Array.isArray(data)) {
+            data = data.map((item: any) => ({
+                ...item,
+                number_identifier: item.invoys,
+                quantity: item.rulon,
+            }));
+        }
+        return data;
     },
 
     // Get materials by davaldiylik_id
@@ -22,24 +32,59 @@ export const omborApi = {
         q?: string;
     }): Promise<OmborItem[]> => {
         const response = await axiosInstance.get('/ombor', { params: { ...params, davaldiylik_id } });
-        return response.data;
+        let data = response.data;
+        if (Array.isArray(data)) {
+            data = data.map((item: any) => item.ombor_type === OmborType.PLYONKA ? {
+                ...item,
+                number_identifier: item.invoys,
+                quantity: item.rulon,
+            } : item);
+        }
+        return data;
     },
 
     // Get single ombor item
     getOmborItem: async (type: OmborType, id: number): Promise<OmborItem> => {
         const response = await axiosInstance.get(`/ombor/${type}/${id}`);
-        return response.data;
+        const data = response.data;
+        if (type === OmborType.PLYONKA) {
+            data.number_identifier = data.invoys;
+            data.quantity = data.rulon;
+        }
+        return data;
     },
 
     // Create ombor item
     createOmborItem: async (type: OmborType, data: CreateOmborRequest): Promise<OmborItem> => {
-        const response = await axiosInstance.post(`/ombor/${type}`, data);
+        const payload: any = { ...data };
+        if (type === OmborType.PLYONKA) {
+            if (payload.number_identifier !== undefined) {
+                payload.invoys = payload.number_identifier;
+                delete payload.number_identifier;
+            }
+            if (payload.quantity !== undefined) {
+                payload.rulon = payload.quantity;
+                delete payload.quantity;
+            }
+        }
+        const response = await axiosInstance.post(`/ombor/${type}`, payload);
         return response.data;
     },
 
     // Update ombor item
     updateOmborItem: async (type: OmborType, id: number, data: UpdateOmborRequest): Promise<OmborItem> => {
-        const response = await axiosInstance.put(`/ombor/${type}/${id}`, data);
+        const payload: any = { ...data };
+        if (type === OmborType.PLYONKA) {
+            if (payload.number_identifier !== undefined) {
+                payload.invoys = payload.number_identifier;
+                delete payload.number_identifier;
+            }
+            if (payload.quantity !== undefined) {
+                payload.rulon = payload.quantity;
+                delete payload.quantity;
+            }
+        }
+        const response = await axiosInstance.put(`/ombor/${type}/${id}`, payload);
         return response.data;
     },
 
@@ -51,7 +96,15 @@ export const omborApi = {
     // Get archived items
     getArchivedItems: async (type: OmborType, q?: string): Promise<OmborItem[]> => {
         const response = await axiosInstance.get(`/ombor/${type}/archived`, { params: { q } });
-        return response.data;
+        let data = response.data;
+        if (type === OmborType.PLYONKA && Array.isArray(data)) {
+            data = data.map((item: any) => ({
+                ...item,
+                number_identifier: item.invoys,
+                quantity: item.rulon,
+            }));
+        }
+        return data;
     },
 
     // Restore item
