@@ -149,7 +149,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const [notes, setNotes] = useState('');
 
     // Send state
-    const [sendEnabled, setSendEnabled] = useState(false);
     const [sendToBrigada, setSendToBrigada] = useState('');
     const [sendKg, setSendKg] = useState('');
     const [sendMeters, setSendMeters] = useState('');
@@ -167,6 +166,24 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const orderTitle = order?.title || step?.plan_item?.order_title;
     const kgReceived = step?.kg_received;
 
+    // Find next step (skip sushka — it auto-passes, no brigada needed)
+    const sortedSteps = [...pipelineSteps].sort((a: any, b: any) => a.step_number - b.step_number);
+    const currentIdx = sortedSteps.findIndex((s: any) => s.id === step?.id);
+    let nextStep: any = null;
+    for (let i = currentIdx + 1; i < sortedSteps.length; i += 1) {
+        if (sortedSteps[i].step_type !== 'sushka') {
+            nextStep = sortedSteps[i];
+            break;
+        }
+    }
+    const nextStepType = nextStep?.step_type;
+    const nextStepColor = STEP_TYPE_COLORS[nextStepType] || '#64748b';
+    const nextStepLabel = STEP_TYPE_LABELS[nextStepType] || nextStepType;
+    // Filter brigadas to only those matching the next step's type
+    const filteredBrigadas = nextStepType
+        ? brigadas.filter((b: any) => b.machine_type === nextStepType)
+        : brigadas;
+
     const handleSave = async () => {
         try {
             const materialsPayload = Object.entries(usageAmounts)
@@ -181,7 +198,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 })
                 .filter(Boolean) as any[];
 
-            const sendPayload = sendEnabled && sendToBrigada ? {
+            const sendPayload = sendToBrigada ? {
                 to_brigada_id: Number(sendToBrigada),
                 kg_sent: Number(sendKg) || 0,
                 meters_sent: Number(sendMeters) || 0,
@@ -207,7 +224,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
             setKgOstatok('');
             setWorkType('');
             setNotes('');
-            setSendEnabled(false);
             setSendToBrigada('');
             setSendKg('');
             setSendMeters('');
@@ -430,52 +446,58 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
                                 {/* Send to Next Step Section */}
                                 <Box sx={{
-                                    border: sendEnabled ? '2px solid #22c55e' : '2px dashed #e2e8f0',
+                                    border: '2px solid #22c55e',
                                     borderRadius: 2,
                                     p: 2.5,
-                                    bgcolor: sendEnabled ? '#f0fdf4' : '#fff',
-                                    transition: 'all 0.2s',
+                                    bgcolor: '#f0fdf4',
                                 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: sendEnabled ? 2 : 0 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" width={20} sx={{ color: sendEnabled ? '#16a34a' : '#94a3b8' }} />
-                                            <Typography variant="subtitle2" sx={{ color: sendEnabled ? '#16a34a' : '#64748b', fontWeight: 600 }}>
+                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" width={20} sx={{ color: '#16a34a' }} />
+                                            <Typography variant="subtitle2" sx={{ color: '#16a34a', fontWeight: 600 }}>
                                                 Keyingi bosqichga yuborish
                                             </Typography>
                                         </Box>
-                                        <Button
-                                            size="small"
-                                            variant={sendEnabled ? 'contained' : 'outlined'}
-                                            color={sendEnabled ? 'success' : 'inherit'}
-                                            onClick={() => setSendEnabled(!sendEnabled)}
-                                            sx={{ minWidth: 90, borderRadius: 1.5 }}
-                                        >
-                                            {sendEnabled ? 'Yoqilgan' : 'Yoqish'}
-                                        </Button>
+                                        {nextStepType && (
+                                            <Chip
+                                                label={nextStepLabel}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: `${nextStepColor}15`,
+                                                    color: nextStepColor,
+                                                    fontWeight: 700,
+                                                    fontSize: '0.75rem',
+                                                    textTransform: 'uppercase',
+                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                }}
+                                            />
+                                        )}
                                     </Box>
 
-                                    {sendEnabled && (
-                                        <Stack spacing={2}>
-                                            <FormControl fullWidth size="small">
-                                                <InputLabel>Qaysi brigadaga?</InputLabel>
-                                                <Select label="Qaysi brigadaga?" value={sendToBrigada} onChange={(e) => setSendToBrigada(e.target.value)}>
-                                                    <MenuItem value="">Tanlang</MenuItem>
-                                                    {brigadas.map((b: any) => (
-                                                        <MenuItem key={b.id} value={String(b.id)}>{b.name} ({b.machine_type})</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                            <Box sx={{ display: 'flex', gap: 2 }}>
-                                                <TextField fullWidth size="small" label="Kg yuboriladi" placeholder="0" value={sendKg} onChange={(e) => setSendKg(e.target.value)} />
-                                                <TextField fullWidth size="small" label="Metr yuboriladi" placeholder="0" value={sendMeters} onChange={(e) => setSendMeters(e.target.value)} />
-                                            </Box>
-                                            <Box sx={{ display: 'flex', gap: 2 }}>
-                                                <TextField fullWidth size="small" label="Kg chiqindi" placeholder="0" value={sendKgWaste} onChange={(e) => setSendKgWaste(e.target.value)} />
-                                                <TextField fullWidth size="small" label="Kg qoldiq" placeholder="0" value={sendKgOstatok} onChange={(e) => setSendKgOstatok(e.target.value)} />
-                                            </Box>
-                                            <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={sendNotes} onChange={(e) => setSendNotes(e.target.value)} />
-                                        </Stack>
-                                    )}
+                                    <Stack spacing={2}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>{nextStepLabel ? `${nextStepLabel} brigadasi` : 'Qaysi brigadaga?'}</InputLabel>
+                                            <Select
+                                                label={nextStepLabel ? `${nextStepLabel} brigadasi` : 'Qaysi brigadaga?'}
+                                                value={sendToBrigada}
+                                                onChange={(e) => setSendToBrigada(e.target.value)}
+                                            >
+                                                <MenuItem value="">Tanlang</MenuItem>
+                                                {filteredBrigadas.map((b: any) => (
+                                                    <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField fullWidth size="small" label="Kg yuboriladi" placeholder="0" value={sendKg} onChange={(e) => setSendKg(e.target.value)} />
+                                            <TextField fullWidth size="small" label="Metr yuboriladi" placeholder="0" value={sendMeters} onChange={(e) => setSendMeters(e.target.value)} />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField fullWidth size="small" label="Kg chiqindi" placeholder="0" value={sendKgWaste} onChange={(e) => setSendKgWaste(e.target.value)} />
+                                            <TextField fullWidth size="small" label="Kg qoldiq" placeholder="0" value={sendKgOstatok} onChange={(e) => setSendKgOstatok(e.target.value)} />
+                                        </Box>
+                                        <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={sendNotes} onChange={(e) => setSendNotes(e.target.value)} />
+                                    </Stack>
                                 </Box>
                             </>
                         )}
