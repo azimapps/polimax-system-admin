@@ -77,9 +77,9 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
             placement="bottom"
             slotProps={{
                 tooltip: {
-                    sx: { bgcolor: '#1C252E', maxWidth: 320, p: 0, borderRadius: 1.5, border: '1px solid rgba(145,158,171,0.16)' },
+                    sx: { bgcolor: '#fff', maxWidth: 320, p: 0, borderRadius: 1.5, border: '1px solid rgba(145,158,171,0.2)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' },
                 },
-                arrow: { sx: { color: '#1C252E' } },
+                arrow: { sx: { color: '#fff' } },
             }}
             title={
                 <Box sx={{ p: 1.5 }}>
@@ -88,19 +88,20 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
                         const kgR = step.kg_received ?? 0;
                         const kgP = step.kg_produced ?? 0;
                         const kgW = step.kg_waste ?? 0;
+                        const statusColor = step.status === 'completed' ? '#16a34a' : step.status === 'in_progress' ? '#d97706' : '#94a3b8';
                         return (
                             <Box key={step.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
                                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: step.status === 'completed' ? c : step.status === 'in_progress' ? c : 'rgba(145,158,171,0.3)', flexShrink: 0 }} />
                                 <Typography variant="caption" sx={{ fontWeight: 700, color: c, minWidth: 72 }}>
                                     {STEP_FULL[step.step_type] || step.step_type}
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: step.status === 'completed' ? 'success.light' : step.status === 'in_progress' ? 'warning.light' : 'text.disabled', minWidth: 72 }}>
+                                <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, minWidth: 72 }}>
                                     {STATUS_LABEL[step.status] || step.status}
                                 </Typography>
                                 {(kgR > 0 || kgP > 0) && (
-                                    <Typography variant="caption" sx={{ color: 'text.secondary', ml: 'auto' }}>
+                                    <Typography variant="caption" sx={{ color: '#64748b', ml: 'auto' }}>
                                         {kgP}/{kgR} kg
-                                        {kgW > 0 && <Box component="span" sx={{ color: 'error.light' }}> (-{kgW})</Box>}
+                                        {kgW > 0 && <Box component="span" sx={{ color: '#ef4444' }}> (-{kgW})</Box>}
                                     </Typography>
                                 )}
                             </Box>
