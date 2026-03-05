@@ -22,18 +22,12 @@ import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useGetPlanItem } from 'src/hooks/use-plan-items';
 import { useLogProduction, useGetMachineStock, useGetPlanItemSteps } from 'src/hooks/use-material-usage';
 
+import { useTranslate } from 'src/locales';
+
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 // ----------------------------------------------------------------------
-
-const STEP_TYPE_LABELS: Record<string, string> = {
-    reska: 'Reska',
-    pechat: 'Pechat',
-    sushka: 'Sushka',
-    laminatsiya: 'Laminatsiya',
-    tayyor: 'Tayyor',
-};
 
 const STEP_TYPE_COLORS: Record<string, string> = {
     reska: '#2196f3',
@@ -49,17 +43,17 @@ const STEP_STATUS_ICON: Record<string, string> = {
     pending: '○',
 };
 
-const WORK_TYPES = [
-    { value: 'tayyor_mahsulotlar_reskasi', label: 'Tayyor mahsulotlar reskasi' },
-    { value: 'tayyor_mahsulot_peremotkasi', label: 'Tayyor mahsulot peremotkasi' },
-    { value: 'plyonka_peremotkasi', label: 'Plyonka peremotkasi' },
-    { value: 'reska_3_5_sm', label: 'Reska 3-5 sm' },
-    { value: 'asobiy_tarif', label: 'Asobiy tarif' },
+const WORK_TYPE_KEYS = [
+    'tayyor_mahsulotlar_reskasi',
+    'tayyor_mahsulot_peremotkasi',
+    'plyonka_peremotkasi',
+    'reska_3_5_sm',
+    'asobiy_tarif',
 ];
 
 // ----------------------------------------------------------------------
 
-function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: number }) {
+function StepPipeline({ steps, currentStepId, t }: { steps: any[]; currentStepId?: number; t: any }) {
     const sorted = [...steps].sort((a, b) => a.step_number - b.step_number);
 
     return (
@@ -95,7 +89,7 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
                                     textTransform: 'uppercase',
                                 }}
                             >
-                                {STEP_TYPE_LABELS[step.step_type] || step.step_type}
+                                {t(`steps.${step.step_type}`) || step.step_type}
                             </Typography>
                         </Box>
                         {idx < sorted.length - 1 && (
@@ -132,6 +126,7 @@ type Props = {
 };
 
 export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Props) {
+    const { t } = useTranslate('pechat-panel');
     const effectivePlanItemId = step?.plan_item_id || planItemId;
 
     const { data: planItemDetail } = useGetPlanItem(effectivePlanItemId || 0, { enabled: !!effectivePlanItemId });
@@ -173,7 +168,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     }
     const nextStepType = nextStep?.step_type;
     const nextStepColor = STEP_TYPE_COLORS[nextStepType] || '#64748b';
-    const nextStepLabel = STEP_TYPE_LABELS[nextStepType] || nextStepType;
+    const nextStepLabel = nextStepType ? t(`steps.${nextStepType}`) : '';
     // Filter brigadas to only those matching the next step's type
     const filteredBrigadas = nextStepType
         ? brigadas.filter((b: any) => b.machine_type === nextStepType)
@@ -262,16 +257,16 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                     fontSize: '0.75rem',
                                     fontWeight: 800,
                                 }}>
-                                    {(STEP_TYPE_LABELS[stepType] || stepType).charAt(0)}
+                                    {(t(`steps.${stepType}`) || stepType).charAt(0)}
                                 </Box>
                             )}
                             <Box>
                                 <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', lineHeight: 1.2 }}>
-                                    {readOnly ? 'Bosqich tafsilotlari' : 'Ishlab chiqarish'}
+                                    {readOnly ? t('dialog.title_details') : t('dialog.title_production')}
                                 </Typography>
                                 {stepType && (
                                     <Typography variant="caption" sx={{ color: stepColor, fontWeight: 600, textTransform: 'uppercase' }}>
-                                        {STEP_TYPE_LABELS[stepType] || stepType}
+                                        {t(`steps.${stepType}`) || stepType}
                                     </Typography>
                                 )}
                             </Box>
@@ -290,7 +285,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             )}
                             {kgReceived != null && (
                                 <Chip
-                                    label={`Olindi: ${kgReceived} kg`}
+                                    label={t('dialog.received_kg', { kg: kgReceived })}
                                     size="small"
                                     sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 600, fontSize: '0.75rem', border: '1px solid #a7f3d0' }}
                                 />
@@ -307,7 +302,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                         {/* Step Pipeline */}
                         {pipelineSteps.length > 0 && (
                             <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2 }}>
-                                <StepPipeline steps={pipelineSteps} currentStepId={step?.id} />
+                                <StepPipeline steps={pipelineSteps} currentStepId={step?.id} t={t} />
                             </Box>
                         )}
 
@@ -316,20 +311,20 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
                                 <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Iconify icon="solar:file-text-bold" width={18} sx={{ color: '#64748b' }} />
-                                    Buyurtma ma&apos;lumotlari
+                                    {t('dialog.order_info')}
                                 </Typography>
                                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
-                                    <InfoItem label="Buyurtma №" value={order.order_number} />
-                                    <InfoItem label="Nomi" value={order.title} />
-                                    <InfoItem label="Material" value={`${order.material || '-'} ${order.sub_material || ''}`} />
-                                    <InfoItem label="Hajmi" value={order.quantity_kg ? `${order.quantity_kg} kg` : null} />
-                                    <InfoItem label="Plyonka qalinligi" value={order.film_thickness} />
-                                    <InfoItem label="Plyonka kengligi" value={order.film_width} />
-                                    <InfoItem label="Val uzunligi" value={order.cylinder_length} />
-                                    <InfoItem label="Val soni" value={order.cylinder_count} />
-                                    <InfoItem label="Val aylanmasi" value={order.cylinder_aylanasi} />
-                                    <InfoItem label="Vtulka" value={order.vtulka} />
-                                    <InfoItem label="Napravlenie" value={order.napravlenie} />
+                                    <InfoItem label={t('dialog.order_number')} value={order.order_number} />
+                                    <InfoItem label={t('dialog.order_name')} value={order.title} />
+                                    <InfoItem label={t('dialog.material')} value={`${order.material || '-'} ${order.sub_material || ''}`} />
+                                    <InfoItem label={t('dialog.volume')} value={order.quantity_kg ? `${order.quantity_kg} kg` : null} />
+                                    <InfoItem label={t('dialog.film_thickness')} value={order.film_thickness} />
+                                    <InfoItem label={t('dialog.film_width')} value={order.film_width} />
+                                    <InfoItem label={t('dialog.cylinder_length')} value={order.cylinder_length} />
+                                    <InfoItem label={t('dialog.cylinder_count')} value={order.cylinder_count} />
+                                    <InfoItem label={t('dialog.cylinder_rotation')} value={order.cylinder_aylanasi} />
+                                    <InfoItem label={t('dialog.vtulka')} value={order.vtulka} />
+                                    <InfoItem label={t('dialog.napravlenie')} value={order.napravlenie} />
                                 </Box>
                             </Box>
                         )}
@@ -342,14 +337,14 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                 <Box>
                                     <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
                                         <Iconify icon="solar:inbox-bold" width={18} sx={{ color: '#64748b' }} />
-                                        Mavjud materiallar
+                                        {t('dialog.available_materials')}
                                     </Typography>
                                     <Box sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
                                         {isStockLoading ? (
                                             <Box sx={{ p: 3, display: 'flex', justifyContent: 'center' }}><CircularProgress size={24} /></Box>
                                         ) : stock.length === 0 ? (
                                             <Typography variant="body2" sx={{ p: 3, textAlign: 'center', color: '#94a3b8' }}>
-                                                Uskunada materiallar topilmadi
+                                                {t('dialog.no_materials')}
                                             </Typography>
                                         ) : stock.map((mat, idx) => (
                                             <Box
@@ -409,7 +404,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
                                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
-                                            Ishlab chiqarish natijasi
+                                            {t('dialog.production_result')}
                                         </Typography>
                                         {nextStepType && (
                                             <Chip
@@ -430,13 +425,13 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         {/* Brigada selector for next step */}
                                         {nextStepType && (
                                             <FormControl fullWidth size="small">
-                                                <InputLabel>{nextStepLabel} brigadasi</InputLabel>
+                                                <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
                                                 <Select
-                                                    label={`${nextStepLabel} brigadasi`}
+                                                    label={t('dialog.brigada_for_step', { step: nextStepLabel })}
                                                     value={sendToBrigada}
                                                     onChange={(e) => setSendToBrigada(e.target.value)}
                                                 >
-                                                    <MenuItem value="">Tanlang</MenuItem>
+                                                    <MenuItem value="">{t('common.select')}</MenuItem>
                                                     {filteredBrigadas.map((b: any) => (
                                                         <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
                                                     ))}
@@ -444,26 +439,26 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                             </FormControl>
                                         )}
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label="Metr ishlab chiqarilgan" placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
-                                            <TextField fullWidth size="small" label="Kg ishlab chiqarilgan" placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
+                                            <TextField fullWidth size="small" label={t('dialog.meters_produced')} placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
+                                            <TextField fullWidth size="small" label={t('dialog.kg_produced')} placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
                                         </Box>
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label="Kg chiqindi (waste)" placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
-                                            <TextField fullWidth size="small" label="Kg qoldiq (ostatok)" placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
+                                            <TextField fullWidth size="small" label={t('dialog.kg_waste')} placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
+                                            <TextField fullWidth size="small" label={t('dialog.kg_remaining')} placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
                                         </Box>
                                         {/* Ish turi only for reska */}
                                         {stepType === 'reska' && (
                                             <FormControl fullWidth size="small">
-                                                <InputLabel>Ish turi</InputLabel>
-                                                <Select label="Ish turi" value={workType} onChange={(e) => setWorkType(e.target.value)}>
-                                                    <MenuItem value="">Tanlanmagan</MenuItem>
-                                                    {WORK_TYPES.map((wt) => (
-                                                        <MenuItem key={wt.value} value={wt.value}>{wt.label}</MenuItem>
+                                                <InputLabel>{t('dialog.work_type')}</InputLabel>
+                                                <Select label={t('dialog.work_type')} value={workType} onChange={(e) => setWorkType(e.target.value)}>
+                                                    <MenuItem value="">{t('dialog.work_type_none')}</MenuItem>
+                                                    {WORK_TYPE_KEYS.map((wk) => (
+                                                        <MenuItem key={wk} value={wk}>{t(`work_types.${wk}`)}</MenuItem>
                                                     ))}
                                                 </Select>
                                             </FormControl>
                                         )}
-                                        <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                        <TextField fullWidth size="small" label={t('dialog.notes')} placeholder={t('dialog.notes_placeholder')} value={notes} onChange={(e) => setNotes(e.target.value)} />
                                     </Stack>
                                 </Box>
                             </>
@@ -474,20 +469,20 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
                                 <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
-                                    Natijalar
+                                    {t('dialog.results')}
                                 </Typography>
                                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
-                                    <InfoItem label="Kg olindi" value={step.kg_received} />
-                                    <InfoItem label="Kg ishlab chiqarildi" value={step.kg_produced} />
-                                    <InfoItem label="Metr ishlab chiqarildi" value={step.meters_produced} />
-                                    <InfoItem label="Kg chiqindi" value={step.kg_waste} />
-                                    <InfoItem label="Kg qoldiq" value={step.kg_ostatok} />
+                                    <InfoItem label={t('dialog.result_kg_received')} value={step.kg_received} />
+                                    <InfoItem label={t('dialog.result_kg_produced')} value={step.kg_produced} />
+                                    <InfoItem label={t('dialog.result_meters_produced')} value={step.meters_produced} />
+                                    <InfoItem label={t('dialog.result_kg_waste')} value={step.kg_waste} />
+                                    <InfoItem label={t('dialog.result_kg_remaining')} value={step.kg_ostatok} />
                                     <Stack spacing={0.25}>
                                         <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                                            Holati
+                                            {t('dialog.result_status')}
                                         </Typography>
                                         <Chip
-                                            label={step.status === 'completed' ? 'Yakunlangan' : step.status === 'in_progress' ? 'Jarayonda' : 'Kutilmoqda'}
+                                            label={t(`status.${step.status}`) || step.status}
                                             size="small"
                                             sx={{
                                                 width: 'fit-content',
@@ -512,7 +507,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     disabled={isSaving}
                     sx={{ color: '#64748b', fontWeight: 600, borderRadius: 1.5 }}
                 >
-                    {readOnly ? 'Yopish' : 'Bekor qilish'}
+                    {readOnly ? t('dialog.btn_close') : t('dialog.btn_cancel')}
                 </Button>
                 {!readOnly && (
                     <Button
@@ -527,7 +522,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             '&:hover': { bgcolor: stepColor, filter: 'brightness(0.9)' },
                         }}
                     >
-                        {isSaving ? <CircularProgress size={20} color="inherit" /> : 'Saqlash'}
+                        {isSaving ? <CircularProgress size={20} color="inherit" /> : t('dialog.btn_save')}
                     </Button>
                 )}
             </DialogActions>

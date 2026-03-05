@@ -27,6 +27,8 @@ import { useGetMySteps, useGetMyBrigada, useGetPlanItemSteps } from 'src/hooks/u
 
 import { fDate } from 'src/utils/format-time';
 
+import { useTranslate } from 'src/locales';
+
 import { Iconify } from 'src/components/iconify';
 
 import { useAuthContext } from 'src/auth/hooks';
@@ -54,23 +56,9 @@ const STEP_SHORT: Record<string, string> = {
     tayyor: 'T',
 };
 
-const STEP_FULL: Record<string, string> = {
-    reska: 'Reska',
-    pechat: 'Pechat',
-    sushka: 'Sushka',
-    laminatsiya: 'Laminatsiya',
-    tayyor: 'Tayyor',
-};
-
-const STATUS_LABEL: Record<string, string> = {
-    completed: 'Yakunlangan',
-    in_progress: 'Jarayonda',
-    pending: 'Kutilmoqda',
-};
-
 // ----------------------------------------------------------------------
 
-function StepPipelineCell({ planItemId }: { planItemId: number }) {
+function StepPipelineCell({ planItemId, t }: { planItemId: number; t: any }) {
     const { data: steps = [], isLoading } = useGetPlanItemSteps(planItemId);
 
     if (isLoading) {
@@ -105,10 +93,10 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
                             <Box key={step.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
                                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: step.status === 'completed' ? c : step.status === 'in_progress' ? c : 'rgba(145,158,171,0.3)', flexShrink: 0 }} />
                                 <Typography variant="caption" sx={{ fontWeight: 700, color: c, minWidth: 72 }}>
-                                    {STEP_FULL[step.step_type] || step.step_type}
+                                    {t(`steps.${step.step_type}`) || step.step_type}
                                 </Typography>
                                 <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, minWidth: 72 }}>
-                                    {STATUS_LABEL[step.status] || step.status}
+                                    {t(`status.${step.status}`) || step.status}
                                 </Typography>
                                 {(kgR > 0 || kgP > 0) && (
                                     <Typography variant="caption" sx={{ color: '#64748b', ml: 'auto' }}>
@@ -173,7 +161,7 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
 
 // ----------------------------------------------------------------------
 
-function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number) => void }) {
+function AdminPlanItemRow({ item, onAction, t }: { item: any, onAction: (id: number) => void, t: any }) {
     const hasEmbeddedOrder = item.order && typeof item.order === 'object' && 'order_number' in item.order;
     const { data: fetchedPlanItem } = useGetPlanItem(item.id, { enabled: !hasEmbeddedOrder && !!item.id });
     const matchedOrder = hasEmbeddedOrder ? item.order : fetchedPlanItem?.order;
@@ -187,7 +175,7 @@ function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number
                 {matchedOrder?.title || '-'}
             </TableCell>
             <TableCell>
-                <StepPipelineCell planItemId={item.id} />
+                <StepPipelineCell planItemId={item.id} t={t} />
             </TableCell>
             <TableCell>
                 0 kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {matchedOrder?.quantity_kg || 0} kg</Box>
@@ -206,7 +194,7 @@ function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number
     );
 }
 
-function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void }) {
+function StepRow({ step, onAction, t }: { step: any, onAction: (step: any) => void, t: any }) {
     const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
     const kgReceived = step.kg_received ?? 0;
     const kgProduced = step.kg_produced ?? 0;
@@ -216,7 +204,7 @@ function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void 
         <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
             <TableCell>
                 <Chip
-                    label={step.step_type}
+                    label={t(`steps.${step.step_type}`) || step.step_type}
                     size="small"
                     sx={{
                         bgcolor: `${color}22`,
@@ -231,7 +219,7 @@ function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void 
                 {step.plan_item?.order_title || '-'}
             </TableCell>
             <TableCell>
-                <StepPipelineCell planItemId={step.plan_item_id} />
+                <StepPipelineCell planItemId={step.plan_item_id} t={t} />
             </TableCell>
             <TableCell>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -269,6 +257,7 @@ function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void 
 // ----------------------------------------------------------------------
 
 export function InProgressView() {
+    const { t } = useTranslate('pechat-panel');
     const { user } = useAuthContext();
     const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
 
@@ -339,19 +328,19 @@ export function InProgressView() {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h4" sx={{ mb: 1, fontWeight: 'bold' }}>
-                Pechat umumiy
+                {t('in_progress.title')}
             </Typography>
             <Typography color="text.secondary" sx={{ mb: 4, fontSize: '0.9rem' }}>
-                Reja bo&apos;yicha bosmaga biriktirilgan buyurtmalar tanlangan stanok va brigada bo&apos;yicha ko&apos;rinadi.
+                {t('in_progress.description')}
             </Typography>
 
             <Card sx={{ p: 3, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
                     <FormControl fullWidth sx={{ maxWidth: 400 }}>
-                        <InputLabel>Stanok</InputLabel>
+                        <InputLabel>{t('common.stanok')}</InputLabel>
                         <Select
                             value={selectedStanok || ''}
-                            label="Stanok"
+                            label={t('common.stanok')}
                             disabled={hasMyData}
                             onChange={(e) => setManualStanok(e.target.value as number)}
                             sx={{ borderRadius: 1 }}
@@ -371,10 +360,10 @@ export function InProgressView() {
                     </FormControl>
 
                     <FormControl fullWidth sx={{ maxWidth: 400 }}>
-                        <InputLabel>Brigada</InputLabel>
+                        <InputLabel>{t('common.brigada')}</InputLabel>
                         <Select
                             value={selectedBrigada || ''}
-                            label="Brigada"
+                            label={t('common.brigada')}
                             disabled={hasMyData}
                             onChange={(e) => setManualBrigada(e.target.value as number)}
                             sx={{ borderRadius: 1 }}
@@ -398,13 +387,13 @@ export function InProgressView() {
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1 }}>
                         <Iconify icon="solar:info-circle-bold" width={20} sx={{ color: 'info.main' }} />
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                            Tanlangan: <Box component="span" sx={{ color: 'text.primary' }}>{activeStanokName} · {activeBrigadaName}</Box>
+                            {t('common.selected')} <Box component="span" sx={{ color: 'text.primary' }}>{activeStanokName} · {activeBrigadaName}</Box>
                         </Typography>
                     </Box>
                     {members.length > 0 && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 3.5, flexWrap: 'wrap' }}>
                             <Iconify icon="solar:users-group-rounded-bold" width={18} sx={{ color: 'text.disabled' }} />
-                            <Typography variant="body2" sx={{ color: 'text.disabled' }}>Brigada a&apos;zolari:</Typography>
+                            <Typography variant="body2" sx={{ color: 'text.disabled' }}>{t('common.brigada_members')}</Typography>
                             {members.map((m: any) => (
                                 <Box key={m.id} component="span" sx={{ bgcolor: 'rgba(145, 158, 171, 0.16)', px: 1, py: 0.25, borderRadius: 1, fontSize: '0.75rem', color: m.is_leader || m.position === 'operator' ? 'primary.main' : 'text.primary', fontWeight: 500 }}>
                                     {m.fullname || m.worker?.first_name || '...'} ({m.position})
@@ -418,43 +407,43 @@ export function InProgressView() {
                     <Table size="medium">
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>
-                                <TableCell>{isAdmin ? 'Buyurtma raqami' : 'Bosqich'}</TableCell>
-                                <TableCell>Nomi</TableCell>
-                                <TableCell>Bosqichlar</TableCell>
-                                <TableCell>Miqdori (kg)</TableCell>
-                                <TableCell>Sana</TableCell>
-                                <TableCell align="right">Amallar</TableCell>
+                                <TableCell>{isAdmin ? t('table.order_number') : t('table.step')}</TableCell>
+                                <TableCell>{t('table.name')}</TableCell>
+                                <TableCell>{t('table.steps')}</TableCell>
+                                <TableCell>{t('table.quantity_kg')}</TableCell>
+                                <TableCell>{t('table.date')}</TableCell>
+                                <TableCell align="right">{t('table.actions')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                        Yuklanmoqda...
+                                        {t('common.loading')}
                                     </TableCell>
                                 </TableRow>
                             ) : isAdmin ? (
                                 adminPlanItems.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                            Jarayondagi vazifalar topilmadi.
+                                            {t('in_progress.empty')}
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     adminPlanItems.map((item: any) => (
-                                        <AdminPlanItemRow key={item.id} item={item} onAction={setActionDialogTarget} />
+                                        <AdminPlanItemRow key={item.id} item={item} onAction={setActionDialogTarget} t={t} />
                                     ))
                                 )
                             ) : (
                                 workerSteps.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                            Jarayondagi vazifalar topilmadi.
+                                            {t('in_progress.empty')}
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     workerSteps.map((step: any) => (
-                                        <StepRow key={step.id} step={step} onAction={(s) => { setActionDialogStep(s); setActionDialogTarget(s.plan_item_id); }} />
+                                        <StepRow key={step.id} step={step} onAction={(s) => { setActionDialogStep(s); setActionDialogTarget(s.plan_item_id); }} t={t} />
                                     ))
                                 )
                             )}

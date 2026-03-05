@@ -18,11 +18,14 @@ import TableContainer from '@mui/material/TableContainer';
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetMyBrigada, useGetMachineStock } from 'src/hooks/use-material-usage';
 
+import { useTranslate } from 'src/locales';
+
 import { useAuthContext } from 'src/auth/hooks';
 
 import { StanokType } from 'src/types/stanok';
 
 export function MaterialsView() {
+    const { t } = useTranslate('pechat-panel');
     const { user } = useAuthContext();
     const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
 
@@ -49,20 +52,20 @@ export function MaterialsView() {
             <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
                 <Box>
                     <Typography variant="h4" sx={{ mb: 1, fontWeight: 'bold' }}>
-                        Mavjud Materiallar
+                        {t('materials.title')}
                     </Typography>
                     <Typography color="text.secondary" sx={{ fontSize: '0.9rem' }}>
-                        Stanokingizga biriktirilgan va hozirda mavjud bo&apos;lgan barcha xom ashyo materiallari ro&apos;yxati.
+                        {t('materials.description')}
                     </Typography>
                 </Box>
 
                 <FormControl sx={{ minWidth: 240 }} disabled={hasMyData}>
-                    <InputLabel id="stanok-select-label">Stanok (Uskuna)</InputLabel>
+                    <InputLabel id="stanok-select-label">{t('materials.stanok_label')}</InputLabel>
                     <Select
                         labelId="stanok-select-label"
                         id="stanok-select"
                         value={selectedStanok || ''}
-                        label="Stanok (Uskuna)"
+                        label={t('materials.stanok_label')}
                         onChange={(e) => setManualStanok(e.target.value as number)}
                     >
                         {hasMyData ? (
@@ -81,25 +84,25 @@ export function MaterialsView() {
                     <Table size="medium">
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>
-                                <TableCell>Nomi</TableCell>
-                                <TableCell>Turi</TableCell>
-                                <TableCell>Jami olingan</TableCell>
-                                <TableCell>Ishlatilgan</TableCell>
-                                <TableCell>Qaytarilgan</TableCell>
-                                <TableCell align="right">Qoldiq (Mavjud)</TableCell>
+                                <TableCell>{t('materials.col_name')}</TableCell>
+                                <TableCell>{t('materials.col_type')}</TableCell>
+                                <TableCell>{t('materials.col_total_received')}</TableCell>
+                                <TableCell>{t('materials.col_used')}</TableCell>
+                                <TableCell>{t('materials.col_returned')}</TableCell>
+                                <TableCell align="right">{t('materials.col_remaining')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                        Yuklanmoqda...
+                                        {t('common.loading')}
                                     </TableCell>
                                 </TableRow>
                             ) : stock.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                        Stanokda materiallar topilmadi.
+                                        {t('materials.empty')}
                                     </TableCell>
                                 </TableRow>
                             ) : (
