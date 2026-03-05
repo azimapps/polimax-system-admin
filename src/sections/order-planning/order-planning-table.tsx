@@ -190,7 +190,7 @@ export function OrderPlanningTable({ planItems, loading, onView, onEdit, onDelet
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>ID</TableCell>
+                        <TableCell>Buyurtma №</TableCell>
                         <TableCell>{t('table.order')}</TableCell>
                         <TableCell>{t('table.machine')}</TableCell>
                         <TableCell>{t('table.brigada')}</TableCell>
@@ -204,8 +204,8 @@ export function OrderPlanningTable({ planItems, loading, onView, onEdit, onDelet
                 <TableBody>
                     {planItems.map((item) => (
                         <TableRow key={item.id}>
-                            <TableCell>{item.id}</TableCell>
-                            <TableCell>{item.order_title || `#${item.order_id}`}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{item.order_number || `#${item.order_id}`}</TableCell>
+                            <TableCell>{item.order_title || '-'}</TableCell>
                             <TableCell>{item.machine_name || item.machine_id}</TableCell>
                             <TableCell>{item.brigada_name || item.brigada_id}</TableCell>
                             <TableCell>

@@ -41,6 +41,7 @@ export type PlanItem = {
 
 export type PlanItemListItem = Pick<PlanItem, 'id' | 'version' | 'order_id' | 'brigada_id' | 'machine_id' | 'start_date' | 'end_date' | 'status' | 'plan_type'> & {
     order_title?: string;
+    order_number?: string;
     brigada_name?: string;
     machine_name?: string;
     quantity_kg?: number;
