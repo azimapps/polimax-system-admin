@@ -15,8 +15,7 @@ import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
-import { useGetMyMaterials } from 'src/hooks/use-worker-panel';
-import { useLogProduction, useGetMachineStock, useTransferPlanItem } from 'src/hooks/use-material-usage';
+import { useLogProduction, useGetMachineStock, useTransferPlanItem, useGetMaterialUsages } from 'src/hooks/use-material-usage';
 
 type Props = {
     open: boolean;
@@ -27,7 +26,7 @@ type Props = {
 export function ActionDialog({ open, onClose, planItemId }: Props) {
     const { data: stock = [], isLoading: isStockLoading } = useGetMachineStock();
     const { data: brigadas = [] } = useGetBrigadas();
-    const { data: latestMaterials = [] } = useGetMyMaterials({ limit: 200 });
+    const { data: latestMaterials = [] } = useGetMaterialUsages({ limit: 200 });
 
     // Form state
     const [usageAmounts, setUsageAmounts] = useState<Record<number, string>>({});
@@ -48,12 +47,12 @@ export function ActionDialog({ open, onClose, planItemId }: Props) {
                     const parsedAmount = Number(amount);
                     if (!parsedAmount || parsedAmount <= 0) return null;
 
-                    // Find a matching chiqim transaction for this material to use its ID
-                    const tx = latestMaterials.find((m: any) => m.ombor_item_id === Number(matId) && m.transaction_type === 'chiqim');
+                    // Find a matching material usage record for this ombor item to get ombor_transaction_id
+                    const tx = latestMaterials.find((m: any) => m.ombor_item_id === Number(matId));
                     if (!tx) return null;
 
                     return {
-                        ombor_transaction_id: tx.id,
+                        ombor_transaction_id: tx.ombor_transaction_id,
                         used_amount: parsedAmount,
                         remainder_destination: 'machine_warehouse' as const,
                     };

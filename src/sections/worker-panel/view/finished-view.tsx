@@ -17,8 +17,8 @@ import FormControl from '@mui/material/FormControl';
 import TableContainer from '@mui/material/TableContainer';
 
 import { useGetStanoklar } from 'src/hooks/use-stanok';
-import { useGetMyBrigada } from 'src/hooks/use-material-usage';
 import { useGetPlanItem, useGetPlanItems } from 'src/hooks/use-plan-items';
+import { useGetMySteps, useGetMyBrigada } from 'src/hooks/use-material-usage';
 import { useGetBrigadas, useGetBrigadaMembers } from 'src/hooks/use-brigadas';
 
 import { fDate } from 'src/utils/format-time';
@@ -34,15 +34,9 @@ import { ActionDialog } from './action-dialog';
 
 // ----------------------------------------------------------------------
 
-function PlanItemRow({ item, isAdmin, onAction }: { item: any, isAdmin: boolean, onAction: (id: number) => void }) {
-    // If the backend magically embedded it with actual object data
+function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number) => void }) {
     const hasEmbeddedOrder = item.order && typeof item.order === 'object' && 'order_number' in item.order;
-
-    // Fetch the full PlanItem details which the backend Guarantees has an .order property nested inside.
-    // We cannot use /orders/:id because workers might get 403 Forbidden! They must fetch /plan-items/:id
     const { data: fetchedPlanItem } = useGetPlanItem(item.id, { enabled: !hasEmbeddedOrder && !!item.id });
-
-    // Extract the order object
     const matchedOrder = hasEmbeddedOrder ? item.order : fetchedPlanItem?.order;
 
     return (
@@ -62,6 +56,32 @@ function PlanItemRow({ item, isAdmin, onAction }: { item: any, isAdmin: boolean,
             <TableCell align="right">
                 <IconButton
                     onClick={() => onAction(item.id)}
+                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
+                    <Iconify icon="solar:info-circle-bold" />
+                </IconButton>
+            </TableCell>
+        </TableRow>
+    );
+}
+
+function StepRow({ step, onAction }: { step: any, onAction: (id: number) => void }) {
+    return (
+        <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
+            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
+                {step.step_type}
+            </TableCell>
+            <TableCell>
+                {step.plan_item?.order_title || '-'}
+            </TableCell>
+            <TableCell>
+                {step.kg_produced ?? 0} kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {step.kg_received ?? 0} kg</Box>
+            </TableCell>
+            <TableCell>
+                {fDate(step.completed_at || step.started_at || step.created_at)}
+            </TableCell>
+            <TableCell align="right">
+                <IconButton
+                    onClick={() => onAction(step.plan_item_id)}
                     sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
                     <Iconify icon="solar:info-circle-bold" />
                 </IconButton>
@@ -124,22 +144,20 @@ export function FinishedView() {
     const { data: fetchedMembers = [] } = useGetBrigadaMembers(hasMyData ? 0 : Number(manualBrigada)); // Fetch only if manual mode and has a brigada
     const members = hasMyData ? (myData.members || []) : fetchedMembers;
 
-    // Fetch finished plan items — both admin and worker use the same /plan-items endpoint
-    // Workers filter by their own brigada_id from myData
-    const { data: planItems = [], isLoading: isLoadingPlans } = useGetPlanItems({
+    // Admin: use /plan-items (requires accountant role)
+    const { data: adminPlanItems = [], isLoading: isLoadingAdminPlans } = useGetPlanItems({
         status: PlanItemStatus.FINISHED,
         machine_id: selectedStanok || undefined,
         brigada_id: selectedBrigada || undefined,
-    });
+    }, { enabled: isAdmin });
 
+    // Worker: use /material-usage/my-steps (brigada leader auth)
+    const { data: workerSteps = [], isLoading: isLoadingWorkerSteps } = useGetMySteps(
+        { status: 'completed' },
+    );
+
+    const isLoadingPlans = isAdmin ? isLoadingAdminPlans : isLoadingWorkerSteps;
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
-
-    // Debugging log so the developer can see the exact backend payload
-    useEffect(() => {
-        if (planItems.length > 0) {
-            console.log("API response planItems:", planItems);
-        }
-    }, [planItems]);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -229,7 +247,7 @@ export function FinishedView() {
                     <Table size="medium">
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>
-                                <TableCell>Buyurtma raqami</TableCell>
+                                <TableCell>{isAdmin ? 'Buyurtma raqami' : 'Bosqich'}</TableCell>
                                 <TableCell>Nomi</TableCell>
                                 <TableCell>Miqdori (kg)</TableCell>
                                 <TableCell>Sana</TableCell>
@@ -239,20 +257,34 @@ export function FinishedView() {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                    <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
                                         Yuklanmoqda...
                                     </TableCell>
                                 </TableRow>
-                            ) : planItems.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
-                                        Yakunlangan vazifalar topilmadi.
-                                    </TableCell>
-                                </TableRow>
+                            ) : isAdmin ? (
+                                adminPlanItems.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                            Yakunlangan vazifalar topilmadi.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    adminPlanItems.map((item: any) => (
+                                        <AdminPlanItemRow key={item.id} item={item} onAction={setActionDialogTarget} />
+                                    ))
+                                )
                             ) : (
-                                planItems.map((item: any) => (
-                                    <PlanItemRow key={item.id} item={item} isAdmin={isAdmin} onAction={setActionDialogTarget} />
-                                ))
+                                workerSteps.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                            Yakunlangan vazifalar topilmadi.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    workerSteps.map((step: any) => (
+                                        <StepRow key={step.id} step={step} onAction={setActionDialogTarget} />
+                                    ))
+                                )
                             )}
                         </TableBody>
                     </Table>
