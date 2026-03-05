@@ -150,11 +150,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
     // Send state
     const [sendToBrigada, setSendToBrigada] = useState('');
-    const [sendKg, setSendKg] = useState('');
-    const [sendMeters, setSendMeters] = useState('');
-    const [sendKgWaste, setSendKgWaste] = useState('');
-    const [sendKgOstatok, setSendKgOstatok] = useState('');
-    const [sendNotes, setSendNotes] = useState('');
 
     const logProd = useLogProduction();
 
@@ -200,11 +195,11 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
             const sendPayload = sendToBrigada ? {
                 to_brigada_id: Number(sendToBrigada),
-                kg_sent: Number(sendKg) || 0,
-                meters_sent: Number(sendMeters) || 0,
-                kg_waste: Number(sendKgWaste) || undefined,
-                kg_ostatok: Number(sendKgOstatok) || undefined,
-                notes: sendNotes || undefined,
+                kg_sent: Number(kg) || 0,
+                meters_sent: Number(meters) || 0,
+                kg_waste: Number(kgWaste) || undefined,
+                kg_ostatok: Number(kgOstatok) || undefined,
+                notes: notes || undefined,
             } : undefined;
 
             await logProd.mutateAsync({
@@ -225,11 +220,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
             setWorkType('');
             setNotes('');
             setSendToBrigada('');
-            setSendKg('');
-            setSendMeters('');
-            setSendKgWaste('');
-            setSendKgOstatok('');
-            setSendNotes('');
 
             onClose();
         } catch (error) {
@@ -414,13 +404,45 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
                                 <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
 
-                                {/* Production Section */}
+                                {/* Production + Send (merged — same numbers go to both) */}
                                 <Box>
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
-                                        Ishlab chiqarish natijasi
-                                    </Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
+                                            Ishlab chiqarish natijasi
+                                        </Typography>
+                                        {nextStepType && (
+                                            <Chip
+                                                label={`→ ${nextStepLabel}`}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: `${nextStepColor}15`,
+                                                    color: nextStepColor,
+                                                    fontWeight: 700,
+                                                    fontSize: '0.7rem',
+                                                    textTransform: 'uppercase',
+                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
                                     <Stack spacing={2}>
+                                        {/* Brigada selector for next step */}
+                                        {nextStepType && (
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>{nextStepLabel} brigadasi</InputLabel>
+                                                <Select
+                                                    label={`${nextStepLabel} brigadasi`}
+                                                    value={sendToBrigada}
+                                                    onChange={(e) => setSendToBrigada(e.target.value)}
+                                                >
+                                                    <MenuItem value="">Tanlang</MenuItem>
+                                                    {filteredBrigadas.map((b: any) => (
+                                                        <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        )}
                                         <Box sx={{ display: 'flex', gap: 2 }}>
                                             <TextField fullWidth size="small" label="Metr ishlab chiqarilgan" placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
                                             <TextField fullWidth size="small" label="Kg ishlab chiqarilgan" placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
@@ -429,7 +451,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                             <TextField fullWidth size="small" label="Kg chiqindi (waste)" placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
                                             <TextField fullWidth size="small" label="Kg qoldiq (ostatok)" placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
                                         </Box>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                        {/* Ish turi only for reska */}
+                                        {stepType === 'reska' && (
                                             <FormControl fullWidth size="small">
                                                 <InputLabel>Ish turi</InputLabel>
                                                 <Select label="Ish turi" value={workType} onChange={(e) => setWorkType(e.target.value)}>
@@ -439,64 +462,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                                     ))}
                                                 </Select>
                                             </FormControl>
-                                            <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={notes} onChange={(e) => setNotes(e.target.value)} />
-                                        </Box>
-                                    </Stack>
-                                </Box>
-
-                                {/* Send to Next Step Section */}
-                                <Box sx={{
-                                    border: '2px solid #22c55e',
-                                    borderRadius: 2,
-                                    p: 2.5,
-                                    bgcolor: '#f0fdf4',
-                                }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" width={20} sx={{ color: '#16a34a' }} />
-                                            <Typography variant="subtitle2" sx={{ color: '#16a34a', fontWeight: 600 }}>
-                                                Keyingi bosqichga yuborish
-                                            </Typography>
-                                        </Box>
-                                        {nextStepType && (
-                                            <Chip
-                                                label={nextStepLabel}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: `${nextStepColor}15`,
-                                                    color: nextStepColor,
-                                                    fontWeight: 700,
-                                                    fontSize: '0.75rem',
-                                                    textTransform: 'uppercase',
-                                                    border: `1.5px solid ${nextStepColor}40`,
-                                                }}
-                                            />
                                         )}
-                                    </Box>
-
-                                    <Stack spacing={2}>
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel>{nextStepLabel ? `${nextStepLabel} brigadasi` : 'Qaysi brigadaga?'}</InputLabel>
-                                            <Select
-                                                label={nextStepLabel ? `${nextStepLabel} brigadasi` : 'Qaysi brigadaga?'}
-                                                value={sendToBrigada}
-                                                onChange={(e) => setSendToBrigada(e.target.value)}
-                                            >
-                                                <MenuItem value="">Tanlang</MenuItem>
-                                                {filteredBrigadas.map((b: any) => (
-                                                    <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label="Kg yuboriladi" placeholder="0" value={sendKg} onChange={(e) => setSendKg(e.target.value)} />
-                                            <TextField fullWidth size="small" label="Metr yuboriladi" placeholder="0" value={sendMeters} onChange={(e) => setSendMeters(e.target.value)} />
-                                        </Box>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label="Kg chiqindi" placeholder="0" value={sendKgWaste} onChange={(e) => setSendKgWaste(e.target.value)} />
-                                            <TextField fullWidth size="small" label="Kg qoldiq" placeholder="0" value={sendKgOstatok} onChange={(e) => setSendKgOstatok(e.target.value)} />
-                                        </Box>
-                                        <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={sendNotes} onChange={(e) => setSendNotes(e.target.value)} />
+                                        <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={notes} onChange={(e) => setNotes(e.target.value)} />
                                     </Stack>
                                 </Box>
                             </>
