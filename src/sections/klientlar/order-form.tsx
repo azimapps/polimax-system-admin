@@ -1,8 +1,8 @@
 
 import type { Order, CreateOrderRequest, UpdateOrderRequest } from 'src/types/order';
 
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
@@ -23,7 +23,7 @@ import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
 import { StaffType } from 'src/types/staff';
-import { OrderStatus, OrderCurrency, OrderMaterial, OrderSubMaterial, OrderVtulka, OrderNapravlenie } from 'src/types/order';
+import { OrderStatus, OrderVtulka, OrderCurrency, OrderMaterial, OrderSubMaterial, OrderNapravlenie } from 'src/types/order';
 
 import { getOrderSchema } from './order-schema';
 
@@ -118,6 +118,12 @@ export function OrderBookForm({ order, onSuccess }: Props) {
         resolver: zodResolver(getOrderSchema(t)),
         defaultValues,
     });
+
+    useEffect(() => {
+        if (order) {
+            methods.reset(defaultValues);
+        }
+    }, [order, defaultValues, methods]);
 
     const { handleSubmit, watch, setValue } = methods;
 
