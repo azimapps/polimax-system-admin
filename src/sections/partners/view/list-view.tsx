@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
 
-import { useGetPartners, useDeletePartner, useCreatePartner } from 'src/hooks/use-partners';
+import { useGetPartners, useDeletePartner } from 'src/hooks/use-partners';
 
 import { useTranslate } from 'src/locales';
 
@@ -31,8 +31,6 @@ export function PartnerListView() {
 
     const { data: partners = [], isLoading } = useGetPartners({ q: debouncedQuery });
     const { mutateAsync: deletePartner } = useDeletePartner();
-    const { mutateAsync: createPartner } = useCreatePartner();
-
     const dialog = useBoolean();
     const confirmDialog = useBoolean();
     const historyDialog = useBoolean();
