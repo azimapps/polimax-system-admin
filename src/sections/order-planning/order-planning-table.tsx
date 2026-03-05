@@ -3,6 +3,7 @@ import type { PlanItemListItem } from 'src/types/plan-item';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -25,12 +26,26 @@ import { PlanItemStatus } from 'src/types/plan-item';
 
 // ----------------------------------------------------------------------
 
-const STEP_TYPE_LABELS: Record<string, string> = {
+const STEP_SHORT: Record<string, string> = {
     reska: 'R',
     pechat: 'P',
     sushka: 'S',
     laminatsiya: 'L',
     tayyor: 'T',
+};
+
+const STEP_FULL: Record<string, string> = {
+    reska: 'Reska',
+    pechat: 'Pechat',
+    sushka: 'Sushka',
+    laminatsiya: 'Laminatsiya',
+    tayyor: 'Tayyor',
+};
+
+const STATUS_LABEL: Record<string, string> = {
+    completed: 'Yakunlangan',
+    in_progress: 'Jarayonda',
+    pending: 'Kutilmoqda',
 };
 
 const STEP_TYPE_COLORS: Record<string, string> = {
@@ -57,53 +72,89 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
     const sorted = [...steps].sort((a: any, b: any) => a.step_number - b.step_number);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-            {sorted.map((step: any) => {
-                const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
-                const isCompleted = step.status === 'completed';
-                const isActive = step.status === 'in_progress';
-                const isPending = step.status === 'pending';
+        <Tooltip
+            arrow
+            placement="bottom"
+            slotProps={{
+                tooltip: {
+                    sx: { bgcolor: '#1C252E', maxWidth: 320, p: 0, borderRadius: 1.5, border: '1px solid rgba(145,158,171,0.16)' },
+                },
+                arrow: { sx: { color: '#1C252E' } },
+            }}
+            title={
+                <Box sx={{ p: 1.5 }}>
+                    {sorted.map((step: any) => {
+                        const c = STEP_TYPE_COLORS[step.step_type] || '#919eab';
+                        const kgR = step.kg_received ?? 0;
+                        const kgP = step.kg_produced ?? 0;
+                        const kgW = step.kg_waste ?? 0;
+                        return (
+                            <Box key={step.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
+                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: step.status === 'completed' ? c : step.status === 'in_progress' ? c : 'rgba(145,158,171,0.3)', flexShrink: 0 }} />
+                                <Typography variant="caption" sx={{ fontWeight: 700, color: c, minWidth: 72 }}>
+                                    {STEP_FULL[step.step_type] || step.step_type}
+                                </Typography>
+                                <Typography variant="caption" sx={{ color: step.status === 'completed' ? 'success.light' : step.status === 'in_progress' ? 'warning.light' : 'text.disabled', minWidth: 72 }}>
+                                    {STATUS_LABEL[step.status] || step.status}
+                                </Typography>
+                                {(kgR > 0 || kgP > 0) && (
+                                    <Typography variant="caption" sx={{ color: 'text.secondary', ml: 'auto' }}>
+                                        {kgP}/{kgR} kg
+                                        {kgW > 0 && <Box component="span" sx={{ color: 'error.light' }}> (-{kgW})</Box>}
+                                    </Typography>
+                                )}
+                            </Box>
+                        );
+                    })}
+                </Box>
+            }
+        >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '3px', cursor: 'default' }}>
+                {sorted.map((step: any) => {
+                    const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
+                    const isCompleted = step.status === 'completed';
+                    const isActive = step.status === 'in_progress';
+                    const isPending = step.status === 'pending';
 
-                return (
-                    <Box
-                        key={step.id}
-                        title={`${step.step_type} — ${step.status}${step.kg_received ? ` (${step.kg_produced ?? 0}/${step.kg_received} kg)` : ''}`}
-                        sx={{
-                            width: 22,
-                            height: 22,
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '0.6rem',
-                            fontWeight: 800,
-                            cursor: 'default',
-                            transition: 'all 0.15s',
-                            ...(isCompleted && {
-                                bgcolor: color,
-                                color: '#fff',
-                            }),
-                            ...(isActive && {
-                                bgcolor: `${color}33`,
-                                color,
-                                border: `1.5px solid ${color}`,
-                                animation: 'pulse 2s infinite',
-                                '@keyframes pulse': {
-                                    '0%, 100%': { opacity: 1 },
-                                    '50%': { opacity: 0.6 },
-                                },
-                            }),
-                            ...(isPending && {
-                                bgcolor: 'rgba(145, 158, 171, 0.12)',
-                                color: 'rgba(145, 158, 171, 0.5)',
-                            }),
-                        }}
-                    >
-                        {STEP_TYPE_LABELS[step.step_type] || '?'}
-                    </Box>
-                );
-            })}
-        </Box>
+                    return (
+                        <Box
+                            key={step.id}
+                            sx={{
+                                width: 22,
+                                height: 22,
+                                borderRadius: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.6rem',
+                                fontWeight: 800,
+                                transition: 'all 0.15s',
+                                ...(isCompleted && {
+                                    bgcolor: color,
+                                    color: '#fff',
+                                }),
+                                ...(isActive && {
+                                    bgcolor: `${color}33`,
+                                    color,
+                                    border: `1.5px solid ${color}`,
+                                    animation: 'pulse 2s infinite',
+                                    '@keyframes pulse': {
+                                        '0%, 100%': { opacity: 1 },
+                                        '50%': { opacity: 0.6 },
+                                    },
+                                }),
+                                ...(isPending && {
+                                    bgcolor: 'rgba(145, 158, 171, 0.12)',
+                                    color: 'rgba(145, 158, 171, 0.5)',
+                                }),
+                            }}
+                        >
+                            {STEP_SHORT[step.step_type] || '?'}
+                        </Box>
+                    );
+                })}
+            </Box>
+        </Tooltip>
     );
 }
 
