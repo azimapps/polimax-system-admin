@@ -105,6 +105,19 @@ export function AuthProvider({ children }: Props) {
     [setState]
   );
 
+  const phoneLogin = useCallback(
+    async (payload: Record<string, any>) => {
+      const res = await axiosInstance.post('/auth/phone-login', payload);
+      const { token, account } = res.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(account));
+
+      setState({ user: account });
+    },
+    [setState]
+  );
+
   const omborLogin = useCallback(
     async (payload: Record<string, any>) => {
       const res = await axiosInstance.post('/ombor-accounts/login', payload);
@@ -155,11 +168,12 @@ export function AuthProvider({ children }: Props) {
       unauthenticated: status === 'unauthenticated',
       login,
       staffLogin,
+      phoneLogin,
       omborLogin,
       logout,
       updateUser,
     }),
-    [checkUserSession, login, staffLogin, omborLogin, logout, updateUser, state.user, status]
+    [checkUserSession, login, staffLogin, phoneLogin, omborLogin, logout, updateUser, state.user, status]
   );
 
   return <AuthContext value={memoizedValue}>{children}</AuthContext>;

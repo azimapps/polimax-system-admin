@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -20,7 +21,7 @@ import { AnimateLogoRotate } from 'src/components/animate';
 
 import { FormHead } from '../components/form-head';
 import { TelegramLoginButton } from '../components/telegram-login';
-import { useSignIn, useStaffLogin, useOmborLogin } from '../context/jwt';
+import { useSignIn, useStaffLogin, usePhoneLogin, useOmborLogin } from '../context/jwt';
 
 // ----------------------------------------------------------------------
 
@@ -39,7 +40,10 @@ export function CenteredSignInView() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { isPending, mutateAsync } = useSignIn();
   const { isPending: isStaffPending, mutateAsync: mutateStaffAsync } = useStaffLogin();
+  const { isPending: isPhonePending, mutateAsync: mutatePhoneAsync } = usePhoneLogin();
   const { isPending: isOmborPending, mutateAsync: mutateOmborAsync } = useOmborLogin();
+  const [phoneValue, setPhoneValue] = useState('');
+
   const defaultValues: SignInSchemaType = {
     login: '',
     password: '',
@@ -136,6 +140,7 @@ export function CenteredSignInView() {
     >
       <Tab value="manager" label="Manager / CEO Login" />
       <Tab value="staff" label="Staff Telegram Login" />
+      <Tab value="phone" label="Phone Login" />
       <Tab value="ombor" label="Ombor Login" />
     </Tabs>
   );
@@ -173,6 +178,34 @@ export function CenteredSignInView() {
           {isStaffPending && (
             <Box sx={{ mt: 2, color: 'text.secondary' }}>Kirish amalga oshirilmoqda...</Box>
           )}
+        </Box>
+      )}
+
+      {currentTab === 'phone' && (
+        <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+          <TextField
+            fullWidth
+            label="Telefon raqami"
+            placeholder="990330919"
+            value={phoneValue}
+            onChange={(e) => setPhoneValue(e.target.value)}
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+          <Button
+            fullWidth
+            color="inherit"
+            size="large"
+            variant="contained"
+            loading={isPhonePending}
+            loadingIndicator={t('loading_indicator')}
+            onClick={async () => {
+              if (phoneValue.trim()) {
+                await mutatePhoneAsync({ phone: phoneValue.trim() });
+              }
+            }}
+          >
+            {t('sign_in_button')}
+          </Button>
         </Box>
       )}
 

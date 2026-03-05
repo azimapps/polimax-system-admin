@@ -102,6 +102,40 @@ export const useStaffLogin = () => {
   return { isPending, mutateAsync };
 };
 
+export const usePhoneLogin = () => {
+  const router = useRouter();
+  const { phoneLogin } = useAuthContext();
+  const searchParams = useSearchParams();
+  const { t } = useTranslate();
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: async (value: { phone: string }) => {
+      await phoneLogin(value);
+    },
+    onSuccess: () => {
+      toast.success('Hush kelibsiz', { position: 'top-center' });
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      if (
+        user?.type === 'worker' ||
+        user?.role === 'worker' ||
+        user?.worker_type ||
+        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
+      ) {
+        router.replace(paths.dashboard.pechatPanel.root);
+      } else {
+        router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
+      }
+    },
+    onError: (err: any) => {
+      const errorMessage = err?.response?.data?.detail || t('auth.login_failed');
+      toast.error(errorMessage, { position: 'top-center' });
+    },
+  });
+
+  return { isPending, mutateAsync };
+};
+
 export const useOmborLogin = () => {
   const router = useRouter();
   const { omborLogin } = useAuthContext();
