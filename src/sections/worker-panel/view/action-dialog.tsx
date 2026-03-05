@@ -223,6 +223,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     };
 
     const isSaving = logProd.isPending;
+    const hasOverflow = stock.some((mat) => (Number(usageAmounts[mat.ombor_item_id]) || 0) > mat.stock_at_machine);
 
     return (
         <Dialog
@@ -346,7 +347,10 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                             <Typography variant="body2" sx={{ p: 3, textAlign: 'center', color: '#94a3b8' }}>
                                                 {t('dialog.no_materials')}
                                             </Typography>
-                                        ) : stock.map((mat, idx) => (
+                                        ) : stock.map((mat, idx) => {
+                                            const entered = Number(usageAmounts[mat.ombor_item_id]) || 0;
+                                            const isOver = entered > mat.stock_at_machine;
+                                            return (
                                             <Box
                                                 key={mat.ombor_item_id}
                                                 sx={{
@@ -356,7 +360,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                                     alignItems: 'center',
                                                     justifyContent: 'space-between',
                                                     borderBottom: idx !== stock.length - 1 ? '1px solid #f1f5f9' : 'none',
-                                                    '&:hover': { bgcolor: '#f8fafc' },
+                                                    bgcolor: isOver ? '#fef2f2' : 'transparent',
+                                                    '&:hover': { bgcolor: isOver ? '#fef2f2' : '#f8fafc' },
                                                     transition: 'background 0.15s',
                                                 }}
                                             >
@@ -368,32 +373,36 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                                         label={`${mat.stock_at_machine} kg/l`}
                                                         size="small"
                                                         sx={{
-                                                            bgcolor: mat.stock_at_machine > 0 ? '#ecfdf5' : '#fef2f2',
-                                                            color: mat.stock_at_machine > 0 ? '#059669' : '#dc2626',
+                                                            bgcolor: isOver ? '#fef2f2' : mat.stock_at_machine > 0 ? '#ecfdf5' : '#fef2f2',
+                                                            color: isOver ? '#dc2626' : mat.stock_at_machine > 0 ? '#059669' : '#dc2626',
                                                             fontWeight: 600,
                                                             fontSize: '0.75rem',
-                                                            border: `1px solid ${mat.stock_at_machine > 0 ? '#a7f3d0' : '#fecaca'}`,
+                                                            border: `1px solid ${isOver ? '#fecaca' : mat.stock_at_machine > 0 ? '#a7f3d0' : '#fecaca'}`,
                                                         }}
                                                     />
                                                     <TextField
                                                         size="small"
                                                         placeholder="0"
+                                                        error={isOver}
+                                                        helperText={isOver ? `max ${mat.stock_at_machine}` : ''}
                                                         value={usageAmounts[mat.ombor_item_id] || ''}
                                                         onChange={(e) => setUsageAmounts({ ...usageAmounts, [mat.ombor_item_id]: e.target.value })}
                                                         sx={{
-                                                            width: 80,
+                                                            width: 100,
                                                             '& .MuiOutlinedInput-root': {
                                                                 bgcolor: '#fff',
-                                                                '& fieldset': { borderColor: '#e2e8f0' },
-                                                                '&:hover fieldset': { borderColor: '#94a3b8' },
-                                                                '&.Mui-focused fieldset': { borderColor: stepColor },
+                                                                '& fieldset': { borderColor: isOver ? '#ef4444' : '#e2e8f0' },
+                                                                '&:hover fieldset': { borderColor: isOver ? '#ef4444' : '#94a3b8' },
+                                                                '&.Mui-focused fieldset': { borderColor: isOver ? '#ef4444' : stepColor },
                                                             },
-                                                            '& input': { textAlign: 'center', color: '#1e293b', fontWeight: 600 },
+                                                            '& input': { textAlign: 'center', color: isOver ? '#dc2626' : '#1e293b', fontWeight: 600 },
+                                                            '& .MuiFormHelperText-root': { mx: 0, mt: 0.5, fontSize: '0.65rem' },
                                                         }}
                                                     />
                                                 </Box>
                                             </Box>
-                                        ))}
+                                            );
+                                        })}
                                     </Box>
                                 </Box>
 
@@ -513,7 +522,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     <Button
                         variant="contained"
                         onClick={handleSave}
-                        disabled={isSaving}
+                        disabled={isSaving || hasOverflow}
                         sx={{
                             bgcolor: stepColor,
                             borderRadius: 1.5,
