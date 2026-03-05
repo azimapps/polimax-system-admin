@@ -18,7 +18,6 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { useGetStanoklar } from 'src/hooks/use-stanok';
 import { useGetMyBrigada } from 'src/hooks/use-material-usage';
-import { useGetMyBrigadaPlanItems } from 'src/hooks/use-worker-panel';
 import { useGetPlanItem, useGetPlanItems } from 'src/hooks/use-plan-items';
 import { useGetBrigadas, useGetBrigadaMembers } from 'src/hooks/use-brigadas';
 
@@ -125,19 +124,13 @@ export function InProgressView() {
     const { data: fetchedMembers = [] } = useGetBrigadaMembers(hasMyData ? 0 : Number(manualBrigada)); // Fetch only if manual mode and has a brigada
     const members = hasMyData ? (myData.members || []) : fetchedMembers;
 
-    // Fetch in_progress plan items using current filters (Admin UI uses original plan items hook)
-    const { data: adminPlanItems = [], isLoading: isLoadingAdminPlans } = useGetPlanItems({
+    // Fetch in_progress plan items — both admin and worker use the same /plan-items endpoint
+    // Workers filter by their own brigada_id from myData
+    const { data: planItems = [], isLoading: isLoadingPlans } = useGetPlanItems({
         status: PlanItemStatus.IN_PROGRESS,
         machine_id: selectedStanok || undefined,
         brigada_id: selectedBrigada || undefined,
-    }, { enabled: isAdmin });
-
-    // Workers use useGetMyBrigadaPlanItems specifically
-    // We determine true worker API by user role!
-    const { data: workerPlanItems = [], isLoading: isLoadingWorkerPlans } = useGetMyBrigadaPlanItems({ status: PlanItemStatus.IN_PROGRESS });
-
-    const planItems = isAdmin ? adminPlanItems : workerPlanItems;
-    const isLoadingPlans = isAdmin ? isLoadingAdminPlans : isLoadingWorkerPlans;
+    });
 
     const isLoading = isLoadingMyBrigada || isLoadingPlans;
 
