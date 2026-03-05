@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
@@ -34,6 +35,16 @@ import { ActionDialog } from './action-dialog';
 
 // ----------------------------------------------------------------------
 
+const STEP_TYPE_COLORS: Record<string, string> = {
+    reska: '#2196f3',
+    pechat: '#ff9800',
+    sushka: '#f44336',
+    laminatsiya: '#9c27b0',
+    tayyor: '#4caf50',
+};
+
+// ----------------------------------------------------------------------
+
 function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number) => void }) {
     const hasEmbeddedOrder = item.order && typeof item.order === 'object' && 'order_number' in item.order;
     const { data: fetchedPlanItem } = useGetPlanItem(item.id, { enabled: !hasEmbeddedOrder && !!item.id });
@@ -56,34 +67,48 @@ function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number
             <TableCell align="right">
                 <IconButton
                     onClick={() => onAction(item.id)}
-                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                    <Iconify icon="solar:info-circle-bold" />
+                    sx={{ bgcolor: 'rgba(145, 158, 171, 0.16)', color: 'text.secondary', '&:hover': { bgcolor: 'rgba(145, 158, 171, 0.32)' } }}>
+                    <Iconify icon="solar:eye-bold" />
                 </IconButton>
             </TableCell>
         </TableRow>
     );
 }
 
-function StepRow({ step, onAction }: { step: any, onAction: (id: number) => void }) {
+function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void }) {
+    const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
+
     return (
         <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
-            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
-                {step.step_type}
+            <TableCell>
+                <Chip
+                    label={step.step_type}
+                    size="small"
+                    sx={{
+                        bgcolor: `${color}22`,
+                        color,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        fontSize: '0.7rem',
+                    }}
+                />
             </TableCell>
             <TableCell>
                 {step.plan_item?.order_title || '-'}
             </TableCell>
             <TableCell>
-                {step.kg_produced ?? 0} kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {step.kg_received ?? 0} kg</Box>
+                <Typography variant="body2">
+                    {step.kg_produced ?? 0} kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {step.kg_received ?? 0} kg</Box>
+                </Typography>
             </TableCell>
             <TableCell>
                 {fDate(step.completed_at || step.started_at || step.created_at)}
             </TableCell>
             <TableCell align="right">
                 <IconButton
-                    onClick={() => onAction(step.plan_item_id)}
-                    sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                    <Iconify icon="solar:info-circle-bold" />
+                    onClick={() => onAction(step)}
+                    sx={{ bgcolor: 'rgba(145, 158, 171, 0.16)', color: 'text.secondary', '&:hover': { bgcolor: 'rgba(145, 158, 171, 0.32)' } }}>
+                    <Iconify icon="solar:eye-bold" />
                 </IconButton>
             </TableCell>
         </TableRow>
@@ -109,6 +134,7 @@ export function FinishedView() {
 
     // Modal state
     const [actionDialogTarget, setActionDialogTarget] = useState<number | null>(null);
+    const [actionDialogStep, setActionDialogStep] = useState<any>(null);
 
     // Determine final values: Use myData if available, else manual selection
     const hasMyData = !!myData;
@@ -282,7 +308,7 @@ export function FinishedView() {
                                     </TableRow>
                                 ) : (
                                     workerSteps.map((step: any) => (
-                                        <StepRow key={step.id} step={step} onAction={setActionDialogTarget} />
+                                        <StepRow key={step.id} step={step} onAction={(s) => { setActionDialogStep(s); setActionDialogTarget(s.plan_item_id); }} />
                                     ))
                                 )
                             )}
@@ -293,8 +319,10 @@ export function FinishedView() {
 
             <ActionDialog
                 open={!!actionDialogTarget}
-                onClose={() => setActionDialogTarget(null)}
+                onClose={() => { setActionDialogTarget(null); setActionDialogStep(null); }}
                 planItemId={actionDialogTarget}
+                step={actionDialogStep}
+                readOnly
             />
         </Box>
     );

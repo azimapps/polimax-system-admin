@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
@@ -14,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import InputLabel from '@mui/material/InputLabel';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
+import LinearProgress from '@mui/material/LinearProgress';
 import TableContainer from '@mui/material/TableContainer';
 
 import { useGetStanoklar } from 'src/hooks/use-stanok';
@@ -31,6 +33,16 @@ import { StanokType } from 'src/types/stanok';
 import { PlanItemStatus } from 'src/types/plan-item';
 
 import { ActionDialog } from './action-dialog';
+
+// ----------------------------------------------------------------------
+
+const STEP_TYPE_COLORS: Record<string, string> = {
+    reska: '#2196f3',
+    pechat: '#ff9800',
+    sushka: '#f44336',
+    laminatsiya: '#9c27b0',
+    tayyor: '#4caf50',
+};
 
 // ----------------------------------------------------------------------
 
@@ -57,33 +69,64 @@ function AdminPlanItemRow({ item, onAction }: { item: any, onAction: (id: number
                 <IconButton
                     onClick={() => onAction(item.id)}
                     sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                    <Iconify icon="solar:info-circle-bold" />
+                    <Iconify icon="solar:pen-bold" />
                 </IconButton>
             </TableCell>
         </TableRow>
     );
 }
 
-function StepRow({ step, onAction }: { step: any, onAction: (id: number) => void }) {
+function StepRow({ step, onAction }: { step: any, onAction: (step: any) => void }) {
+    const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
+    const kgReceived = step.kg_received ?? 0;
+    const kgProduced = step.kg_produced ?? 0;
+    const progress = kgReceived > 0 ? Math.min((kgProduced / kgReceived) * 100, 100) : 0;
+
     return (
         <TableRow sx={{ '& td': { borderBottom: '1px solid rgba(145, 158, 171, 0.16)' } }}>
-            <TableCell sx={{ color: 'success.main', fontWeight: 600 }}>
-                {step.step_type}
+            <TableCell>
+                <Chip
+                    label={step.step_type}
+                    size="small"
+                    sx={{
+                        bgcolor: `${color}22`,
+                        color,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        fontSize: '0.7rem',
+                    }}
+                />
             </TableCell>
             <TableCell>
                 {step.plan_item?.order_title || '-'}
             </TableCell>
             <TableCell>
-                {step.kg_produced ?? 0} kg <Box component="span" sx={{ color: 'text.secondary' }}>/ {step.kg_received ?? 0} kg</Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ flexGrow: 1, minWidth: 60 }}>
+                        <LinearProgress
+                            variant="determinate"
+                            value={progress}
+                            sx={{
+                                height: 6,
+                                borderRadius: 3,
+                                bgcolor: 'rgba(145, 158, 171, 0.16)',
+                                '& .MuiLinearProgress-bar': { bgcolor: color, borderRadius: 3 },
+                            }}
+                        />
+                    </Box>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
+                        {kgProduced}/{kgReceived} kg
+                    </Typography>
+                </Box>
             </TableCell>
             <TableCell>
                 {fDate(step.started_at || step.created_at)}
             </TableCell>
             <TableCell align="right">
                 <IconButton
-                    onClick={() => onAction(step.plan_item_id)}
+                    onClick={() => onAction(step)}
                     sx={{ bgcolor: 'rgba(34, 197, 94, 0.16)', color: 'success.main', '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.32)' } }}>
-                    <Iconify icon="solar:info-circle-bold" />
+                    <Iconify icon="solar:pen-bold" />
                 </IconButton>
             </TableCell>
         </TableRow>
@@ -107,8 +150,9 @@ export function InProgressView() {
     const [manualStanok, setManualStanok] = useState<number | ''>('');
     const [manualBrigada, setManualBrigada] = useState<number | ''>('');
 
-    // Modal state
+    // Modal state — for admin: planItemId, for worker: full step object
     const [actionDialogTarget, setActionDialogTarget] = useState<number | null>(null);
+    const [actionDialogStep, setActionDialogStep] = useState<any>(null);
 
     // Determine final values: Use myData if available, else manual selection
     const hasMyData = !!myData;
@@ -282,7 +326,7 @@ export function InProgressView() {
                                     </TableRow>
                                 ) : (
                                     workerSteps.map((step: any) => (
-                                        <StepRow key={step.id} step={step} onAction={setActionDialogTarget} />
+                                        <StepRow key={step.id} step={step} onAction={(s) => { setActionDialogStep(s); setActionDialogTarget(s.plan_item_id); }} />
                                     ))
                                 )
                             )}
@@ -293,8 +337,9 @@ export function InProgressView() {
 
             <ActionDialog
                 open={!!actionDialogTarget}
-                onClose={() => setActionDialogTarget(null)}
+                onClose={() => { setActionDialogTarget(null); setActionDialogStep(null); }}
                 planItemId={actionDialogTarget}
+                step={actionDialogStep}
             />
         </Box>
     );
