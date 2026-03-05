@@ -98,6 +98,11 @@ function StepPipelineCell({ planItemId }: { planItemId: number }) {
                                 <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, minWidth: 72 }}>
                                     {STATUS_LABEL[step.status] || step.status}
                                 </Typography>
+                                {step.brigada_name && (
+                                    <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.65rem' }}>
+                                        {step.brigada_name}
+                                    </Typography>
+                                )}
                                 {(kgR > 0 || kgP > 0) && (
                                     <Typography variant="caption" sx={{ color: '#64748b', ml: 'auto' }}>
                                         {kgP}/{kgR} kg
@@ -200,9 +205,9 @@ export function OrderPlanningTable({ planItems, loading, onView, onEdit, onDelet
                     {planItems.map((item) => (
                         <TableRow key={item.id}>
                             <TableCell>{item.id}</TableCell>
-                            <TableCell>{item.order_id}</TableCell>
-                            <TableCell>{item.machine_id}</TableCell>
-                            <TableCell>{item.brigada_id}</TableCell>
+                            <TableCell>{item.order_title || `#${item.order_id}`}</TableCell>
+                            <TableCell>{item.machine_name || item.machine_id}</TableCell>
+                            <TableCell>{item.brigada_name || item.brigada_id}</TableCell>
                             <TableCell>
                                 <StepPipelineCell planItemId={item.id} />
                             </TableCell>

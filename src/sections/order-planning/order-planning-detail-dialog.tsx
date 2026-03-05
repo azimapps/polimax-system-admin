@@ -195,6 +195,11 @@ export function OrderPlanningDetailDialog({ open, onClose, id }: Props) {
                                                         color={STEP_STATUS_COLORS[step.status] || 'default'}
                                                         sx={{ fontSize: '0.65rem', minWidth: 80 }}
                                                     />
+                                                    {(step.brigada_name || step.machine_name) && (
+                                                        <Typography variant="caption" sx={{ color: 'text.secondary', whiteSpace: 'nowrap', minWidth: 100 }}>
+                                                            {step.brigada_name}{step.brigada_name && step.machine_name ? ' · ' : ''}{step.machine_name}
+                                                        </Typography>
+                                                    )}
                                                     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
                                                         <LinearProgress
                                                             variant="determinate"

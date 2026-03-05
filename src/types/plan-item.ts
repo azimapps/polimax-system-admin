@@ -39,7 +39,12 @@ export type PlanItem = {
     machine?: any;
 };
 
-export type PlanItemListItem = Pick<PlanItem, 'id' | 'version' | 'order_id' | 'brigada_id' | 'machine_id' | 'start_date' | 'end_date' | 'status' | 'plan_type'>;
+export type PlanItemListItem = Pick<PlanItem, 'id' | 'version' | 'order_id' | 'brigada_id' | 'machine_id' | 'start_date' | 'end_date' | 'status' | 'plan_type'> & {
+    order_title?: string;
+    brigada_name?: string;
+    machine_name?: string;
+    quantity_kg?: number;
+};
 
 export type CreatePlanItemRequest = {
     order_id: number;
