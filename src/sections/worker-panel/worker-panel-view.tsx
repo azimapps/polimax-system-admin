@@ -45,7 +45,7 @@ export function WorkerPanelView() {
     return (
         <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
             <Box sx={{ flexGrow: 1 }}>
-                <Card sx={{ p: 3, borderRadius: 2, bgcolor: '#1C252E', minHeight: 400 }}>
+                <Card sx={{ p: 3, borderRadius: 2, minHeight: 400 }}>
                     <Typography variant="h5" sx={{ mb: 2 }}>
                         {currentTab === 'sushka' && 'Sushka paneli'}
                     </Typography>

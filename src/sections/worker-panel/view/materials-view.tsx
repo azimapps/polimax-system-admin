@@ -76,8 +76,8 @@ export function MaterialsView() {
                 </FormControl>
             </Box>
 
-            <Card sx={{ p: 3, borderRadius: 2, bgcolor: '#1C252E' }}>
-                <TableContainer component={Paper} sx={{ bgcolor: 'transparent', boxShadow: 'none' }}>
+            <Card sx={{ p: 3, borderRadius: 2 }}>
+                <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
                     <Table size="medium">
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>

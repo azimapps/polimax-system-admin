@@ -327,7 +327,7 @@ export function FinishedView() {
                 Yakunlangan va topshirilgan buyurtmalar tarixi.
             </Typography>
 
-            <Card sx={{ p: 3, borderRadius: 2, bgcolor: '#1C252E' }}>
+            <Card sx={{ p: 3, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
                     <FormControl fullWidth sx={{ maxWidth: 400 }}>
                         <InputLabel>Stanok</InputLabel>
@@ -336,10 +336,7 @@ export function FinishedView() {
                             label="Stanok"
                             disabled={hasMyData}
                             onChange={(e) => setManualStanok(e.target.value as number)}
-                            sx={{
-                                bgcolor: 'background.paper',
-                                borderRadius: 1,
-                            }}
+                            sx={{ borderRadius: 1 }}
                         >
                             {hasMyData ? (
                                 <MenuItem value={selectedStanok}>
@@ -362,10 +359,7 @@ export function FinishedView() {
                             label="Brigada"
                             disabled={hasMyData}
                             onChange={(e) => setManualBrigada(e.target.value as number)}
-                            sx={{
-                                bgcolor: 'background.paper',
-                                borderRadius: 1
-                            }}
+                            sx={{ borderRadius: 1 }}
                         >
                             {hasMyData ? (
                                 <MenuItem value={selectedBrigada}>
@@ -402,7 +396,7 @@ export function FinishedView() {
                     )}
                 </Box>
 
-                <TableContainer component={Paper} sx={{ bgcolor: 'transparent', boxShadow: 'none' }}>
+                <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
                     <Table size="medium">
                         <TableHead sx={{ '& th': { borderBottom: '1px solid rgba(145, 158, 171, 0.24)', bgcolor: 'transparent' } }}>
                             <TableRow>
