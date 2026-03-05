@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Select from '@mui/material/Select';
@@ -16,6 +17,7 @@ import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
+import { useGetPlanItem } from 'src/hooks/use-plan-items';
 import { useLogProduction, useGetMachineStock, useGetPlanItemSteps } from 'src/hooks/use-material-usage';
 
 // ----------------------------------------------------------------------
@@ -56,7 +58,7 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
     const sorted = [...steps].sort((a, b) => a.step_number - b.step_number);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap', py: 1.5, px: 2, bgcolor: '#28323D', borderRadius: 1.5, mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap', py: 1.5, px: 2, bgcolor: 'background.neutral', borderRadius: 1.5, mb: 3 }}>
             {sorted.map((step, idx) => {
                 const isCurrent = step.id === currentStepId;
                 const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
@@ -114,6 +116,7 @@ type Props = {
 export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Props) {
     const effectivePlanItemId = step?.plan_item_id || planItemId;
 
+    const { data: planItemDetail } = useGetPlanItem(effectivePlanItemId || 0, { enabled: !!effectivePlanItemId });
     const { data: stock = [], isLoading: isStockLoading } = useGetMachineStock();
     const { data: brigadas = [] } = useGetBrigadas();
     const { data: pipelineSteps = [] } = useGetPlanItemSteps(effectivePlanItemId || 0, { enabled: !!effectivePlanItemId });
@@ -208,7 +211,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const isSaving = logProd.isPending;
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: '#212B36', backgroundImage: 'none', borderRadius: 2 } }}>
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: 2 } }}>
             <DialogTitle sx={{ pb: 1, pt: 3, px: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     {stepType && (
@@ -246,10 +249,65 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     <StepPipeline steps={pipelineSteps} currentStepId={step?.id} />
                 )}
 
+                {/* Order Details */}
+                {planItemDetail?.order && (
+                    <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, p: 2.5 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5, color: 'primary.main' }}>
+                            Buyurtma ma&apos;lumotlari
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Buyurtma №</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.order_number || '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Nomi</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.title || '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Material</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.material || '-'} {planItemDetail.order.sub_material || ''}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Hajmi (kg)</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.quantity_kg ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Plyonka qalinligi</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.film_thickness ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Plyonka kengligi</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.film_width ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val uzunligi</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_length ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val soni</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_count ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val aylanmasi</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_aylanasi ?? '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Vtulka</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.vtulka || '-'}</Typography>
+                            </Stack>
+                            <Stack spacing={0.25}>
+                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Napravlenie</Typography>
+                                <Typography variant="subtitle2">{planItemDetail.order.napravlenie || '-'}</Typography>
+                            </Stack>
+                        </Box>
+                    </Box>
+                )}
+
                 {!readOnly && (
                     <>
                         {/* Materials Section */}
-                        <Box sx={{ bgcolor: '#28323D', borderRadius: 1.5, overflow: 'hidden' }}>
+                        <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, overflow: 'hidden' }}>
                             <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(145, 158, 171, 0.12)' }}>
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Mavjud materiallar</Typography>
                             </Box>
@@ -348,7 +406,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
                 {/* Read-only summary for completed steps */}
                 {readOnly && step && (
-                    <Box sx={{ bgcolor: '#28323D', borderRadius: 1.5, p: 3 }}>
+                    <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, p: 3 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>Natijalar</Typography>
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                             <Box>
