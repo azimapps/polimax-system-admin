@@ -6,8 +6,10 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Select from '@mui/material/Select';
+import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputLabel from '@mui/material/InputLabel';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -19,6 +21,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useGetPlanItem } from 'src/hooks/use-plan-items';
 import { useLogProduction, useGetMachineStock, useGetPlanItemSteps } from 'src/hooks/use-material-usage';
+
+import { Iconify } from 'src/components/iconify';
+import { Scrollbar } from 'src/components/scrollbar';
 
 // ----------------------------------------------------------------------
 
@@ -58,7 +63,7 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
     const sorted = [...steps].sort((a, b) => a.step_number - b.step_number);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap', py: 1.5, px: 2, bgcolor: 'background.neutral', borderRadius: 1.5, mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
             {sorted.map((step, idx) => {
                 const isCurrent = step.id === currentStepId;
                 const color = STEP_TYPE_COLORS[step.step_type] || '#919eab';
@@ -74,8 +79,8 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
                                 px: 1.5,
                                 py: 0.5,
                                 borderRadius: 1,
-                                bgcolor: isCurrent ? `${color}22` : 'transparent',
-                                border: isCurrent ? `1.5px solid ${color}` : '1.5px solid transparent',
+                                bgcolor: isCurrent ? `${color}15` : 'transparent',
+                                border: isCurrent ? `2px solid ${color}` : '2px solid transparent',
                             }}
                         >
                             <Typography variant="caption" sx={{ color, fontWeight: 700, fontSize: '0.7rem' }}>
@@ -85,7 +90,7 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
                                 variant="caption"
                                 sx={{
                                     fontWeight: isCurrent ? 700 : 500,
-                                    color: isCurrent ? color : 'text.secondary',
+                                    color: step.status === 'pending' ? '#94a3b8' : color,
                                     fontSize: '0.7rem',
                                     textTransform: 'uppercase',
                                 }}
@@ -94,12 +99,25 @@ function StepPipeline({ steps, currentStepId }: { steps: any[]; currentStepId?: 
                             </Typography>
                         </Box>
                         {idx < sorted.length - 1 && (
-                            <Typography variant="caption" sx={{ color: 'text.disabled', mx: 0.25 }}>→</Typography>
+                            <Iconify icon="eva:arrow-ios-forward-fill" width={14} sx={{ color: '#cbd5e1' }} />
                         )}
                     </Box>
                 );
             })}
         </Box>
+    );
+}
+
+function InfoItem({ label, value }: { label: string; value: any }) {
+    return (
+        <Stack spacing={0.25}>
+            <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                {label}
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#1e293b', fontWeight: 500 }}>
+                {value || '-'}
+            </Typography>
+        </Stack>
     );
 }
 
@@ -144,20 +162,17 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     if (!effectivePlanItemId) return null;
 
     const stepType = step?.step_type;
-    const orderTitle = step?.plan_item?.order_title;
+    const stepColor = STEP_TYPE_COLORS[stepType] || '#64748b';
+    const order = planItemDetail?.order;
+    const orderTitle = order?.title || step?.plan_item?.order_title;
     const kgReceived = step?.kg_received;
 
     const handleSave = async () => {
         try {
-            // Build materials array from stock usage amounts
             const materialsPayload = Object.entries(usageAmounts)
                 .map(([matId, amount]) => {
                     const parsedAmount = Number(amount);
                     if (!parsedAmount || parsedAmount <= 0) return null;
-
-                    // For now, use ombor_item_id as a placeholder — the backend
-                    // expects ombor_transaction_id but machine-stock doesn't expose it.
-                    // The production-log endpoint handles this via the plan_item context.
                     return {
                         ombor_transaction_id: Number(matId),
                         used_amount: parsedAmount,
@@ -166,7 +181,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 })
                 .filter(Boolean) as any[];
 
-            // Build send payload
             const sendPayload = sendEnabled && sendToBrigada ? {
                 to_brigada_id: Number(sendToBrigada),
                 kg_sent: Number(sendKg) || 0,
@@ -186,7 +200,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 send: sendPayload,
             });
 
-            // Reset form
             setUsageAmounts({});
             setMeters('');
             setKg('');
@@ -211,240 +224,305 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const isSaving = logProd.isPending;
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: 2 } }}>
-            <DialogTitle sx={{ pb: 1, pt: 3, px: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    {stepType && (
-                        <Chip
-                            label={STEP_TYPE_LABELS[stepType] || stepType}
-                            size="small"
-                            sx={{
-                                bgcolor: `${STEP_TYPE_COLORS[stepType] || '#919eab'}22`,
-                                color: STEP_TYPE_COLORS[stepType] || '#919eab',
-                                fontWeight: 700,
-                                textTransform: 'uppercase',
-                                fontSize: '0.75rem',
-                            }}
-                        />
-                    )}
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {readOnly ? 'Bosqich tafsilotlari' : 'Ishlab chiqarish'}
-                    </Typography>
-                </Box>
-                {orderTitle && (
-                    <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                        {orderTitle}
-                        {kgReceived != null && (
-                            <Box component="span" sx={{ color: 'info.main', ml: 1 }}>
-                                · Olindi: {kgReceived} kg
-                            </Box>
-                        )}
-                    </Typography>
-                )}
-            </DialogTitle>
-
-            <DialogContent sx={{ px: 3, pb: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {/* Step Pipeline */}
-                {pipelineSteps.length > 0 && (
-                    <StepPipeline steps={pipelineSteps} currentStepId={step?.id} />
-                )}
-
-                {/* Order Details */}
-                {planItemDetail?.order && (
-                    <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, p: 2.5 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5, color: 'primary.main' }}>
-                            Buyurtma ma&apos;lumotlari
-                        </Typography>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Buyurtma №</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.order_number || '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Nomi</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.title || '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Material</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.material || '-'} {planItemDetail.order.sub_material || ''}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Hajmi (kg)</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.quantity_kg ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Plyonka qalinligi</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.film_thickness ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Plyonka kengligi</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.film_width ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val uzunligi</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_length ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val soni</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_count ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Val aylanmasi</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.cylinder_aylanasi ?? '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Vtulka</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.vtulka || '-'}</Typography>
-                            </Stack>
-                            <Stack spacing={0.25}>
-                                <Typography variant="caption" sx={{ color: 'text.disabled' }}>Napravlenie</Typography>
-                                <Typography variant="subtitle2">{planItemDetail.order.napravlenie || '-'}</Typography>
-                            </Stack>
-                        </Box>
-                    </Box>
-                )}
-
-                {!readOnly && (
-                    <>
-                        {/* Materials Section */}
-                        <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, overflow: 'hidden' }}>
-                            <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(145, 158, 171, 0.12)' }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Mavjud materiallar</Typography>
-                            </Box>
-
-                            {isStockLoading ? (
-                                <Box sx={{ p: 3, display: 'flex', justifyContent: 'center' }}><CircularProgress size={24} /></Box>
-                            ) : stock.length === 0 ? (
-                                <Typography variant="body2" sx={{ p: 3, textAlign: 'center', color: 'text.secondary' }}>Uskunada materiallar topilmadi</Typography>
-                            ) : stock.map((mat, idx) => (
-                                <Box key={mat.ombor_item_id} sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: idx !== stock.length - 1 ? '1px solid rgba(145, 158, 171, 0.12)' : 'none' }}>
-                                    <Typography variant="body2" sx={{ flexGrow: 1 }}>{mat.ombor_item_name}</Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, ml: 2 }}>
-                                        <Typography variant="subtitle2" sx={{ minWidth: 60, textAlign: 'right', color: 'info.main' }}>
-                                            {mat.stock_at_machine} kg/l
-                                        </Typography>
-                                        <TextField
-                                            size="small"
-                                            placeholder="0"
-                                            value={usageAmounts[mat.ombor_item_id] || ''}
-                                            onChange={(e) => setUsageAmounts({ ...usageAmounts, [mat.ombor_item_id]: e.target.value })}
-                                            sx={{ width: 80, '& .MuiOutlinedInput-root': { bgcolor: 'rgba(255, 255, 255, 0.04)', '& fieldset': { borderColor: 'rgba(145, 158, 171, 0.24)' } } }}
-                                            inputProps={{ style: { textAlign: 'center' } }}
-                                        />
-                                    </Box>
-                                </Box>
-                            ))}
-                        </Box>
-
-                        {/* Production Section */}
-                        <Box>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>Ishlab chiqarish natijasi</Typography>
-                            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                                <TextField fullWidth label="Metr ishlab chiqarilgan" placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
-                                <TextField fullWidth label="Kg ishlab chiqarilgan" placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                                <TextField fullWidth label="Kg chiqindi (waste)" placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
-                                <TextField fullWidth label="Kg qoldiq (ostatok)" placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 2 }}>
-                                <FormControl fullWidth>
-                                    <InputLabel>Ish turi</InputLabel>
-                                    <Select label="Ish turi" value={workType} onChange={(e) => setWorkType(e.target.value)}>
-                                        <MenuItem value="">Tanlanmagan</MenuItem>
-                                        {WORK_TYPES.map((wt) => (
-                                            <MenuItem key={wt.value} value={wt.value}>{wt.label}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <TextField fullWidth label="Izoh" placeholder="Ixtiyoriy" value={notes} onChange={(e) => setNotes(e.target.value)} />
-                            </Box>
-                        </Box>
-
-                        {/* Send to Next Step Section */}
-                        <Box sx={{ border: '1px dashed rgba(145, 158, 171, 0.24)', borderRadius: 1.5, p: 3 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                                <Typography variant="subtitle2" sx={{ color: 'success.main', fontWeight: 600 }}>
-                                    Keyingi bosqichga yuborish
-                                </Typography>
-                                <Button
-                                    size="small"
-                                    variant={sendEnabled ? 'contained' : 'outlined'}
-                                    color={sendEnabled ? 'success' : 'inherit'}
-                                    onClick={() => setSendEnabled(!sendEnabled)}
-                                    sx={{ minWidth: 90 }}
-                                >
-                                    {sendEnabled ? 'Yoqilgan' : 'Yoqish'}
-                                </Button>
-                            </Box>
-
-                            {sendEnabled && (
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <FormControl fullWidth>
-                                        <InputLabel>Qaysi brigadaga?</InputLabel>
-                                        <Select label="Qaysi brigadaga?" value={sendToBrigada} onChange={(e) => setSendToBrigada(e.target.value)}>
-                                            <MenuItem value="">Tanlang</MenuItem>
-                                            {brigadas.map((b: any) => (
-                                                <MenuItem key={b.id} value={String(b.id)}>{b.name} ({b.machine_type})</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <Box sx={{ display: 'flex', gap: 2 }}>
-                                        <TextField fullWidth label="Kg yuboriladi" placeholder="0" value={sendKg} onChange={(e) => setSendKg(e.target.value)} />
-                                        <TextField fullWidth label="Metr yuboriladi" placeholder="0" value={sendMeters} onChange={(e) => setSendMeters(e.target.value)} />
-                                    </Box>
-                                    <Box sx={{ display: 'flex', gap: 2 }}>
-                                        <TextField fullWidth label="Kg chiqindi" placeholder="0" value={sendKgWaste} onChange={(e) => setSendKgWaste(e.target.value)} />
-                                        <TextField fullWidth label="Kg qoldiq" placeholder="0" value={sendKgOstatok} onChange={(e) => setSendKgOstatok(e.target.value)} />
-                                    </Box>
-                                    <TextField fullWidth label="Izoh" placeholder="Ixtiyoriy" value={sendNotes} onChange={(e) => setSendNotes(e.target.value)} />
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+                sx: {
+                    bgcolor: '#fff',
+                    backgroundImage: 'none',
+                    borderRadius: 3,
+                    overflow: 'hidden',
+                },
+            }}
+        >
+            {/* Header */}
+            <DialogTitle sx={{ p: 0 }}>
+                <Box sx={{ bgcolor: `${stepColor}08`, borderBottom: `2px solid ${stepColor}20`, px: 3, py: 2.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                            {stepType && (
+                                <Box sx={{
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: '10px',
+                                    bgcolor: stepColor,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#fff',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                }}>
+                                    {(STEP_TYPE_LABELS[stepType] || stepType).charAt(0)}
                                 </Box>
                             )}
-                        </Box>
-                    </>
-                )}
-
-                {/* Read-only summary for completed steps */}
-                {readOnly && step && (
-                    <Box sx={{ bgcolor: 'background.neutral', borderRadius: 1.5, p: 3 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>Natijalar</Typography>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
                             <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Kg olindi</Typography>
-                                <Typography variant="subtitle2">{step.kg_received ?? '-'}</Typography>
-                            </Box>
-                            <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Kg ishlab chiqarildi</Typography>
-                                <Typography variant="subtitle2">{step.kg_produced ?? '-'}</Typography>
-                            </Box>
-                            <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Metr ishlab chiqarildi</Typography>
-                                <Typography variant="subtitle2">{step.meters_produced ?? '-'}</Typography>
-                            </Box>
-                            <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Kg chiqindi</Typography>
-                                <Typography variant="subtitle2">{step.kg_waste ?? '-'}</Typography>
-                            </Box>
-                            <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Kg qoldiq</Typography>
-                                <Typography variant="subtitle2">{step.kg_ostatok ?? '-'}</Typography>
-                            </Box>
-                            <Box>
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Holati</Typography>
-                                <Chip
-                                    label={step.status === 'completed' ? 'Yakunlangan' : step.status === 'in_progress' ? 'Jarayonda' : 'Kutilmoqda'}
-                                    size="small"
-                                    color={step.status === 'completed' ? 'success' : step.status === 'in_progress' ? 'warning' : 'default'}
-                                    sx={{ mt: 0.5 }}
-                                />
+                                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', lineHeight: 1.2 }}>
+                                    {readOnly ? 'Bosqich tafsilotlari' : 'Ishlab chiqarish'}
+                                </Typography>
+                                {stepType && (
+                                    <Typography variant="caption" sx={{ color: stepColor, fontWeight: 600, textTransform: 'uppercase' }}>
+                                        {STEP_TYPE_LABELS[stepType] || stepType}
+                                    </Typography>
+                                )}
                             </Box>
                         </Box>
+                        <IconButton onClick={onClose} sx={{ color: '#94a3b8' }}>
+                            <Iconify icon="mingcute:close-line" />
+                        </IconButton>
                     </Box>
-                )}
+                    {(orderTitle || kgReceived != null) && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1.5 }}>
+                            {orderTitle && (
+                                <Chip label={orderTitle} size="small" sx={{ bgcolor: '#fff', color: '#475569', fontWeight: 500, fontSize: '0.75rem', border: '1px solid #e2e8f0' }} />
+                            )}
+                            {order?.order_number && (
+                                <Chip label={order.order_number} size="small" sx={{ bgcolor: '#fff', color: stepColor, fontWeight: 600, fontSize: '0.75rem', border: `1px solid ${stepColor}40` }} />
+                            )}
+                            {kgReceived != null && (
+                                <Chip
+                                    label={`Olindi: ${kgReceived} kg`}
+                                    size="small"
+                                    sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 600, fontSize: '0.75rem', border: '1px solid #a7f3d0' }}
+                                />
+                            )}
+                        </Box>
+                    )}
+                </Box>
+            </DialogTitle>
+
+            <DialogContent sx={{ p: 0 }}>
+                <Scrollbar sx={{ maxHeight: '65vh' }}>
+                    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
+
+                        {/* Step Pipeline */}
+                        {pipelineSteps.length > 0 && (
+                            <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2 }}>
+                                <StepPipeline steps={pipelineSteps} currentStepId={step?.id} />
+                            </Box>
+                        )}
+
+                        {/* Order Details */}
+                        {order && (
+                            <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Iconify icon="solar:file-text-bold" width={18} sx={{ color: '#64748b' }} />
+                                    Buyurtma ma&apos;lumotlari
+                                </Typography>
+                                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
+                                    <InfoItem label="Buyurtma №" value={order.order_number} />
+                                    <InfoItem label="Nomi" value={order.title} />
+                                    <InfoItem label="Material" value={`${order.material || '-'} ${order.sub_material || ''}`} />
+                                    <InfoItem label="Hajmi" value={order.quantity_kg ? `${order.quantity_kg} kg` : null} />
+                                    <InfoItem label="Plyonka qalinligi" value={order.film_thickness} />
+                                    <InfoItem label="Plyonka kengligi" value={order.film_width} />
+                                    <InfoItem label="Val uzunligi" value={order.cylinder_length} />
+                                    <InfoItem label="Val soni" value={order.cylinder_count} />
+                                    <InfoItem label="Val aylanmasi" value={order.cylinder_aylanasi} />
+                                    <InfoItem label="Vtulka" value={order.vtulka} />
+                                    <InfoItem label="Napravlenie" value={order.napravlenie} />
+                                </Box>
+                            </Box>
+                        )}
+
+                        {!readOnly && (
+                            <>
+                                <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
+
+                                {/* Materials Section */}
+                                <Box>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Iconify icon="solar:inbox-bold" width={18} sx={{ color: '#64748b' }} />
+                                        Mavjud materiallar
+                                    </Typography>
+                                    <Box sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
+                                        {isStockLoading ? (
+                                            <Box sx={{ p: 3, display: 'flex', justifyContent: 'center' }}><CircularProgress size={24} /></Box>
+                                        ) : stock.length === 0 ? (
+                                            <Typography variant="body2" sx={{ p: 3, textAlign: 'center', color: '#94a3b8' }}>
+                                                Uskunada materiallar topilmadi
+                                            </Typography>
+                                        ) : stock.map((mat, idx) => (
+                                            <Box
+                                                key={mat.ombor_item_id}
+                                                sx={{
+                                                    px: 2.5,
+                                                    py: 1.5,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    borderBottom: idx !== stock.length - 1 ? '1px solid #f1f5f9' : 'none',
+                                                    '&:hover': { bgcolor: '#f8fafc' },
+                                                    transition: 'background 0.15s',
+                                                }}
+                                            >
+                                                <Typography variant="body2" sx={{ color: '#334155', fontWeight: 500 }}>
+                                                    {mat.ombor_item_name}
+                                                </Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                    <Chip
+                                                        label={`${mat.stock_at_machine} kg/l`}
+                                                        size="small"
+                                                        sx={{
+                                                            bgcolor: mat.stock_at_machine > 0 ? '#ecfdf5' : '#fef2f2',
+                                                            color: mat.stock_at_machine > 0 ? '#059669' : '#dc2626',
+                                                            fontWeight: 600,
+                                                            fontSize: '0.75rem',
+                                                            border: `1px solid ${mat.stock_at_machine > 0 ? '#a7f3d0' : '#fecaca'}`,
+                                                        }}
+                                                    />
+                                                    <TextField
+                                                        size="small"
+                                                        placeholder="0"
+                                                        value={usageAmounts[mat.ombor_item_id] || ''}
+                                                        onChange={(e) => setUsageAmounts({ ...usageAmounts, [mat.ombor_item_id]: e.target.value })}
+                                                        sx={{
+                                                            width: 80,
+                                                            '& .MuiOutlinedInput-root': {
+                                                                bgcolor: '#fff',
+                                                                '& fieldset': { borderColor: '#e2e8f0' },
+                                                                '&:hover fieldset': { borderColor: '#94a3b8' },
+                                                                '&.Mui-focused fieldset': { borderColor: stepColor },
+                                                            },
+                                                            '& input': { textAlign: 'center', color: '#1e293b', fontWeight: 600 },
+                                                        }}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                </Box>
+
+                                <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
+
+                                {/* Production Section */}
+                                <Box>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
+                                        Ishlab chiqarish natijasi
+                                    </Typography>
+                                    <Stack spacing={2}>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField fullWidth size="small" label="Metr ishlab chiqarilgan" placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
+                                            <TextField fullWidth size="small" label="Kg ishlab chiqarilgan" placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <TextField fullWidth size="small" label="Kg chiqindi (waste)" placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
+                                            <TextField fullWidth size="small" label="Kg qoldiq (ostatok)" placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>Ish turi</InputLabel>
+                                                <Select label="Ish turi" value={workType} onChange={(e) => setWorkType(e.target.value)}>
+                                                    <MenuItem value="">Tanlanmagan</MenuItem>
+                                                    {WORK_TYPES.map((wt) => (
+                                                        <MenuItem key={wt.value} value={wt.value}>{wt.label}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                            <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                        </Box>
+                                    </Stack>
+                                </Box>
+
+                                {/* Send to Next Step Section */}
+                                <Box sx={{
+                                    border: sendEnabled ? '2px solid #22c55e' : '2px dashed #e2e8f0',
+                                    borderRadius: 2,
+                                    p: 2.5,
+                                    bgcolor: sendEnabled ? '#f0fdf4' : '#fff',
+                                    transition: 'all 0.2s',
+                                }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: sendEnabled ? 2 : 0 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Iconify icon="solar:transfer-horizontal-bold-duotone" width={20} sx={{ color: sendEnabled ? '#16a34a' : '#94a3b8' }} />
+                                            <Typography variant="subtitle2" sx={{ color: sendEnabled ? '#16a34a' : '#64748b', fontWeight: 600 }}>
+                                                Keyingi bosqichga yuborish
+                                            </Typography>
+                                        </Box>
+                                        <Button
+                                            size="small"
+                                            variant={sendEnabled ? 'contained' : 'outlined'}
+                                            color={sendEnabled ? 'success' : 'inherit'}
+                                            onClick={() => setSendEnabled(!sendEnabled)}
+                                            sx={{ minWidth: 90, borderRadius: 1.5 }}
+                                        >
+                                            {sendEnabled ? 'Yoqilgan' : 'Yoqish'}
+                                        </Button>
+                                    </Box>
+
+                                    {sendEnabled && (
+                                        <Stack spacing={2}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>Qaysi brigadaga?</InputLabel>
+                                                <Select label="Qaysi brigadaga?" value={sendToBrigada} onChange={(e) => setSendToBrigada(e.target.value)}>
+                                                    <MenuItem value="">Tanlang</MenuItem>
+                                                    {brigadas.map((b: any) => (
+                                                        <MenuItem key={b.id} value={String(b.id)}>{b.name} ({b.machine_type})</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                                <TextField fullWidth size="small" label="Kg yuboriladi" placeholder="0" value={sendKg} onChange={(e) => setSendKg(e.target.value)} />
+                                                <TextField fullWidth size="small" label="Metr yuboriladi" placeholder="0" value={sendMeters} onChange={(e) => setSendMeters(e.target.value)} />
+                                            </Box>
+                                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                                <TextField fullWidth size="small" label="Kg chiqindi" placeholder="0" value={sendKgWaste} onChange={(e) => setSendKgWaste(e.target.value)} />
+                                                <TextField fullWidth size="small" label="Kg qoldiq" placeholder="0" value={sendKgOstatok} onChange={(e) => setSendKgOstatok(e.target.value)} />
+                                            </Box>
+                                            <TextField fullWidth size="small" label="Izoh" placeholder="Ixtiyoriy" value={sendNotes} onChange={(e) => setSendNotes(e.target.value)} />
+                                        </Stack>
+                                    )}
+                                </Box>
+                            </>
+                        )}
+
+                        {/* Read-only summary */}
+                        {readOnly && step && (
+                            <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
+                                    Natijalar
+                                </Typography>
+                                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
+                                    <InfoItem label="Kg olindi" value={step.kg_received} />
+                                    <InfoItem label="Kg ishlab chiqarildi" value={step.kg_produced} />
+                                    <InfoItem label="Metr ishlab chiqarildi" value={step.meters_produced} />
+                                    <InfoItem label="Kg chiqindi" value={step.kg_waste} />
+                                    <InfoItem label="Kg qoldiq" value={step.kg_ostatok} />
+                                    <Stack spacing={0.25}>
+                                        <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                                            Holati
+                                        </Typography>
+                                        <Chip
+                                            label={step.status === 'completed' ? 'Yakunlangan' : step.status === 'in_progress' ? 'Jarayonda' : 'Kutilmoqda'}
+                                            size="small"
+                                            sx={{
+                                                width: 'fit-content',
+                                                fontWeight: 600,
+                                                fontSize: '0.7rem',
+                                                ...(step.status === 'completed' && { bgcolor: '#dcfce7', color: '#16a34a' }),
+                                                ...(step.status === 'in_progress' && { bgcolor: '#fef3c7', color: '#d97706' }),
+                                                ...(step.status === 'pending' && { bgcolor: '#f1f5f9', color: '#64748b' }),
+                                            }}
+                                        />
+                                    </Stack>
+                                </Box>
+                            </Box>
+                        )}
+                    </Box>
+                </Scrollbar>
             </DialogContent>
 
-            <DialogActions sx={{ p: 3, pt: 0, borderTop: '1px dashed rgba(145, 158, 171, 0.12)' }}>
-                <Button onClick={onClose} sx={{ color: 'text.primary', fontWeight: 600 }} disabled={isSaving}>
+            <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #e2e8f0', bgcolor: '#fafbfc' }}>
+                <Button
+                    onClick={onClose}
+                    disabled={isSaving}
+                    sx={{ color: '#64748b', fontWeight: 600, borderRadius: 1.5 }}
+                >
                     {readOnly ? 'Yopish' : 'Bekor qilish'}
                 </Button>
                 {!readOnly && (
@@ -452,7 +530,13 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                         variant="contained"
                         onClick={handleSave}
                         disabled={isSaving}
-                        color="success"
+                        sx={{
+                            bgcolor: stepColor,
+                            borderRadius: 1.5,
+                            fontWeight: 600,
+                            px: 3,
+                            '&:hover': { bgcolor: stepColor, filter: 'brightness(0.9)' },
+                        }}
                     >
                         {isSaving ? <CircularProgress size={20} color="inherit" /> : 'Saqlash'}
                     </Button>
