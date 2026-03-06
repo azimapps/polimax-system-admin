@@ -225,17 +225,18 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
         ? sortedSteps[currentIdx + 1]
         : null;
     const nextStepType = nextStep?.step_type;
-    const nextStepColor = STEP_TYPE_COLORS[nextStepType] || '#64748b';
-    const nextStepLabel = nextStepType ? t(`steps.${nextStepType}`) : '';
     const nextIsSushka = nextStepType === 'sushka';
-    // When next step is sushka, find the step AFTER sushka for brigada filtering
+    // When next step is sushka, find the step AFTER sushka for brigada filtering & labels
     const stepAfterSushka = nextIsSushka
         ? sortedSteps.find((s: any, i: number) => i > currentIdx + 1 && s.step_type !== 'sushka')
         : null;
-    // Filter brigadas: for sushka next step, use brigadas matching step after sushka
-    const brigadaFilterType = nextIsSushka ? stepAfterSushka?.step_type : nextStepType;
-    const filteredBrigadas = brigadaFilterType
-        ? brigadas.filter((b: any) => b.machine_type === brigadaFilterType)
+    // Display labels: show the brigada's actual step (step after sushka when next is sushka)
+    const brigadaStepType = nextIsSushka ? stepAfterSushka?.step_type : nextStepType;
+    const brigadaStepColor = STEP_TYPE_COLORS[brigadaStepType] || '#64748b';
+    const brigadaStepLabel = brigadaStepType ? t(`steps.${brigadaStepType}`) : '';
+    // Filter brigadas by the actual target step type
+    const filteredBrigadas = brigadaStepType
+        ? brigadas.filter((b: any) => b.machine_type === brigadaStepType)
         : brigadas;
 
     const handleSave = async () => {
@@ -443,25 +444,25 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
                                             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <Iconify icon="solar:forward-bold" width={18} sx={{ color: '#64748b' }} />
-                                                {t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                                {t('dialog.brigada_for_step', { step: brigadaStepLabel })}
                                             </Typography>
                                             <Chip
-                                                label={nextStepLabel}
+                                                label={brigadaStepLabel}
                                                 size="small"
                                                 sx={{
-                                                    bgcolor: `${nextStepColor}15`,
-                                                    color: nextStepColor,
+                                                    bgcolor: `${brigadaStepColor}15`,
+                                                    color: brigadaStepColor,
                                                     fontWeight: 700,
                                                     fontSize: '0.7rem',
                                                     textTransform: 'uppercase',
-                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                    border: `1.5px solid ${brigadaStepColor}40`,
                                                 }}
                                             />
                                         </Box>
                                         <FormControl fullWidth size="small">
-                                            <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
+                                            <InputLabel>{t('dialog.brigada_for_step', { step: brigadaStepLabel })}</InputLabel>
                                             <Select
-                                                label={t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                                label={t('dialog.brigada_for_step', { step: brigadaStepLabel })}
                                                 value={sendToBrigada}
                                                 onChange={(e) => setSendToBrigada(e.target.value)}
                                             >
@@ -562,15 +563,15 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         </Typography>
                                         {nextStepType && (
                                             <Chip
-                                                label={`→ ${nextStepLabel}`}
+                                                label={`→ ${brigadaStepLabel}`}
                                                 size="small"
                                                 sx={{
-                                                    bgcolor: `${nextStepColor}15`,
-                                                    color: nextStepColor,
+                                                    bgcolor: `${brigadaStepColor}15`,
+                                                    color: brigadaStepColor,
                                                     fontWeight: 700,
                                                     fontSize: '0.7rem',
                                                     textTransform: 'uppercase',
-                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                    border: `1.5px solid ${brigadaStepColor}40`,
                                                 }}
                                             />
                                         )}
@@ -579,9 +580,9 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         {/* Brigada selector for next step */}
                                         {nextStepType && (
                                             <FormControl fullWidth size="small">
-                                                <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
+                                                <InputLabel>{t('dialog.brigada_for_step', { step: brigadaStepLabel })}</InputLabel>
                                                 <Select
-                                                    label={t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                                    label={t('dialog.brigada_for_step', { step: brigadaStepLabel })}
                                                     value={sendToBrigada}
                                                     onChange={(e) => setSendToBrigada(e.target.value)}
                                                 >
