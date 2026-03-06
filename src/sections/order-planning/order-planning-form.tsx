@@ -67,6 +67,12 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
         defaultValues: defaultValues as any,
     });
 
+    useEffect(() => {
+        if (planItem) {
+            methods.reset(defaultValues as any);
+        }
+    }, [planItem, defaultValues, methods]);
+
     const { handleSubmit, watch, setValue } = methods;
 
     const values = watch();
