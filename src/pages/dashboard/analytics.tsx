@@ -16,13 +16,18 @@ export default function Page() {
   const { user } = useAuthContext();
 
   useEffect(() => {
-    if (
+    const isWorker =
       user?.type === 'worker' ||
       user?.role === 'worker' ||
       user?.worker_type ||
-      ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
-    ) {
-      router.replace(paths.dashboard.pechatPanel.root);
+      ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role);
+
+    if (isWorker) {
+      if (user?.worker_type === 'laminatsiya' || user?.role === 'laminatsiya') {
+        router.replace(paths.dashboard.laminatsiyaPanel.root);
+      } else {
+        router.replace(paths.dashboard.pechatPanel.root);
+      }
     }
   }, [user, router]);
 
