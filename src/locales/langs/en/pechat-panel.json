@@ -57,6 +57,12 @@
         "col_remaining": "Remaining (Available)",
         "empty": "No materials found at machine."
     },
+    "sushka": {
+        "title": "Drying Panel",
+        "description": "Orders at the drying stage. Drying is automatic — kg in = kg out.",
+        "empty": "No orders found at drying stage.",
+        "auto_note": "Drying is automatic: kg received = kg produced. Just select the next brigade."
+    },
     "dialog": {
         "title_production": "Production",
         "title_details": "Step Details",

@@ -57,6 +57,12 @@
         "col_remaining": "Qoldiq (Mavjud)",
         "empty": "Stanokda materiallar topilmadi."
     },
+    "sushka": {
+        "title": "Sushka paneli",
+        "description": "Quritish bosqichidagi buyurtmalar. Sushka avtomatik — kg kirgan = kg chiqqan.",
+        "empty": "Sushka bosqichida buyurtmalar topilmadi.",
+        "auto_note": "Sushka avtomatik: kirgan kg = chiqqan kg. Faqat keyingi brigadani tanlang."
+    },
     "dialog": {
         "title_production": "Ishlab chiqarish",
         "title_details": "Bosqich tafsilotlari",

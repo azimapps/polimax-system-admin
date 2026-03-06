@@ -1,12 +1,10 @@
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 
 import { usePathname } from 'src/routes/hooks';
 
 import { StanokType } from 'src/types/stanok';
 
+import { SushkaView } from './view/sushka-view';
 import { FinishedView } from './view/finished-view';
 import { MaterialsView } from './view/materials-view';
 import { InProgressView } from './view/in-progress-view';
@@ -50,16 +48,7 @@ export function WorkerPanelView({ machineType = StanokType.PECHAT }: Props) {
 
     return (
         <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Card sx={{ p: 3, borderRadius: 2, minHeight: 400 }}>
-                    <Typography variant="h5" sx={{ mb: 2 }}>
-                        {currentTab === 'sushka' && 'Sushka paneli'}
-                    </Typography>
-                    <Typography color="text.secondary">
-                        Tez orada qo&apos;shiladi...
-                    </Typography>
-                </Card>
-            </Box>
+            <SushkaView />
         </Container>
     );
 }

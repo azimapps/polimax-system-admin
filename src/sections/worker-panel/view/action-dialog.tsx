@@ -156,6 +156,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const order = planItemDetail?.order;
     const orderTitle = order?.title || step?.plan_item?.order_title;
     const kgReceived = step?.kg_received;
+    const isSushka = stepType === 'sushka';
 
     // Find next step (skip sushka — it auto-passes, no brigada needed)
     const sortedSteps = [...pipelineSteps].sort((a: any, b: any) => a.step_number - b.step_number);
@@ -177,6 +178,24 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
     const handleSave = async () => {
         try {
+            if (isSushka) {
+                // Sushka mode: kg_produced = kg_received, no waste, no materials
+                const sushkaSend = sendToBrigada ? {
+                    to_brigada_id: Number(sendToBrigada),
+                    kg_sent: kgReceived || 0,
+                    meters_sent: 0,
+                    kg_waste: 0,
+                    kg_ostatok: 0,
+                } : undefined;
+
+                await logProd.mutateAsync({
+                    plan_item_id: effectivePlanItemId,
+                    kg_produced: kgReceived || 0,
+                    meters_produced: 0,
+                    work_type: 'sushka',
+                    send: sushkaSend,
+                });
+            } else {
             const materialsPayload = Object.entries(usageAmounts)
                 .map(([matId, amount]) => {
                     const parsedAmount = Number(amount);
@@ -207,6 +226,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 materials: materialsPayload.length > 0 ? materialsPayload : undefined,
                 send: sendPayload,
             });
+            }
 
             setUsageAmounts({});
             setMeters('');
@@ -333,7 +353,67 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             </Box>
                         )}
 
-                        {!readOnly && (
+                        {!readOnly && isSushka && (
+                            <>
+                                <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
+
+                                {/* Sushka simplified view */}
+                                <Box sx={{ bgcolor: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 2, p: 2.5 }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#9a3412', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Iconify icon="solar:info-circle-bold" width={18} sx={{ color: '#ea580c' }} />
+                                        {t('steps.sushka')}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ color: '#9a3412', mb: 2 }}>
+                                        {t('sushka.auto_note')}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                        <Chip
+                                            label={`${kgReceived || 0} kg → ${kgReceived || 0} kg`}
+                                            sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 700, fontSize: '0.85rem', border: '1px solid #a7f3d0' }}
+                                        />
+                                    </Box>
+                                </Box>
+
+                                {/* Next step brigada selector */}
+                                {nextStepType && (
+                                    <Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
+                                                {t('dialog.production_result')}
+                                            </Typography>
+                                            <Chip
+                                                label={`→ ${nextStepLabel}`}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: `${nextStepColor}15`,
+                                                    color: nextStepColor,
+                                                    fontWeight: 700,
+                                                    fontSize: '0.7rem',
+                                                    textTransform: 'uppercase',
+                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                }}
+                                            />
+                                        </Box>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
+                                            <Select
+                                                label={t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                                value={sendToBrigada}
+                                                onChange={(e) => setSendToBrigada(e.target.value)}
+                                            >
+                                                <MenuItem value="">{t('common.select')}</MenuItem>
+                                                {filteredBrigadas.map((b: any) => (
+                                                    <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
+                                )}
+                            </>
+                        )}
+
+                        {!readOnly && !isSushka && (
                             <>
                                 <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
 

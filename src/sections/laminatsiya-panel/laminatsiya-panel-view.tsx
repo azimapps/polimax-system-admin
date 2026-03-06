@@ -1,10 +1,8 @@
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 
 import { usePathname } from 'src/routes/hooks';
 
+import { SushkaView } from 'src/sections/worker-panel/view/sushka-view';
 import { FinishedView } from 'src/sections/worker-panel/view/finished-view';
 import { MaterialsView } from 'src/sections/worker-panel/view/materials-view';
 import { InProgressView } from 'src/sections/worker-panel/view/in-progress-view';
@@ -45,16 +43,7 @@ export function LaminatsiyaPanelView() {
 
     return (
         <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Card sx={{ p: 3, borderRadius: 2, minHeight: 400 }}>
-                    <Typography variant="h5" sx={{ mb: 2 }}>
-                        {currentTab === 'sushka' && 'Sushka paneli'}
-                    </Typography>
-                    <Typography color="text.secondary">
-                        Tez orada qo&apos;shiladi...
-                    </Typography>
-                </Card>
-            </Box>
+            <SushkaView translationNs="laminatsiya-panel" />
         </Container>
     );
 }
