@@ -141,9 +141,8 @@ export function SushkaView({ translationNs = 'pechat-panel' }: SushkaViewProps) 
     const { user } = useAuthContext();
     const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
 
-    // Fetch worker steps and filter to sushka in_progress
-    const { data: workerSteps = [], isLoading } = useGetMySteps({ status: 'in_progress' });
-    const sushkaSteps = workerSteps.filter((s: any) => s.step_type === 'sushka');
+    // Fetch sushka steps still drying (timer not expired)
+    const { data: sushkaSteps = [], isLoading } = useGetMySteps({ status: 'in_progress', sushka_ready: false });
 
     // Action dialog state
     const [actionDialogTarget, setActionDialogTarget] = useState<number | null>(null);

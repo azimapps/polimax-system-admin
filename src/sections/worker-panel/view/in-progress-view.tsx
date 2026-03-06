@@ -322,9 +322,9 @@ export function InProgressView({ machineType = StanokType.PECHAT, translationNs 
         brigada_id: selectedBrigada || undefined,
     }, { enabled: isAdmin });
 
-    // Worker: use /material-usage/my-steps (brigada leader auth)
+    // Worker: use /material-usage/my-steps (brigada leader auth) — only ready steps
     const { data: workerSteps = [], isLoading: isLoadingWorkerSteps } = useGetMySteps(
-        { status: 'in_progress' },
+        { status: 'in_progress', sushka_ready: true },
     );
 
     const isLoadingPlans = isAdmin ? isLoadingAdminPlans : isLoadingWorkerSteps;

@@ -190,6 +190,7 @@ export interface ProductionSend {
 
 export interface GetMyStepsParams {
     status?: StepStatus;
+    sushka_ready?: boolean;
 }
 
 export interface BrigadaMemberInfo {
