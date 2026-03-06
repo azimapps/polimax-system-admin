@@ -13,6 +13,27 @@ import { setSession } from './utils';
 
 // ----------------------------------------------------------------------
 
+function getWorkerPanelRedirect(): string | null {
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  const isWorker =
+    user?.type === 'worker' ||
+    user?.role === 'worker' ||
+    user?.worker_type ||
+    ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role);
+
+  if (!isWorker) return null;
+
+  // Laminatsiya workers → laminatsiya panel
+  if (user?.worker_type === 'laminatsiya' || user?.role === 'laminatsiya') {
+    return paths.dashboard.laminatsiyaPanel.root;
+  }
+
+  // Everyone else (pechat, reska, sushka, generic worker) → pechat panel
+  return paths.dashboard.pechatPanel.root;
+}
+
 export type SignInParams = {
   login: string;
   password: string;
@@ -37,18 +58,7 @@ export const useSignIn = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
-      if (
-        user?.type === 'worker' ||
-        user?.role === 'worker' ||
-        user?.worker_type ||
-        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
-      ) {
-        router.replace(paths.dashboard.pechatPanel.root);
-      } else {
-        router.replace(returnTo);
-      }
+      router.replace(getWorkerPanelRedirect() || returnTo);
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
@@ -76,23 +86,12 @@ export const useStaffLogin = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
-      if (
-        user?.type === 'worker' ||
-        user?.role === 'worker' ||
-        user?.worker_type ||
-        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
-      ) {
-        router.replace(paths.dashboard.pechatPanel.root);
-      } else {
-        router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
-      }
+      router.replace(getWorkerPanelRedirect() || searchParams.get('returnTo') || CONFIG.auth.redirectPath);
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail
         ? err.response.data.detail.includes('Invalid') || err.response.data.detail.includes('not linked')
-          ? err.response.data.detail // Show exact error from backend
+          ? err.response.data.detail
           : t('auth.login_failed')
         : t('auth.login_failed');
       toast.error(errorMessage, { position: 'top-center' });
@@ -114,18 +113,7 @@ export const usePhoneLogin = () => {
     },
     onSuccess: () => {
       toast.success('Hush kelibsiz', { position: 'top-center' });
-      const userStr = localStorage.getItem('user');
-      const user = userStr ? JSON.parse(userStr) : null;
-      if (
-        user?.type === 'worker' ||
-        user?.role === 'worker' ||
-        user?.worker_type ||
-        ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role)
-      ) {
-        router.replace(paths.dashboard.pechatPanel.root);
-      } else {
-        router.replace(searchParams.get('returnTo') || CONFIG.auth.redirectPath);
-      }
+      router.replace(getWorkerPanelRedirect() || searchParams.get('returnTo') || CONFIG.auth.redirectPath);
     },
     onError: (err: any) => {
       const errorMessage = err?.response?.data?.detail || t('auth.login_failed');
