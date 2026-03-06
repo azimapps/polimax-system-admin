@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Select from '@mui/material/Select';
+import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -224,6 +225,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
     const isSaving = logProd.isPending;
     const hasOverflow = stock.some((mat) => (Number(usageAmounts[mat.ombor_item_id]) || 0) > mat.stock_at_machine);
+    const kgTotal = (Number(kg) || 0) + (Number(kgWaste) || 0) + (Number(kgOstatok) || 0);
+    const hasTotalOverflow = kgReceived != null && kgReceived > 0 && kgTotal > kgReceived;
 
     return (
         <Dialog
@@ -448,13 +451,47 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                             </FormControl>
                                         )}
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label={t('dialog.meters_produced')} placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
-                                            <TextField fullWidth size="small" label={t('dialog.kg_produced')} placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} />
+                                            <Box sx={{ flex: 1, position: 'relative' }}>
+                                                <TextField fullWidth size="small" label={t('dialog.meters_produced')} placeholder="0" value={meters} onChange={(e) => setMeters(e.target.value)} />
+                                                <Tooltip title={t('dialog.meters_produced_hint')} arrow placement="top">
+                                                    <Box sx={{ position: 'absolute', top: 8, right: 8, cursor: 'help', display: 'flex' }}>
+                                                        <Iconify icon="solar:info-circle-bold" width={16} sx={{ color: '#94a3b8' }} />
+                                                    </Box>
+                                                </Tooltip>
+                                            </Box>
+                                            <Box sx={{ flex: 1, position: 'relative' }}>
+                                                <TextField fullWidth size="small" label={t('dialog.kg_produced')} placeholder="0" value={kg} onChange={(e) => setKg(e.target.value)} error={hasTotalOverflow} />
+                                                <Tooltip title={t('dialog.kg_produced_hint')} arrow placement="top">
+                                                    <Box sx={{ position: 'absolute', top: 8, right: 8, cursor: 'help', display: 'flex' }}>
+                                                        <Iconify icon="solar:info-circle-bold" width={16} sx={{ color: '#94a3b8' }} />
+                                                    </Box>
+                                                </Tooltip>
+                                            </Box>
                                         </Box>
                                         <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <TextField fullWidth size="small" label={t('dialog.kg_waste')} placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} />
-                                            <TextField fullWidth size="small" label={t('dialog.kg_remaining')} placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} />
+                                            <Box sx={{ flex: 1, position: 'relative' }}>
+                                                <TextField fullWidth size="small" label={t('dialog.kg_waste')} placeholder="0" value={kgWaste} onChange={(e) => setKgWaste(e.target.value)} error={hasTotalOverflow} />
+                                                <Tooltip title={t('dialog.kg_waste_hint')} arrow placement="top">
+                                                    <Box sx={{ position: 'absolute', top: 8, right: 8, cursor: 'help', display: 'flex' }}>
+                                                        <Iconify icon="solar:info-circle-bold" width={16} sx={{ color: '#94a3b8' }} />
+                                                    </Box>
+                                                </Tooltip>
+                                            </Box>
+                                            <Box sx={{ flex: 1, position: 'relative' }}>
+                                                <TextField fullWidth size="small" label={t('dialog.kg_remaining')} placeholder="0" value={kgOstatok} onChange={(e) => setKgOstatok(e.target.value)} error={hasTotalOverflow} />
+                                                <Tooltip title={t('dialog.kg_remaining_hint')} arrow placement="top">
+                                                    <Box sx={{ position: 'absolute', top: 8, right: 8, cursor: 'help', display: 'flex' }}>
+                                                        <Iconify icon="solar:info-circle-bold" width={16} sx={{ color: '#94a3b8' }} />
+                                                    </Box>
+                                                </Tooltip>
+                                            </Box>
                                         </Box>
+                                        {hasTotalOverflow && (
+                                            <Typography variant="caption" sx={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                <Iconify icon="solar:danger-triangle-bold" width={14} />
+                                                {t('dialog.kg_total_overflow')} ({kgTotal}/{kgReceived} kg)
+                                            </Typography>
+                                        )}
                                         {/* Ish turi only for reska */}
                                         {stepType === 'reska' && (
                                             <FormControl fullWidth size="small">
@@ -522,7 +559,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     <Button
                         variant="contained"
                         onClick={handleSave}
-                        disabled={isSaving || hasOverflow}
+                        disabled={isSaving || hasOverflow || hasTotalOverflow}
                         sx={{
                             bgcolor: stepColor,
                             borderRadius: 1.5,
