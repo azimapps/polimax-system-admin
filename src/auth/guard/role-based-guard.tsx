@@ -2,12 +2,15 @@ import type { Theme, SxProps } from '@mui/material/styles';
 
 import { m } from 'framer-motion';
 
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { ForbiddenIllustration } from 'src/assets/illustrations';
 
 import { varBounce, MotionContainer } from 'src/components/animate';
+
+import { useAuthContext } from 'src/auth/hooks';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +35,8 @@ export function RoleBasedGuard({
   currentRole,
   allowedRoles,
 }: RoleBasedGuardProp) {
+  const { logout } = useAuthContext();
+
   if (currentRole && allowedRoles && !allowedRoles.includes(currentRole)) {
     return hasContent ? (
       <Container
@@ -52,6 +57,18 @@ export function RoleBasedGuard({
 
         <m.div variants={varBounce('in')}>
           <ForbiddenIllustration sx={{ my: { xs: 5, sm: 10 } }} />
+        </m.div>
+
+        <m.div variants={varBounce('in')}>
+          <Button
+            variant="contained"
+            color="error"
+            size="large"
+            onClick={() => logout()}
+            sx={{ mt: 2 }}
+          >
+            Logout
+          </Button>
         </m.div>
       </Container>
     ) : null;
