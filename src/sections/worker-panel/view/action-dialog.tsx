@@ -254,7 +254,6 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     plan_item_id: effectivePlanItemId,
                     kg_produced: kgReceived || 0,
                     meters_produced: 0,
-                    work_type: 'sushka',
                     send: sushkaSend,
                 });
             } else {
