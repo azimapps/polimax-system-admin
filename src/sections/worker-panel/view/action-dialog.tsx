@@ -443,7 +443,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                     <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
                                             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <Iconify icon="solar:arrow-right-bold" width={18} sx={{ color: '#64748b' }} />
+                                                <Iconify icon="solar:forward-bold" width={18} sx={{ color: '#64748b' }} />
                                                 {t('dialog.brigada_for_step', { step: nextStepLabel })}
                                             </Typography>
                                             <Chip
