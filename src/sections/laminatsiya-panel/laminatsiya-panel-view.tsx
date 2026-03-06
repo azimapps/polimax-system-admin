@@ -5,20 +5,15 @@ import Typography from '@mui/material/Typography';
 
 import { usePathname } from 'src/routes/hooks';
 
+import { FinishedView } from 'src/sections/worker-panel/view/finished-view';
+import { MaterialsView } from 'src/sections/worker-panel/view/materials-view';
+import { InProgressView } from 'src/sections/worker-panel/view/in-progress-view';
+
 import { StanokType } from 'src/types/stanok';
 
-import { FinishedView } from './view/finished-view';
-import { MaterialsView } from './view/materials-view';
-import { InProgressView } from './view/in-progress-view';
-
-type Props = {
-    machineType?: StanokType;
-};
-
-export function WorkerPanelView({ machineType = StanokType.PECHAT }: Props) {
+export function LaminatsiyaPanelView() {
     const pathname = usePathname();
 
-    // Determine current tab from pathname
     let currentTab = 'jarayonda';
     if (pathname.includes('/finished')) currentTab = 'finished';
     else if (pathname.includes('/materials')) currentTab = 'materials';
@@ -27,7 +22,7 @@ export function WorkerPanelView({ machineType = StanokType.PECHAT }: Props) {
     if (currentTab === 'jarayonda') {
         return (
             <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
-                <InProgressView machineType={machineType} />
+                <InProgressView machineType={StanokType.LAMINATSIYA} translationNs="laminatsiya-panel" />
             </Container>
         );
     }
@@ -35,7 +30,7 @@ export function WorkerPanelView({ machineType = StanokType.PECHAT }: Props) {
     if (currentTab === 'materials') {
         return (
             <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
-                <MaterialsView machineType={machineType} />
+                <MaterialsView machineType={StanokType.LAMINATSIYA} translationNs="laminatsiya-panel" />
             </Container>
         );
     }
@@ -43,7 +38,7 @@ export function WorkerPanelView({ machineType = StanokType.PECHAT }: Props) {
     if (currentTab === 'finished') {
         return (
             <Container maxWidth="xl" sx={{ py: 3, display: 'flex', gap: 3 }}>
-                <FinishedView machineType={machineType} />
+                <FinishedView machineType={StanokType.LAMINATSIYA} translationNs="laminatsiya-panel" />
             </Container>
         );
     }

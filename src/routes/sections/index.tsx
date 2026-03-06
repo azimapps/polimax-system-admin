@@ -5,6 +5,7 @@ import { lazy, Suspense } from 'react';
 
 import { DashboardLayout } from 'src/layouts/dashboard';
 import { PechatPanelLayout } from 'src/layouts/pechat-panel/pechat-panel-layout';
+import { LaminatsiyaPanelLayout } from 'src/layouts/laminatsiya-panel/laminatsiya-panel-layout';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -77,6 +78,8 @@ const MixingStationPage = lazy(() => import('src/pages/mixing-station/page'));
 const SushkaPaneliPage = lazy(() => import('src/pages/sushka-paneli/page'));
 // Worker Panel
 const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
+// Laminatsiya Panel
+const LaminatsiyaPanelPage = lazy(() => import('src/pages/laminatsiya-panel/page'));
 
 // ----------------------------------------------------------------------
 
@@ -88,6 +91,22 @@ function WorkerPanelGuard({ children }: { children: React.ReactNode }) {
     user?.worker_type === 'pechat' ||
     user?.type === 'worker' ||
     !!user?.staff; // Allow any telegram staff to at least see it
+
+  return (
+    <RoleBasedGuard hasContent currentRole={allowed ? 'allowed' : 'denied'} allowedRoles={['allowed']}>
+      {children}
+    </RoleBasedGuard>
+  );
+}
+
+function LaminatsiyaPanelGuard({ children }: { children: React.ReactNode }) {
+  const { user } = useAuthContext();
+  const allowed =
+    ['admin', 'manager', 'ceo'].includes(user?.role) ||
+    user?.role === 'laminatsiya' ||
+    user?.worker_type === 'laminatsiya' ||
+    user?.type === 'worker' ||
+    !!user?.staff;
 
   return (
     <RoleBasedGuard hasContent currentRole={allowed ? 'allowed' : 'denied'} allowedRoles={['allowed']}>
@@ -117,6 +136,12 @@ const pechatPanelLayout = () => (
   <PechatPanelLayout>
     <SuspenseOutlet />
   </PechatPanelLayout>
+);
+
+const laminatsiyaPanelLayout = () => (
+  <LaminatsiyaPanelLayout>
+    <SuspenseOutlet />
+  </LaminatsiyaPanelLayout>
 );
 
 // ----------------------------------------------------------------------
@@ -322,6 +347,25 @@ export const routesSection: RouteObject[] = [
       { path: 'finished', element: <WorkerPanelPage /> },
       { path: 'materials', element: <WorkerPanelPage /> },
       { path: 'sushka', element: <WorkerPanelPage /> },
+    ],
+  },
+
+  // Laminatsiya standalone panel
+  {
+    path: '/laminatsiya-panel',
+    element: (
+      <AuthGuard>
+        <LaminatsiyaPanelGuard>
+          {laminatsiyaPanelLayout()}
+        </LaminatsiyaPanelGuard>
+      </AuthGuard>
+    ),
+    children: [
+      { index: true, element: <LaminatsiyaPanelPage /> },
+      { path: 'jarayonda', element: <LaminatsiyaPanelPage /> },
+      { path: 'finished', element: <LaminatsiyaPanelPage /> },
+      { path: 'materials', element: <LaminatsiyaPanelPage /> },
+      { path: 'sushka', element: <LaminatsiyaPanelPage /> },
     ],
   },
 

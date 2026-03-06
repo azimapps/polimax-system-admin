@@ -1,0 +1,104 @@
+{
+    "steps": {
+        "reska": "Reska",
+        "pechat": "Pechat",
+        "sushka": "Sushka",
+        "laminatsiya": "Laminatsiya",
+        "tayyor": "Tayyor"
+    },
+    "status": {
+        "completed": "Yakunlangan",
+        "in_progress": "Jarayonda",
+        "pending": "Kutilmoqda"
+    },
+    "work_types": {
+        "tayyor_mahsulotlar_reskasi": "Tayyor mahsulotlar reskasi",
+        "tayyor_mahsulot_peremotkasi": "Tayyor mahsulot peremotkasi",
+        "plyonka_peremotkasi": "Plyonka peremotkasi",
+        "reska_3_5_sm": "Reska 3-5 sm",
+        "asobiy_tarif": "Asobiy tarif"
+    },
+    "common": {
+        "stanok": "Stanok",
+        "brigada": "Brigada",
+        "loading": "Yuklanmoqda...",
+        "selected": "Tanlangan:",
+        "brigada_members": "Brigada a'zolari:",
+        "select": "Tanlang"
+    },
+    "table": {
+        "order_number": "Buyurtma raqami",
+        "step": "Bosqich",
+        "name": "Nomi",
+        "steps": "Bosqichlar",
+        "quantity_kg": "Miqdori (kg)",
+        "date": "Sana",
+        "actions": "Amallar"
+    },
+    "in_progress": {
+        "title": "Laminatsiya umumiy",
+        "description": "Reja bo'yicha laminatsiyaga biriktirilgan buyurtmalar tanlangan stanok va brigada bo'yicha ko'rinadi.",
+        "empty": "Jarayondagi vazifalar topilmadi."
+    },
+    "finished": {
+        "title": "Yakunlangan vazifalar",
+        "description": "Yakunlangan va topshirilgan buyurtmalar tarixi.",
+        "empty": "Yakunlangan vazifalar topilmadi."
+    },
+    "materials": {
+        "title": "Mavjud Materiallar",
+        "description": "Stanokingizga biriktirilgan va hozirda mavjud bo'lgan barcha xom ashyo materiallari ro'yxati.",
+        "stanok_label": "Stanok (Uskuna)",
+        "col_name": "Nomi",
+        "col_type": "Turi",
+        "col_total_received": "Jami olingan",
+        "col_used": "Ishlatilgan",
+        "col_returned": "Qaytarilgan",
+        "col_remaining": "Qoldiq (Mavjud)",
+        "empty": "Stanokda materiallar topilmadi."
+    },
+    "dialog": {
+        "title_production": "Ishlab chiqarish",
+        "title_details": "Bosqich tafsilotlari",
+        "received_kg": "Olindi: {{kg}} kg",
+        "order_info": "Buyurtma ma'lumotlari",
+        "order_number": "Buyurtma №",
+        "order_name": "Nomi",
+        "material": "Material",
+        "volume": "Hajmi",
+        "film_thickness": "Plyonka qalinligi",
+        "film_width": "Plyonka kengligi",
+        "cylinder_length": "Val uzunligi",
+        "cylinder_count": "Val soni",
+        "cylinder_rotation": "Val aylanmasi",
+        "vtulka": "Vtulka",
+        "napravlenie": "Napravlenie",
+        "available_materials": "Mavjud materiallar",
+        "no_materials": "Uskunada materiallar topilmadi",
+        "production_result": "Ishlab chiqarish natijasi",
+        "brigada_for_step": "{{step}} brigadasi",
+        "meters_produced": "Metr ishlab chiqarilgan",
+        "meters_produced_hint": "Qancha metr mahsulot chiqdi",
+        "kg_produced": "Kg ishlab chiqarilgan",
+        "kg_produced_hint": "Yaxshi chiqqan mahsulot — keyingi stepga yuboriladi",
+        "kg_waste": "Kg chiqindi (waste)",
+        "kg_waste_hint": "Chiqindi — ishlatib bo'lmaydi, tashlanadi",
+        "kg_remaining": "Kg qoldiq (ostatok)",
+        "kg_remaining_hint": "Qoldiq — yaxshi, lekin hozir yuborilmaydi (keyin ishlatilishi mumkin)",
+        "kg_total_overflow": "Jami (ishlab chiqarilgan + chiqindi + qoldiq) olindidan oshmasligi kerak",
+        "work_type": "Ish turi",
+        "work_type_none": "Tanlanmagan",
+        "notes": "Izoh",
+        "notes_placeholder": "Ixtiyoriy",
+        "results": "Natijalar",
+        "result_kg_received": "Kg olindi",
+        "result_kg_produced": "Kg ishlab chiqarildi",
+        "result_meters_produced": "Metr ishlab chiqarildi",
+        "result_kg_waste": "Kg chiqindi",
+        "result_kg_remaining": "Kg qoldiq",
+        "result_status": "Holati",
+        "btn_close": "Yopish",
+        "btn_cancel": "Bekor qilish",
+        "btn_save": "Saqlash"
+    }
+}

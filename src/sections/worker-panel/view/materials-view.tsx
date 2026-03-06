@@ -24,13 +24,18 @@ import { useAuthContext } from 'src/auth/hooks';
 
 import { StanokType } from 'src/types/stanok';
 
-export function MaterialsView() {
-    const { t } = useTranslate('pechat-panel');
+type MaterialsViewProps = {
+    machineType?: StanokType;
+    translationNs?: string;
+};
+
+export function MaterialsView({ machineType = StanokType.PECHAT, translationNs = 'pechat-panel' }: MaterialsViewProps) {
+    const { t } = useTranslate(translationNs);
     const { user } = useAuthContext();
     const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
 
     const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
-    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT, { enabled: isAdmin });
+    const { data: stanoks = [] } = useGetStanoklar(undefined, machineType, { enabled: isAdmin });
 
     const [manualStanok, setManualStanok] = useState<number | ''>('');
 

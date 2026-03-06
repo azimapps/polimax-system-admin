@@ -96,6 +96,13 @@ export const paths = {
       materials: '/pechat-panel/materials',
       sushka: '/pechat-panel/sushka',
     },
+    laminatsiyaPanel: {
+      root: '/laminatsiya-panel',
+      jarayonda: '/laminatsiya-panel/jarayonda',
+      finished: '/laminatsiya-panel/finished',
+      materials: '/laminatsiya-panel/materials',
+      sushka: '/laminatsiya-panel/sushka',
+    },
     mixingStation: {
       root: '/mixing-station',
     },

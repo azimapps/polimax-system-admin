@@ -1,0 +1,104 @@
+{
+    "steps": {
+        "reska": "Cutting",
+        "pechat": "Printing",
+        "sushka": "Drying",
+        "laminatsiya": "Lamination",
+        "tayyor": "Ready"
+    },
+    "status": {
+        "completed": "Completed",
+        "in_progress": "In Progress",
+        "pending": "Pending"
+    },
+    "work_types": {
+        "tayyor_mahsulotlar_reskasi": "Finished product cutting",
+        "tayyor_mahsulot_peremotkasi": "Finished product rewinding",
+        "plyonka_peremotkasi": "Film rewinding",
+        "reska_3_5_sm": "Cutting 3-5 cm",
+        "asobiy_tarif": "Special rate"
+    },
+    "common": {
+        "stanok": "Machine",
+        "brigada": "Brigade",
+        "loading": "Loading...",
+        "selected": "Selected:",
+        "brigada_members": "Brigade members:",
+        "select": "Select"
+    },
+    "table": {
+        "order_number": "Order number",
+        "step": "Step",
+        "name": "Name",
+        "steps": "Steps",
+        "quantity_kg": "Quantity (kg)",
+        "date": "Date",
+        "actions": "Actions"
+    },
+    "in_progress": {
+        "title": "Lamination Overview",
+        "description": "Orders assigned to the lamination machine according to the plan, displayed by selected machine and brigade.",
+        "empty": "No tasks in progress."
+    },
+    "finished": {
+        "title": "Completed Tasks",
+        "description": "History of completed and delivered orders.",
+        "empty": "No completed tasks found."
+    },
+    "materials": {
+        "title": "Available Materials",
+        "description": "List of all raw materials assigned to your machine and currently available.",
+        "stanok_label": "Machine (Equipment)",
+        "col_name": "Name",
+        "col_type": "Type",
+        "col_total_received": "Total Received",
+        "col_used": "Used",
+        "col_returned": "Returned",
+        "col_remaining": "Remaining (Available)",
+        "empty": "No materials found at machine."
+    },
+    "dialog": {
+        "title_production": "Production",
+        "title_details": "Step Details",
+        "received_kg": "Received: {{kg}} kg",
+        "order_info": "Order Information",
+        "order_number": "Order №",
+        "order_name": "Name",
+        "material": "Material",
+        "volume": "Volume",
+        "film_thickness": "Film Thickness",
+        "film_width": "Film Width",
+        "cylinder_length": "Cylinder Length",
+        "cylinder_count": "Cylinder Count",
+        "cylinder_rotation": "Cylinder Rotation",
+        "vtulka": "Sleeve",
+        "napravlenie": "Direction",
+        "available_materials": "Available Materials",
+        "no_materials": "No materials found at machine",
+        "production_result": "Production Result",
+        "brigada_for_step": "{{step}} brigade",
+        "meters_produced": "Meters produced",
+        "meters_produced_hint": "How many meters of product were produced",
+        "kg_produced": "Kg produced",
+        "kg_produced_hint": "Good product — will be sent to the next step",
+        "kg_waste": "Kg waste",
+        "kg_waste_hint": "Waste — unusable, discarded",
+        "kg_remaining": "Kg remaining",
+        "kg_remaining_hint": "Remaining — good material, but not sent now (can be used later)",
+        "kg_total_overflow": "Total (produced + waste + remaining) must not exceed received quantity",
+        "work_type": "Work type",
+        "work_type_none": "Not selected",
+        "notes": "Notes",
+        "notes_placeholder": "Optional",
+        "results": "Results",
+        "result_kg_received": "Kg received",
+        "result_kg_produced": "Kg produced",
+        "result_meters_produced": "Meters produced",
+        "result_kg_waste": "Kg waste",
+        "result_kg_remaining": "Kg remaining",
+        "result_status": "Status",
+        "btn_close": "Close",
+        "btn_cancel": "Cancel",
+        "btn_save": "Save"
+    }
+}

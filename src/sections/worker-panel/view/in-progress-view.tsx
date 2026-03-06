@@ -256,8 +256,13 @@ function StepRow({ step, onAction, t }: { step: any, onAction: (step: any) => vo
 
 // ----------------------------------------------------------------------
 
-export function InProgressView() {
-    const { t } = useTranslate('pechat-panel');
+type InProgressViewProps = {
+    machineType?: StanokType;
+    translationNs?: string;
+};
+
+export function InProgressView({ machineType = StanokType.PECHAT, translationNs = 'pechat-panel' }: InProgressViewProps) {
+    const { t } = useTranslate(translationNs);
     const { user } = useAuthContext();
     const isAdmin = user?.role === 'admin' || user?.role === 'pechat_manager' || user?.role === 'manager';
 
@@ -265,8 +270,8 @@ export function InProgressView() {
     const { data: myData, isLoading: isLoadingMyBrigada } = useGetMyBrigada();
 
     // 2. Fetch all stanoks and brigadas (used as fallback for admins)
-    const { data: stanoks = [] } = useGetStanoklar(undefined, StanokType.PECHAT, { enabled: isAdmin });
-    const { data: allBrigadas = [] } = useGetBrigadas({ machine_type: StanokType.PECHAT }, { enabled: isAdmin });
+    const { data: stanoks = [] } = useGetStanoklar(undefined, machineType, { enabled: isAdmin });
+    const { data: allBrigadas = [] } = useGetBrigadas({ machine_type: machineType }, { enabled: isAdmin });
 
     // 3. Manual selection state
     const [manualStanok, setManualStanok] = useState<number | ''>('');
