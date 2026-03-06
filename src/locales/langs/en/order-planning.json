@@ -29,6 +29,7 @@
         "plan_type_no_final_reska": "No Final Cut",
         "machine_type": "Machine type",
         "machine": "Machine",
+        "quantity_kg": "Quantity (kg)",
         "start_date": "Start",
         "end_date": "End",
         "status": "Status",

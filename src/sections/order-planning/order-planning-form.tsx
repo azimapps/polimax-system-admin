@@ -54,6 +54,7 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
             machine_type: planItem?.machine?.type || '',
             machine_id: planItem?.machine_id || 0,
             brigada_id: planItem?.brigada_id || 0,
+            quantity_kg: (planItem as any)?.quantity_kg || 0,
             start_date: planItem?.start_date || '',
             end_date: planItem?.end_date || '',
             status: planItem?.status || 'in_progress',
@@ -103,8 +104,9 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
 
     const onSubmit = handleSubmit(async (data: any) => {
         try {
-            const { machine_type, ...apiData } = data;
+            const { machine_type, quantity_kg, ...rest } = data;
             void machine_type;
+            const apiData = { ...rest, quantity_kg: Number(quantity_kg) || undefined };
 
             if (isEdit) {
                 const response = await updatePlanItem(apiData as UpdatePlanItemRequest);
@@ -194,6 +196,8 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
                             </MenuItem>
                         ))}
                     </Field.Select>
+
+                    <Field.Text name="quantity_kg" label={t('form.quantity_kg')} type="number" required />
 
                     <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
                         <Field.DatePicker name="start_date" label={t('form.start_date')} />

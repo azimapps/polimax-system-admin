@@ -29,6 +29,7 @@
         "plan_type_no_final_reska": "Oxirgi reskasiz",
         "machine_type": "Uskuna turi",
         "machine": "Uskuna",
+        "quantity_kg": "Miqdori (kg)",
         "start_date": "Boshlanish",
         "end_date": "Tugash",
         "status": "Holati",

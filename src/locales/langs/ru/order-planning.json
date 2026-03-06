@@ -29,6 +29,7 @@
         "plan_type_no_final_reska": "Без финальной резки",
         "machine_type": "Тип станка",
         "machine": "Станок",
+        "quantity_kg": "Количество (кг)",
         "start_date": "Начало",
         "end_date": "Конец",
         "status": "Статус",

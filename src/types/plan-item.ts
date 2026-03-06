@@ -55,6 +55,7 @@ export type CreatePlanItemRequest = {
     end_date: string;
     status?: PlanItemStatus;
     plan_type: PlanType;
+    quantity_kg?: number;
 };
 
 export type UpdatePlanItemRequest = Partial<CreatePlanItemRequest>;
