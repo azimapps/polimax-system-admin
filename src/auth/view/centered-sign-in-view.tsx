@@ -42,7 +42,29 @@ export function CenteredSignInView() {
   const { isPending: isStaffPending, mutateAsync: mutateStaffAsync } = useStaffLogin();
   const { isPending: isPhonePending, mutateAsync: mutatePhoneAsync } = usePhoneLogin();
   const { isPending: isOmborPending, mutateAsync: mutateOmborAsync } = useOmborLogin();
-  const [phoneValue, setPhoneValue] = useState('');
+  const [phoneValue, setPhoneValue] = useState('+998 ');
+
+  const formatPhone = (raw: string): string => {
+    // Strip everything except digits
+    const digits = raw.replace(/\D/g, '');
+    // Always keep 998 prefix
+    const d = digits.startsWith('998') ? digits.slice(3) : digits;
+    let formatted = '+998';
+    if (d.length > 0) formatted += ` ${d.slice(0, 2)}`;
+    if (d.length > 2) formatted += ` ${d.slice(2, 5)}`;
+    if (d.length > 5) formatted += ` ${d.slice(5, 7)}`;
+    if (d.length > 7) formatted += ` ${d.slice(7, 9)}`;
+    return formatted;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digits = e.target.value.replace(/\D/g, '');
+    // Cap at 12 digits (998 + 9 digits)
+    const capped = digits.slice(0, 12);
+    setPhoneValue(formatPhone(capped));
+  };
+
+  const getRawPhone = () => phoneValue.replace(/\D/g, '');
 
   const defaultValues: SignInSchemaType = {
     login: '',
@@ -186,9 +208,9 @@ export function CenteredSignInView() {
           <TextField
             fullWidth
             label="Telefon raqami"
-            placeholder="990330919"
+            placeholder="+998 90 123 45 67"
             value={phoneValue}
-            onChange={(e) => setPhoneValue(e.target.value)}
+            onChange={handlePhoneChange}
             slotProps={{ inputLabel: { shrink: true } }}
           />
           <Button
@@ -199,8 +221,9 @@ export function CenteredSignInView() {
             loading={isPhonePending}
             loadingIndicator={t('loading_indicator')}
             onClick={async () => {
-              if (phoneValue.trim()) {
-                await mutatePhoneAsync({ phone: phoneValue.trim() });
+              const raw = getRawPhone();
+              if (raw.length >= 12) {
+                await mutatePhoneAsync({ phone: raw });
               }
             }}
           >
