@@ -131,7 +131,7 @@ export function useLogProduction() {
             queryClient.invalidateQueries({ queryKey: materialUsageKeys.productionLogs(variables.plan_item_id) });
             queryClient.invalidateQueries({ queryKey: materialUsageKeys.planItemSteps(variables.plan_item_id) });
             queryClient.invalidateQueries({ queryKey: materialUsageKeys.planItemSends(variables.plan_item_id) });
-            queryClient.invalidateQueries({ queryKey: materialUsageKeys.mySteps('') });
+            queryClient.invalidateQueries({ queryKey: [...materialUsageKeys.all, 'my-steps'] });
         },
     });
 }
