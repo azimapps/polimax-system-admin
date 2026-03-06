@@ -437,6 +437,42 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 700, fontSize: '0.85rem', border: '1px solid #a7f3d0' }}
                                     />
                                 </Box>
+
+                                {/* Next step + brigada info */}
+                                {nextStepType && (
+                                    <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Iconify icon="solar:arrow-right-bold" width={18} sx={{ color: '#64748b' }} />
+                                                {t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                            </Typography>
+                                            <Chip
+                                                label={nextStepLabel}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: `${nextStepColor}15`,
+                                                    color: nextStepColor,
+                                                    fontWeight: 700,
+                                                    fontSize: '0.7rem',
+                                                    textTransform: 'uppercase',
+                                                    border: `1.5px solid ${nextStepColor}40`,
+                                                }}
+                                            />
+                                        </Box>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
+                                            <Select
+                                                label={t('dialog.brigada_for_step', { step: nextStepLabel })}
+                                                value={sendToBrigada}
+                                                onChange={(e) => setSendToBrigada(e.target.value)}
+                                            >
+                                                {filteredBrigadas.map((b: any) => (
+                                                    <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
+                                )}
                             </>
                         )}
 
