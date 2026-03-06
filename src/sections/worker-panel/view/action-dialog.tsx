@@ -278,7 +278,11 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 kg_ostatok: Number(kgOstatok) || undefined,
                 notes: notes || undefined,
                 ...(nextIsSushka && sushkaDurationHours ? {
-                    sushka_end_at: new Date(Date.now() + Number(sushkaDurationHours) * 3600000).toISOString(),
+                    sushka_end_at: (() => {
+                        const d = new Date(Date.now() + Number(sushkaDurationHours) * 3600000);
+                        const pad = (n: number) => String(n).padStart(2, '0');
+                        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                    })(),
                 } : {}),
             } : undefined;
 
