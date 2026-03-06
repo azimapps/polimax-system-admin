@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -94,6 +94,55 @@ function StepPipelineCell({ planItemId, t }: { planItemId: number; t: any }) {
 
 // ----------------------------------------------------------------------
 
+function SushkaCountdownCell({ endAt }: { endAt: string }) {
+    const [now, setNow] = useState(Date.now());
+
+    useEffect(() => {
+        const timer = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const end = new Date(endAt).getTime();
+    const diff = end - now;
+
+    if (diff <= 0) {
+        return (
+            <Chip
+                label="Tayyor!"
+                size="small"
+                sx={{ bgcolor: '#dcfce7', color: '#16a34a', fontWeight: 700 }}
+            />
+        );
+    }
+
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    const timeStr = hours > 0
+        ? `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`
+        : `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+
+    return (
+        <Box sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.5,
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 1.5,
+            bgcolor: '#fef3c7',
+            border: '1px solid #fde68a',
+        }}>
+            <Iconify icon="solar:clock-circle-bold" width={16} sx={{ color: '#d97706' }} />
+            <Typography variant="caption" sx={{ fontWeight: 700, color: '#92400e', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                {timeStr}
+            </Typography>
+        </Box>
+    );
+}
+
+// ----------------------------------------------------------------------
+
 function SushkaStepRow({ step, onAction, t }: { step: any; onAction: (step: any) => void; t: any }) {
     const color = STEP_TYPE_COLORS.sushka;
     const kgReceived = step.kg_received ?? 0;
@@ -108,7 +157,7 @@ function SushkaStepRow({ step, onAction, t }: { step: any; onAction: (step: any)
                 />
             </TableCell>
             <TableCell>
-                {step.plan_item?.order_title || '-'}
+                {step.plan_item?.order_title || step.order_title || '-'}
             </TableCell>
             <TableCell>
                 <StepPipelineCell planItemId={step.plan_item_id} t={t} />
@@ -117,6 +166,13 @@ function SushkaStepRow({ step, onAction, t }: { step: any; onAction: (step: any)
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     {kgReceived} kg
                 </Typography>
+            </TableCell>
+            <TableCell>
+                {step.sushka_end_at ? (
+                    <SushkaCountdownCell endAt={step.sushka_end_at} />
+                ) : (
+                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>—</Typography>
+                )}
             </TableCell>
             <TableCell align="right">
                 <IconButton
@@ -180,19 +236,20 @@ export function SushkaView({ translationNs = 'pechat-panel' }: SushkaViewProps) 
                                 <TableCell>{t('table.name')}</TableCell>
                                 <TableCell>{t('table.steps')}</TableCell>
                                 <TableCell>{t('table.quantity_kg')}</TableCell>
+                                <TableCell>{t('sushka.countdown') || 'Countdown'}</TableCell>
                                 <TableCell align="right">{t('table.actions')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                    <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
                                         {t('common.loading')}
                                     </TableCell>
                                 </TableRow>
                             ) : sushkaSteps.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                                    <TableCell colSpan={6} align="center" sx={{ py: 3, color: 'text.secondary' }}>
                                         {t('sushka.empty')}
                                     </TableCell>
                                 </TableRow>

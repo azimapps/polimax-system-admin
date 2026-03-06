@@ -61,7 +61,8 @@
         "title": "Sushka paneli",
         "description": "Quritish bosqichidagi buyurtmalar. Sushka avtomatik — kg kirgan = kg chiqqan.",
         "empty": "Sushka bosqichida buyurtmalar topilmadi.",
-        "auto_note": "Sushka avtomatik: kirgan kg = chiqqan kg. Faqat keyingi brigadani tanlang."
+        "auto_note": "Sushka avtomatik: kirgan kg = chiqqan kg. Faqat keyingi brigadani tanlang.",
+        "countdown": "Qolgan vaqt"
     },
     "dialog": {
         "title_production": "Ishlab chiqarish",

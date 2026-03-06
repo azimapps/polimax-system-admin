@@ -61,7 +61,8 @@
         "title": "Drying Panel",
         "description": "Orders at the drying stage. Drying is automatic — kg in = kg out.",
         "empty": "No orders found at drying stage.",
-        "auto_note": "Drying is automatic: kg received = kg produced. Just select the next brigade."
+        "auto_note": "Drying is automatic: kg received = kg produced. Just select the next brigade.",
+        "countdown": "Time left"
     },
     "dialog": {
         "title_production": "Production",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -21,7 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { useGetBrigadas } from 'src/hooks/use-brigadas';
 import { useGetPlanItem } from 'src/hooks/use-plan-items';
-import { useLogProduction, useGetMachineStock, useGetPlanItemSteps } from 'src/hooks/use-material-usage';
+import { useGetMyBrigada, useLogProduction, useGetMachineStock, useGetPlanItemSteps } from 'src/hooks/use-material-usage';
 
 import { useTranslate } from 'src/locales';
 
@@ -118,6 +118,56 @@ function InfoItem({ label, value }: { label: string; value: any }) {
 
 // ----------------------------------------------------------------------
 
+function SushkaCountdown({ endAt }: { endAt: string }) {
+    const [now, setNow] = useState(Date.now());
+
+    useEffect(() => {
+        const timer = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const end = new Date(endAt).getTime();
+    const diff = end - now;
+
+    if (diff <= 0) {
+        return (
+            <Chip
+                icon={<Iconify icon="solar:check-circle-bold" width={16} />}
+                label="Tayyor!"
+                size="small"
+                sx={{ bgcolor: '#dcfce7', color: '#16a34a', fontWeight: 700, fontSize: '0.8rem' }}
+            />
+        );
+    }
+
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    const timeStr = hours > 0
+        ? `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`
+        : `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+
+    return (
+        <Box sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 1,
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+            bgcolor: '#fef3c7',
+            border: '1px solid #fde68a',
+        }}>
+            <Iconify icon="solar:clock-circle-bold" width={18} sx={{ color: '#d97706' }} />
+            <Typography variant="body2" sx={{ fontWeight: 700, color: '#92400e', fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                {timeStr}
+            </Typography>
+        </Box>
+    );
+}
+
+// ----------------------------------------------------------------------
+
 type Props = {
     open: boolean;
     onClose: () => void;
@@ -133,6 +183,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const { data: planItemDetail } = useGetPlanItem(effectivePlanItemId || 0, { enabled: !!effectivePlanItemId });
     const { data: stock = [], isLoading: isStockLoading } = useGetMachineStock();
     const { data: brigadas = [] } = useGetBrigadas();
+    const { data: myBrigadaData } = useGetMyBrigada();
     const { data: pipelineSteps = [] } = useGetPlanItemSteps(effectivePlanItemId || 0, { enabled: !!effectivePlanItemId });
 
     // Form state
@@ -149,6 +200,14 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const [sushkaDurationHours, setSushkaDurationHours] = useState('');
 
     const logProd = useLogProduction();
+
+    // Auto-preselect current brigada for sushka mode
+    const myBrigadaId = myBrigadaData?.brigada?.id;
+    useEffect(() => {
+        if (step?.step_type === 'sushka' && myBrigadaId && !sendToBrigada) {
+            setSendToBrigada(String(myBrigadaId));
+        }
+    }, [step?.step_type, myBrigadaId, sendToBrigada]);
 
     if (!effectivePlanItemId) return null;
 
@@ -364,59 +423,16 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                             <>
                                 <Divider sx={{ borderStyle: 'dashed', borderColor: '#e2e8f0' }} />
 
-                                {/* Sushka simplified view */}
-                                <Box sx={{ bgcolor: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 2, p: 2.5 }}>
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#9a3412', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Iconify icon="solar:info-circle-bold" width={18} sx={{ color: '#ea580c' }} />
-                                        {t('steps.sushka')}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ color: '#9a3412', mb: 2 }}>
-                                        {t('sushka.auto_note')}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                        <Chip
-                                            label={`${kgReceived || 0} kg → ${kgReceived || 0} kg`}
-                                            sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 700, fontSize: '0.85rem', border: '1px solid #a7f3d0' }}
-                                        />
-                                    </Box>
+                                {/* Sushka: countdown + kg info */}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2.5, py: 2 }}>
+                                    {step?.sushka_end_at && (
+                                        <SushkaCountdown endAt={step.sushka_end_at} />
+                                    )}
+                                    <Chip
+                                        label={`${kgReceived || 0} kg → ${kgReceived || 0} kg`}
+                                        sx={{ bgcolor: '#ecfdf5', color: '#059669', fontWeight: 700, fontSize: '0.85rem', border: '1px solid #a7f3d0' }}
+                                    />
                                 </Box>
-
-                                {/* Next step brigada selector */}
-                                {nextStepType && (
-                                    <Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <Iconify icon="solar:list-bold" width={18} sx={{ color: '#64748b' }} />
-                                                {t('dialog.production_result')}
-                                            </Typography>
-                                            <Chip
-                                                label={`→ ${nextStepLabel}`}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: `${nextStepColor}15`,
-                                                    color: nextStepColor,
-                                                    fontWeight: 700,
-                                                    fontSize: '0.7rem',
-                                                    textTransform: 'uppercase',
-                                                    border: `1.5px solid ${nextStepColor}40`,
-                                                }}
-                                            />
-                                        </Box>
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel>{t('dialog.brigada_for_step', { step: nextStepLabel })}</InputLabel>
-                                            <Select
-                                                label={t('dialog.brigada_for_step', { step: nextStepLabel })}
-                                                value={sendToBrigada}
-                                                onChange={(e) => setSendToBrigada(e.target.value)}
-                                            >
-                                                <MenuItem value="">{t('common.select')}</MenuItem>
-                                                {filteredBrigadas.map((b: any) => (
-                                                    <MenuItem key={b.id} value={String(b.id)}>{b.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Box>
-                                )}
                             </>
                         )}
 
