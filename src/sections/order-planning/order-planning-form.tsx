@@ -112,7 +112,8 @@ export function OrderPlanningForm({ planItem, onSuccess }: Props) {
         try {
             const { machine_type, quantity_kg, ...rest } = data;
             void machine_type;
-            const apiData = { ...rest, quantity_kg: Number(quantity_kg) || undefined };
+            const parsedKg = Number(quantity_kg);
+            const apiData = { ...rest, ...(parsedKg > 0 ? { quantity_kg: parsedKg } : {}) };
 
             if (isEdit) {
                 const response = await updatePlanItem(apiData as UpdatePlanItemRequest);
