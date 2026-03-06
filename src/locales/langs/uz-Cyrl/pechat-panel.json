@@ -105,6 +105,8 @@
         "result_status": "Ҳолати",
         "btn_close": "Ёпиш",
         "btn_cancel": "Бекор қилиш",
+        "sushka_duration": "Сушка давомийлиги (соат)",
+        "sushka_duration_hint": "Қуритиш қанча соат давом этади",
         "btn_save": "Сақлаш"
     }
 }

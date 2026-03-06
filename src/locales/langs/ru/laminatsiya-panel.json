@@ -105,6 +105,8 @@
         "result_status": "Статус",
         "btn_close": "Закрыть",
         "btn_cancel": "Отмена",
+        "sushka_duration": "Длительность сушки (часы)",
+        "sushka_duration_hint": "Сколько часов займёт сушка",
         "btn_save": "Сохранить"
     }
 }

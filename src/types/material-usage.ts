@@ -101,6 +101,7 @@ export interface ProductionLogSend {
     kg_waste?: number;
     kg_ostatok?: number;
     notes?: string;
+    sushka_end_at?: string;
 }
 
 export interface ProductionLogRequest {

@@ -105,6 +105,8 @@
         "result_status": "Status",
         "btn_close": "Close",
         "btn_cancel": "Cancel",
+        "sushka_duration": "Drying duration (hours)",
+        "sushka_duration_hint": "How many hours will drying take",
         "btn_save": "Save"
     }
 }

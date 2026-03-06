@@ -105,6 +105,8 @@
         "result_status": "Holati",
         "btn_close": "Yopish",
         "btn_cancel": "Bekor qilish",
+        "sushka_duration": "Sushka davomiyligi (soat)",
+        "sushka_duration_hint": "Quritish qancha soat davom etadi",
         "btn_save": "Saqlash"
     }
 }

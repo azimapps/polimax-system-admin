@@ -146,6 +146,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
 
     // Send state
     const [sendToBrigada, setSendToBrigada] = useState('');
+    const [sushkaDurationHours, setSushkaDurationHours] = useState('');
 
     const logProd = useLogProduction();
 
@@ -158,22 +159,24 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const kgReceived = step?.kg_received;
     const isSushka = stepType === 'sushka';
 
-    // Find next step (skip sushka — it auto-passes, no brigada needed)
+    // Find next step in pipeline
     const sortedSteps = [...pipelineSteps].sort((a: any, b: any) => a.step_number - b.step_number);
     const currentIdx = sortedSteps.findIndex((s: any) => s.id === step?.id);
-    let nextStep: any = null;
-    for (let i = currentIdx + 1; i < sortedSteps.length; i += 1) {
-        if (sortedSteps[i].step_type !== 'sushka') {
-            nextStep = sortedSteps[i];
-            break;
-        }
-    }
+    const nextStep: any = currentIdx >= 0 && currentIdx < sortedSteps.length - 1
+        ? sortedSteps[currentIdx + 1]
+        : null;
     const nextStepType = nextStep?.step_type;
     const nextStepColor = STEP_TYPE_COLORS[nextStepType] || '#64748b';
     const nextStepLabel = nextStepType ? t(`steps.${nextStepType}`) : '';
-    // Filter brigadas to only those matching the next step's type
-    const filteredBrigadas = nextStepType
-        ? brigadas.filter((b: any) => b.machine_type === nextStepType)
+    const nextIsSushka = nextStepType === 'sushka';
+    // When next step is sushka, find the step AFTER sushka for brigada filtering
+    const stepAfterSushka = nextIsSushka
+        ? sortedSteps.find((s: any, i: number) => i > currentIdx + 1 && s.step_type !== 'sushka')
+        : null;
+    // Filter brigadas: for sushka next step, use brigadas matching step after sushka
+    const brigadaFilterType = nextIsSushka ? stepAfterSushka?.step_type : nextStepType;
+    const filteredBrigadas = brigadaFilterType
+        ? brigadas.filter((b: any) => b.machine_type === brigadaFilterType)
         : brigadas;
 
     const handleSave = async () => {
@@ -215,6 +218,9 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 kg_waste: Number(kgWaste) || undefined,
                 kg_ostatok: Number(kgOstatok) || undefined,
                 notes: notes || undefined,
+                ...(nextIsSushka && sushkaDurationHours ? {
+                    sushka_end_at: new Date(Date.now() + Number(sushkaDurationHours) * 3600000).toISOString(),
+                } : {}),
             } : undefined;
 
             await logProd.mutateAsync({
@@ -236,6 +242,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
             setWorkType('');
             setNotes('');
             setSendToBrigada('');
+            setSushkaDurationHours('');
 
             onClose();
         } catch (error) {
@@ -529,6 +536,26 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                                     ))}
                                                 </Select>
                                             </FormControl>
+                                        )}
+                                        {/* Sushka duration when next step is sushka */}
+                                        {nextIsSushka && (
+                                            <Box sx={{ position: 'relative' }}>
+                                                <TextField
+                                                    fullWidth
+                                                    size="small"
+                                                    type="number"
+                                                    label={t('dialog.sushka_duration')}
+                                                    placeholder="24"
+                                                    value={sushkaDurationHours}
+                                                    onChange={(e) => setSushkaDurationHours(e.target.value)}
+                                                    slotProps={{ htmlInput: { min: 0, step: 0.5 } }}
+                                                />
+                                                <Tooltip title={t('dialog.sushka_duration_hint')} arrow placement="top">
+                                                    <Box sx={{ position: 'absolute', top: 8, right: 8, cursor: 'help', display: 'flex' }}>
+                                                        <Iconify icon="solar:info-circle-bold" width={16} sx={{ color: '#94a3b8' }} />
+                                                    </Box>
+                                                </Tooltip>
+                                            </Box>
                                         )}
                                         <Box sx={{ display: 'flex', gap: 2 }}>
                                             <Box sx={{ flex: 1, position: 'relative' }}>
