@@ -57,6 +57,7 @@ const PartnersArchived = lazy(() => import('src/pages/partners/archived'));
 // Staff
 const StaffList = lazy(() => import('src/pages/staff/list'));
 const StaffArchived = lazy(() => import('src/pages/staff/archived'));
+const StaffSalary = lazy(() => import('src/pages/staff/salary'));
 // Stanoklar
 const StanokList = lazy(() => import('src/pages/stanok/list'));
 const StanokArchived = lazy(() => import('src/pages/stanok/archived'));
@@ -219,6 +220,7 @@ export const routesSection: RouteObject[] = [
           { path: 'workers', element: <StaffList /> },
           { path: 'accountants', element: <StaffList /> },
           { path: 'planners', element: <StaffList /> },
+          { path: 'salary', element: <StaffSalary /> },
           { path: 'archived', element: <StaffArchived /> },
         ],
       },

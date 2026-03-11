@@ -111,6 +111,14 @@ export function StaffListView() {
                     <Stack direction="row" spacing={1}>
                         <Button
                             variant="outlined"
+                            color="success"
+                            startIcon={<Iconify icon="solar:wad-of-money-bold" />}
+                            href={paths.dashboard.staff.salary}
+                        >
+                            {t('salary')}
+                        </Button>
+                        <Button
+                            variant="outlined"
                             startIcon={<Iconify icon="solar:inbox-bold" />}
                             href={paths.dashboard.staff.archived}
                         >

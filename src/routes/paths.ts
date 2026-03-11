@@ -55,6 +55,7 @@ export const paths = {
       workers: '/staff/workers',
       accountants: '/staff/accountants',
       planners: '/staff/planners',
+      salary: '/staff/salary',
     },
     stanoklar: {
       root: '/stanoklar',

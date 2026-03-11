@@ -96,7 +96,7 @@ export interface ProductionLogMaterial {
 }
 
 export interface ProductionLogSend {
-    to_brigada_id: number;
+    to_brigada_id?: number;
     kg_sent: number;
     meters_sent: number;
     kg_waste?: number;
