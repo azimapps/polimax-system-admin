@@ -110,10 +110,22 @@ export function AuthProvider({ children }: Props) {
       const res = await axiosInstance.post('/auth/phone-login', payload);
       const { token, account } = res.data;
 
+      // Set token first so /auth/me request is authenticated
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(account));
 
-      setState({ user: account });
+      // Fetch full user data with staff info (worker_type lives on staff)
+      const meRes = await axiosInstance.get('/auth/me');
+      const meData = meRes.data;
+
+      const staff = meData.staff;
+      const userObj = { ...account };
+      if (staff) {
+        userObj.staff = staff;
+        userObj.worker_type = staff.worker_type;
+        userObj.type = staff.type;
+      }
+      localStorage.setItem('user', JSON.stringify(userObj));
+      setState({ user: userObj });
     },
     [setState]
   );

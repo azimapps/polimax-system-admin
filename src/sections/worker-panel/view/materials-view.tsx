@@ -120,16 +120,16 @@ export function MaterialsView({ machineType = StanokType.PECHAT, translationNs =
                                             {item.ombor_item_type || '-'}
                                         </TableCell>
                                         <TableCell>
-                                            {item.total_received} kg/l
+                                            {item.total_received} {item.unit}
                                         </TableCell>
                                         <TableCell sx={{ color: 'warning.main' }}>
-                                            {item.total_used} kg/l
+                                            {item.total_used} {item.unit}
                                         </TableCell>
                                         <TableCell sx={{ color: 'error.main' }}>
-                                            {item.total_returned} kg/l
+                                            {item.total_returned} {item.unit}
                                         </TableCell>
                                         <TableCell align="right" sx={{ color: 'success.main', fontWeight: 'bold' }}>
-                                            {item.stock_at_machine} kg/l
+                                            {item.stock_at_machine} {item.unit}
                                         </TableCell>
                                     </TableRow>
                                 ))

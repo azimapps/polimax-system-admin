@@ -263,7 +263,7 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                     const parsedAmount = Number(amount);
                     if (!parsedAmount || parsedAmount <= 0) return null;
                     return {
-                        ombor_transaction_id: Number(matId),
+                        ombor_item_id: Number(matId),
                         used_amount: parsedAmount,
                         remainder_destination: 'machine_warehouse' as const,
                     };

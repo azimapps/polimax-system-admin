@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
 import { DashboardLayout } from 'src/layouts/dashboard';
+import { ReskaPanelLayout } from 'src/layouts/reska-panel/reska-panel-layout';
 import { PechatPanelLayout } from 'src/layouts/pechat-panel/pechat-panel-layout';
 import { LaminatsiyaPanelLayout } from 'src/layouts/laminatsiya-panel/laminatsiya-panel-layout';
 
@@ -80,6 +81,8 @@ const SushkaPaneliPage = lazy(() => import('src/pages/sushka-paneli/page'));
 const WorkerPanelPage = lazy(() => import('src/pages/worker-panel/page'));
 // Laminatsiya Panel
 const LaminatsiyaPanelPage = lazy(() => import('src/pages/laminatsiya-panel/page'));
+// Reska Panel
+const ReskaPanelPage = lazy(() => import('src/pages/reska-panel/page'));
 
 // ----------------------------------------------------------------------
 
@@ -105,6 +108,22 @@ function LaminatsiyaPanelGuard({ children }: { children: React.ReactNode }) {
     ['admin', 'manager', 'ceo'].includes(user?.role) ||
     user?.role === 'laminatsiya' ||
     user?.worker_type === 'laminatsiya' ||
+    user?.type === 'worker' ||
+    !!user?.staff;
+
+  return (
+    <RoleBasedGuard hasContent currentRole={allowed ? 'allowed' : 'denied'} allowedRoles={['allowed']}>
+      {children}
+    </RoleBasedGuard>
+  );
+}
+
+function ReskaPanelGuard({ children }: { children: React.ReactNode }) {
+  const { user } = useAuthContext();
+  const allowed =
+    ['admin', 'manager', 'ceo'].includes(user?.role) ||
+    user?.role === 'reska' ||
+    user?.worker_type === 'reska' ||
     user?.type === 'worker' ||
     !!user?.staff;
 
@@ -142,6 +161,12 @@ const laminatsiyaPanelLayout = () => (
   <LaminatsiyaPanelLayout>
     <SuspenseOutlet />
   </LaminatsiyaPanelLayout>
+);
+
+const reskaPanelLayout = () => (
+  <ReskaPanelLayout>
+    <SuspenseOutlet />
+  </ReskaPanelLayout>
 );
 
 // ----------------------------------------------------------------------
@@ -366,6 +391,25 @@ export const routesSection: RouteObject[] = [
       { path: 'finished', element: <LaminatsiyaPanelPage /> },
       { path: 'materials', element: <LaminatsiyaPanelPage /> },
       { path: 'sushka', element: <LaminatsiyaPanelPage /> },
+    ],
+  },
+
+  // Reska standalone panel
+  {
+    path: '/reska-panel',
+    element: (
+      <AuthGuard>
+        <ReskaPanelGuard>
+          {reskaPanelLayout()}
+        </ReskaPanelGuard>
+      </AuthGuard>
+    ),
+    children: [
+      { index: true, element: <ReskaPanelPage /> },
+      { path: 'jarayonda', element: <ReskaPanelPage /> },
+      { path: 'finished', element: <ReskaPanelPage /> },
+      { path: 'materials', element: <ReskaPanelPage /> },
+      { path: 'sushka', element: <ReskaPanelPage /> },
     ],
   },
 

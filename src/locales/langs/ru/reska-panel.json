@@ -1,0 +1,113 @@
+{
+    "steps": {
+        "reska": "Резка",
+        "pechat": "Печать",
+        "sushka": "Сушка",
+        "laminatsiya": "Ламинация",
+        "tayyor": "Готово"
+    },
+    "status": {
+        "completed": "Завершено",
+        "in_progress": "В процессе",
+        "pending": "Ожидание"
+    },
+    "work_types": {
+        "tayyor_mahsulotlar_reskasi": "Резка готовой продукции",
+        "tayyor_mahsulot_peremotkasi": "Перемотка готовой продукции",
+        "plyonka_peremotkasi": "Перемотка плёнки",
+        "reska_3_5_sm": "Резка 3-5 см",
+        "asobiy_tarif": "Особый тариф"
+    },
+    "common": {
+        "stanok": "Станок",
+        "brigada": "Бригада",
+        "loading": "Загрузка...",
+        "selected": "Выбрано:",
+        "brigada_members": "Члены бригады:",
+        "select": "Выбрать"
+    },
+    "table": {
+        "order_number": "Номер заказа",
+        "step": "Этап",
+        "name": "Название",
+        "steps": "Этапы",
+        "quantity_kg": "Количество (кг)",
+        "date": "Дата",
+        "actions": "Действия"
+    },
+    "in_progress": {
+        "title": "Обзор резки",
+        "description": "Заказы, назначенные на станок резки по плану, отображаются по выбранному станку и бригаде.",
+        "empty": "Задачи в процессе не найдены."
+    },
+    "finished": {
+        "title": "Завершённые задачи",
+        "description": "История завершённых и сданных заказов.",
+        "empty": "Завершённые задачи не найдены."
+    },
+    "materials": {
+        "title": "Доступные материалы",
+        "description": "Список всех сырьевых материалов, закреплённых за вашим станком и имеющихся в наличии.",
+        "stanok_label": "Станок (Оборудование)",
+        "col_name": "Название",
+        "col_type": "Тип",
+        "col_total_received": "Всего получено",
+        "col_used": "Использовано",
+        "col_returned": "Возвращено",
+        "col_remaining": "Остаток (В наличии)",
+        "empty": "Материалы на станке не найдены."
+    },
+    "sushka": {
+        "title": "Панель сушки",
+        "description": "Заказы на этапе сушки. Сушка автоматическая — кг вход = кг выход.",
+        "empty": "Заказы на этапе сушки не найдены.",
+        "auto_note": "Сушка автоматическая: полученные кг = произведённые кг. Просто выберите следующую бригаду.",
+        "countdown": "Осталось"
+    },
+    "dialog": {
+        "title_production": "Производство",
+        "title_details": "Детали этапа",
+        "received_kg": "Получено: {{kg}} кг",
+        "order_info": "Информация о заказе",
+        "order_number": "Заказ №",
+        "order_name": "Название",
+        "material": "Материал",
+        "volume": "Объём",
+        "film_thickness": "Толщина плёнки",
+        "film_width": "Ширина плёнки",
+        "cylinder_length": "Длина вала",
+        "cylinder_count": "Количество валов",
+        "cylinder_rotation": "Оборот вала",
+        "vtulka": "Втулка",
+        "napravlenie": "Направление",
+        "available_materials": "Доступные материалы",
+        "no_materials": "Материалы на оборудовании не найдены",
+        "production_result": "Результат производства",
+        "brigada_for_step": "Бригада {{step}}",
+        "meters_produced": "Метры произведено",
+        "meters_produced_hint": "Сколько метров продукции произведено",
+        "kg_produced": "Кг произведено",
+        "kg_produced_hint": "Хорошая продукция — отправляется на следующий этап",
+        "kg_waste": "Кг отходы",
+        "kg_waste_hint": "Отходы — нельзя использовать, выбрасывается",
+        "kg_remaining": "Кг остаток",
+        "kg_remaining_hint": "Остаток — хороший материал, но пока не отправляется (может использоваться позже)",
+        "kg_total_overflow": "Сумма (произведено + отходы + остаток) не должна превышать полученное количество",
+        "work_type": "Тип работы",
+        "work_type_none": "Не выбрано",
+        "notes": "Примечание",
+        "notes_placeholder": "Необязательно",
+        "results": "Результаты",
+        "result_kg_received": "Кг получено",
+        "result_kg_produced": "Кг произведено",
+        "result_meters_produced": "Метры произведено",
+        "result_kg_waste": "Кг отходы",
+        "result_kg_remaining": "Кг остаток",
+        "result_status": "Статус",
+        "btn_close": "Закрыть",
+        "btn_cancel": "Отмена",
+        "sushka_duration": "Длительность сушки (часы)",
+        "sushka_duration_hint": "Сколько часов займёт сушка",
+        "btn_save": "Сохранить"
+    }
+}

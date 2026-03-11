@@ -25,6 +25,8 @@ export default function Page() {
     if (isWorker) {
       if (user?.worker_type === 'laminatsiya' || user?.role === 'laminatsiya') {
         router.replace(paths.dashboard.laminatsiyaPanel.root);
+      } else if (user?.worker_type === 'reska' || user?.role === 'reska') {
+        router.replace(paths.dashboard.reskaPanel.root);
       } else {
         router.replace(paths.dashboard.pechatPanel.root);
       }

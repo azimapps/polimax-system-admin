@@ -32,6 +32,7 @@ export interface MachineStock {
     total_used: number;
     total_returned: number;
     stock_at_machine: number;
+    unit: 'kg' | 'l' | 'dona';
 }
 
 export interface PlanItemMaterialUsage {
@@ -87,7 +88,7 @@ export interface GetMaterialUsagesParams {
 }
 
 export interface ProductionLogMaterial {
-    ombor_transaction_id: number;
+    ombor_item_id: number;
     used_amount: number;
     remainder_destination: 'machine_warehouse' | 'main_warehouse';
     percentage?: number;

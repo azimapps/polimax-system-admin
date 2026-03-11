@@ -103,6 +103,13 @@ export const paths = {
       materials: '/laminatsiya-panel/materials',
       sushka: '/laminatsiya-panel/sushka',
     },
+    reskaPanel: {
+      root: '/reska-panel',
+      jarayonda: '/reska-panel/jarayonda',
+      finished: '/reska-panel/finished',
+      materials: '/reska-panel/materials',
+      sushka: '/reska-panel/sushka',
+    },
     mixingStation: {
       root: '/mixing-station',
     },

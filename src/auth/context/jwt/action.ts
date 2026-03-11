@@ -17,20 +17,29 @@ function getWorkerPanelRedirect(): string | null {
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
 
+  const MACHINE_TYPES = ['pechat', 'reska', 'laminatsiya', 'sushka'];
+
+  // role is the account-level assignment — most authoritative source
+  const machineType =
+    (MACHINE_TYPES.includes(user?.role) ? user.role : null) ||
+    user?.worker_type ||
+    user?.staff?.worker_type ||
+    user?.staff?.brigada?.machine_type;
+
   const isWorker =
     user?.type === 'worker' ||
     user?.role === 'worker' ||
-    user?.worker_type ||
-    ['pechat', 'reska', 'laminatsiya', 'sushka'].includes(user?.role);
+    machineType ||
+    MACHINE_TYPES.includes(user?.role);
 
   if (!isWorker) return null;
 
-  // Laminatsiya workers → laminatsiya panel
-  if (user?.worker_type === 'laminatsiya' || user?.role === 'laminatsiya') {
-    return paths.dashboard.laminatsiyaPanel.root;
-  }
+  const effectiveType = machineType || user?.role;
 
-  // Everyone else (pechat, reska, sushka, generic worker) → pechat panel
+  if (effectiveType === 'laminatsiya') return paths.dashboard.laminatsiyaPanel.root;
+  if (effectiveType === 'reska') return paths.dashboard.reskaPanel.root;
+
+  // Everyone else (pechat, sushka, generic worker) → pechat panel
   return paths.dashboard.pechatPanel.root;
 }
 

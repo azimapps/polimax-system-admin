@@ -1,5 +1,6 @@
 import type { CreateOmborTransactionRequest } from 'src/types/ombor';
 
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -90,8 +91,9 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
             });
             setIsCreating(null);
             reset();
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            const message = error?.response?.data?.detail || 'Xatolik yuz berdi';
+            toast.error(message);
         }
     });
 
@@ -126,7 +128,21 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                             <Field.Select name="plan_item_id" label={t('transactions.form.plan_item_id')} required>
                                 {planItems.map((item) => (
                                     <MenuItem key={item.id} value={item.id}>
-                                        {t('transactions.buyurtma')} #{item.order_id || item.id}
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', py: 0.5 }}>
+                                            <Typography variant="subtitle2" component="span">
+                                                {t('transactions.buyurtma')} #{item.order_id || item.id}
+                                                {item.order_title && ` — ${item.order_title}`}
+                                            </Typography>
+                                            {(item.brigada_name || item.quantity_kg || item.machine_name) && (
+                                                <Typography variant="caption" component="span" sx={{ color: 'text.secondary' }}>
+                                                    {[
+                                                        item.brigada_name,
+                                                        item.quantity_kg && `${item.quantity_kg} kg`,
+                                                        item.machine_name,
+                                                    ].filter(Boolean).join(' • ')}
+                                                </Typography>
+                                            )}
+                                        </Box>
                                     </MenuItem>
                                 ))}
                             </Field.Select>
@@ -226,7 +242,25 @@ export function OmborTransactionsDialog({ open, onClose, id, type }: Props) {
                                                 {tx.quantity_count ? `${tx.quantity_count} dona ` : ''}
                                                 {tx.quantity_barrels ? `(${tx.quantity_barrels} bochka)` : ''}
                                             </TableCell>
-                                            <TableCell>{tx.plan_item_id ? `#${tx.plan_item_id}` : '-'}</TableCell>
+                                            <TableCell>
+                                                {tx.plan_item_id ? (() => {
+                                                    const plan = planItems.find(p => p.id === tx.plan_item_id);
+                                                    return plan ? (
+                                                        <Box>
+                                                            <Typography variant="body2" fontWeight="bold">
+                                                                #{plan.order_id || tx.plan_item_id}
+                                                                {plan.order_title && ` — ${plan.order_title}`}
+                                                            </Typography>
+                                                            {plan.brigada_name && (
+                                                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                                                                    {plan.brigada_name}
+                                                                    {plan.quantity_kg && ` • ${plan.quantity_kg} kg`}
+                                                                </Typography>
+                                                            )}
+                                                        </Box>
+                                                    ) : `#${tx.plan_item_id}`;
+                                                })() : '-'}
+                                            </TableCell>
                                             <TableCell>
                                                 {tx.stanok_id ? stanoklar.find(s => s.id === tx.stanok_id)?.name || tx.stanok_id : '-'}
                                             </TableCell>

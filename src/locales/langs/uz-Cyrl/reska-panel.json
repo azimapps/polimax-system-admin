@@ -1,0 +1,113 @@
+{
+    "steps": {
+        "reska": "Реска",
+        "pechat": "Печат",
+        "sushka": "Сушка",
+        "laminatsiya": "Ламинация",
+        "tayyor": "Тайёр"
+    },
+    "status": {
+        "completed": "Якунланган",
+        "in_progress": "Жараёнда",
+        "pending": "Кутилмоқда"
+    },
+    "work_types": {
+        "tayyor_mahsulotlar_reskasi": "Тайёр маҳсулотлар рескаси",
+        "tayyor_mahsulot_peremotkasi": "Тайёр маҳсулот перемоткаси",
+        "plyonka_peremotkasi": "Плёнка перемоткаси",
+        "reska_3_5_sm": "Реска 3-5 см",
+        "asobiy_tarif": "Асобий тариф"
+    },
+    "common": {
+        "stanok": "Станок",
+        "brigada": "Бригада",
+        "loading": "Юкланмоқда...",
+        "selected": "Танланган:",
+        "brigada_members": "Бригада аъзолари:",
+        "select": "Танланг"
+    },
+    "table": {
+        "order_number": "Буюртма рақами",
+        "step": "Босқич",
+        "name": "Номи",
+        "steps": "Босқичлар",
+        "quantity_kg": "Миқдори (кг)",
+        "date": "Сана",
+        "actions": "Амаллар"
+    },
+    "in_progress": {
+        "title": "Реска умумий",
+        "description": "Режа бўйича рескага бириктирилган буюртмалар танланган станок ва бригада бўйича кўринади.",
+        "empty": "Жараёндаги вазифалар топилмади."
+    },
+    "finished": {
+        "title": "Якунланган вазифалар",
+        "description": "Якунланган ва топширилган буюртмалар тарихи.",
+        "empty": "Якунланган вазифалар топилмади."
+    },
+    "materials": {
+        "title": "Мавжуд Материаллар",
+        "description": "Станокингизга бириктирилган ва ҳозирда мавжуд бўлган барча хом ашё материаллари рўйхати.",
+        "stanok_label": "Станок (Ускуна)",
+        "col_name": "Номи",
+        "col_type": "Тури",
+        "col_total_received": "Жами олинган",
+        "col_used": "Ишлатилган",
+        "col_returned": "Қайтарилган",
+        "col_remaining": "Қолдиқ (Мавжуд)",
+        "empty": "Станокда материаллар топилмади."
+    },
+    "sushka": {
+        "title": "Сушка панели",
+        "description": "Қуритиш босқичидаги буюртмалар. Сушка автоматик — кг кирган = кг чиққан.",
+        "empty": "Сушка босқичида буюртмалар топилмади.",
+        "auto_note": "Сушка автоматик: кирган кг = чиққан кг. Фақат кейинги бригадани танланг.",
+        "countdown": "Қолган вақт"
+    },
+    "dialog": {
+        "title_production": "Ишлаб чиқариш",
+        "title_details": "Босқич тафсилотлари",
+        "received_kg": "Олинди: {{kg}} кг",
+        "order_info": "Буюртма маълумотлари",
+        "order_number": "Буюртма №",
+        "order_name": "Номи",
+        "material": "Материал",
+        "volume": "Ҳажми",
+        "film_thickness": "Плёнка қалинлиги",
+        "film_width": "Плёнка кенглиги",
+        "cylinder_length": "Вал узунлиги",
+        "cylinder_count": "Вал сони",
+        "cylinder_rotation": "Вал айланмаси",
+        "vtulka": "Втулка",
+        "napravlenie": "Направление",
+        "available_materials": "Мавжуд материаллар",
+        "no_materials": "Ускунада материаллар топилмади",
+        "production_result": "Ишлаб чиқариш натижаси",
+        "brigada_for_step": "{{step}} бригадаси",
+        "meters_produced": "Метр ишлаб чиқарилган",
+        "meters_produced_hint": "Қанча метр маҳсулот чиқди",
+        "kg_produced": "Кг ишлаб чиқарилган",
+        "kg_produced_hint": "Яхши чиққан маҳсулот — кейинги степга юборилади",
+        "kg_waste": "Кг чиқинди (waste)",
+        "kg_waste_hint": "Чиқинди — ишлатиб бўлмайди, ташланади",
+        "kg_remaining": "Кг қолдиқ (остаток)",
+        "kg_remaining_hint": "Қолдиқ — яхши, лекин ҳозир юборилмайди (кейин ишлатилиши мумкин)",
+        "kg_total_overflow": "Жами (ишлаб чиқарилган + чиқинди + қолдиқ) олиндидан ошмаслиги керак",
+        "work_type": "Иш тури",
+        "work_type_none": "Танланмаган",
+        "notes": "Изоҳ",
+        "notes_placeholder": "Ихтиёрий",
+        "results": "Натижалар",
+        "result_kg_received": "Кг олинди",
+        "result_kg_produced": "Кг ишлаб чиқарилди",
+        "result_meters_produced": "Метр ишлаб чиқарилди",
+        "result_kg_waste": "Кг чиқинди",
+        "result_kg_remaining": "Кг қолдиқ",
+        "result_status": "Ҳолати",
+        "btn_close": "Ёпиш",
+        "btn_cancel": "Бекор қилиш",
+        "sushka_duration": "Сушка давомийлиги (соат)",
+        "sushka_duration_hint": "Қуритиш қанча соат давом этади",
+        "btn_save": "Сақлаш"
+    }
+}
