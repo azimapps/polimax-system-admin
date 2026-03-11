@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -235,7 +236,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
     const brigadaStepColor = STEP_TYPE_COLORS[brigadaStepType] || '#64748b';
     const brigadaStepLabel = brigadaStepType ? t(`steps.${brigadaStepType}`) : '';
     // Filter brigadas by the actual target step type
-    const filteredBrigadas = brigadaStepType
+    const isTayyor = brigadaStepType === 'tayyor' || nextStepType === 'tayyor';
+    const filteredBrigadas = brigadaStepType && !isTayyor
         ? brigadas.filter((b: any) => b.machine_type === brigadaStepType)
         : brigadas;
 
@@ -270,8 +272,10 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                 })
                 .filter(Boolean) as any[];
 
-            const sendPayload = sendToBrigada ? {
-                to_brigada_id: Number(sendToBrigada),
+            // Build send payload: tayyor needs send WITHOUT to_brigada_id
+            const needsSend = sendToBrigada || isTayyor;
+            const sendPayload = needsSend ? {
+                ...(sendToBrigada ? { to_brigada_id: Number(sendToBrigada) } : {}),
                 kg_sent: Number(kg) || 0,
                 meters_sent: Number(meters) || 0,
                 kg_waste: Number(kgWaste) || undefined,
@@ -308,8 +312,9 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
             setSushkaDurationHours('');
 
             onClose();
-        } catch (error) {
-            console.error('Error saving:', error);
+        } catch (error: any) {
+            const message = error?.response?.data?.detail || 'Xatolik yuz berdi';
+            toast.error(message, { position: 'top-center' });
         }
     };
 
@@ -438,8 +443,8 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                     />
                                 </Box>
 
-                                {/* Next step + brigada info */}
-                                {nextStepType && (
+                                {/* Next step + brigada info (hidden for tayyor) */}
+                                {nextStepType && !isTayyor && (
                                     <Box sx={{ bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 2, p: 2.5 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
                                             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -563,22 +568,22 @@ export function ActionDialog({ open, onClose, planItemId, step, readOnly }: Prop
                                         </Typography>
                                         {nextStepType && (
                                             <Chip
-                                                label={`→ ${brigadaStepLabel}`}
+                                                label={isTayyor ? '→ TAYYOR' : `→ ${brigadaStepLabel}`}
                                                 size="small"
                                                 sx={{
-                                                    bgcolor: `${brigadaStepColor}15`,
-                                                    color: brigadaStepColor,
+                                                    bgcolor: isTayyor ? '#ecfdf5' : `${brigadaStepColor}15`,
+                                                    color: isTayyor ? '#059669' : brigadaStepColor,
                                                     fontWeight: 700,
                                                     fontSize: '0.7rem',
                                                     textTransform: 'uppercase',
-                                                    border: `1.5px solid ${brigadaStepColor}40`,
+                                                    border: isTayyor ? '1.5px solid #a7f3d0' : `1.5px solid ${brigadaStepColor}40`,
                                                 }}
                                             />
                                         )}
                                     </Box>
                                     <Stack spacing={2}>
-                                        {/* Brigada selector for next step */}
-                                        {nextStepType && (
+                                        {/* Brigada selector for next step (hidden for tayyor) */}
+                                        {nextStepType && !isTayyor && (
                                             <FormControl fullWidth size="small">
                                                 <InputLabel>{t('dialog.brigada_for_step', { step: brigadaStepLabel })}</InputLabel>
                                                 <Select
