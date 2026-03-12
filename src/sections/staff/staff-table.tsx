@@ -24,10 +24,11 @@ type Props = {
     onHistory: (id: number) => void;
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
+    onSalary?: (id: number) => void;
     hideType?: boolean;
 };
 
-function StaffTableComponent({ staffList, loading, onHistory, onEdit, onDelete, hideType }: Props) {
+function StaffTableComponent({ staffList, loading, onHistory, onEdit, onDelete, onSalary, hideType }: Props) {
     const { t } = useTranslate('staff');
     const columns: GridColDef<Staff>[] = useMemo(
         () => {
@@ -115,12 +116,23 @@ function StaffTableComponent({ staffList, loading, onHistory, onEdit, onDelete, 
                 {
                     field: 'actions',
                     headerName: t('table.actions'),
-                    width: 150,
+                    width: 190,
                     sortable: false,
                     align: 'right',
                     headerAlign: 'right',
                     renderCell: (params) => (
                         <Box display="flex" justifyContent="flex-end" width="100%">
+                            {onSalary && (
+                                <IconButton
+                                    sx={{ color: '#059669' }}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        onSalary(params.row.id);
+                                    }}
+                                >
+                                    <Iconify icon="solar:wad-of-money-bold" />
+                                </IconButton>
+                            )}
                             <IconButton
                                 onClick={(event) => {
                                     event.stopPropagation();
@@ -157,7 +169,7 @@ function StaffTableComponent({ staffList, loading, onHistory, onEdit, onDelete, 
 
             return baseColumns;
         },
-        [onEdit, onDelete, onHistory, t, hideType]
+        [onEdit, onDelete, onHistory, onSalary, t, hideType]
     );
 
     return (

@@ -25,6 +25,7 @@ import { StaffType } from 'src/types/staff';
 import { StaffTable } from '../staff-table';
 import { StaffDialog } from '../staff-dialog';
 import { StaffHistoryDialog } from '../staff-history-dialog';
+import { SalaryDetailDialog } from '../salary-detail-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +57,7 @@ export function StaffListView() {
     const [selectedId, setSelectedId] = useState<number | undefined>();
     const [deleteId, setDeleteId] = useState<number | undefined>();
     const [historyStaffId, setHistoryStaffId] = useState<number>(0);
+    const [salaryStaffId, setSalaryStaffId] = useState<number>(0);
 
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
@@ -77,6 +79,10 @@ export function StaffListView() {
         },
         [historyDialog]
     );
+
+    const handleSalary = useCallback((id: number) => {
+        setSalaryStaffId(id);
+    }, []);
 
     const handleEdit = useCallback(
         (id: number) => {
@@ -159,6 +165,7 @@ export function StaffListView() {
                     onHistory={handleHistory}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
+                    onSalary={handleSalary}
                     hideType={!!currentType}
                 />
             </Card>
@@ -186,6 +193,11 @@ export function StaffListView() {
                 open={historyDialog.value}
                 onClose={historyDialog.onFalse}
                 staffId={historyStaffId}
+            />
+
+            <SalaryDetailDialog
+                staffId={salaryStaffId}
+                onClose={() => setSalaryStaffId(0)}
             />
         </Container>
     );
