@@ -1,4 +1,4 @@
-import type { SalaryRecord, SalaryPreviewResponse } from 'src/types/salary';
+import type { SalaryRecord, SalaryPreviewResponse, StaffSalaryDetailResponse } from 'src/types/salary';
 
 import axiosInstance from 'src/lib/axios';
 
@@ -29,6 +29,13 @@ export const salaryApi = {
             year,
             month,
             ...(staff_ids ? { staff_ids } : {}),
+        });
+        return response.data;
+    },
+
+    staffDetail: async (staff_id: number, year?: number, include_preview?: boolean): Promise<StaffSalaryDetailResponse> => {
+        const response = await axiosInstance.get(`/salary/staff/${staff_id}`, {
+            params: { year, include_preview },
         });
         return response.data;
     },

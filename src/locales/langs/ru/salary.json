@@ -34,6 +34,17 @@
     "notes": "Примечание",
     "confirmed_at": "Подтверждено",
     "paid_at": "Оплачено",
+    "detail_title": "Детали зарплаты",
+    "kpi_rates": "Ставки KPI",
+    "kpi_rate_labels": {
+        "kpi_salary": "Стандартный KPI"
+    },
+    "monthly_history": "История по месяцам",
+    "total_earned": "Всего заработано",
+    "total_paid": "Всего оплачено",
+    "total_unpaid": "Не оплачено",
+    "no_rate": "Не установлена",
+    "preview": "Предварительный",
     "work_types": {
         "tayyor_mahsulotlar_reskasi": "Резка готовой продукции",
         "tayyor_mahsulot_peremotkasi": "Перемотка готовой продукции",

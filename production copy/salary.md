@@ -164,6 +164,89 @@ List confirmed/paid salary records with filtering.
 | `limit`      | int          | no       | Default 100, max 500    |
 | `offset`     | int          | no       | Pagination offset       |
 
+### `GET /salary/staff/{staff_id}`
+
+Get one person's full salary history with detailed KPI breakdown per month.
+
+**Query params:**
+| Param             | Type | Required | Description                                      |
+|-------------------|------|----------|--------------------------------------------------|
+| `year`            | int  | no       | Filter to a specific year                        |
+| `include_preview` | bool | no       | Include live calculation for current unconfirmed month (default `false`) |
+
+**Response:** `StaffSalaryDetailResponse`
+
+```json
+{
+  "staff_id": 5,
+  "fullname": "Aziz Karimov",
+  "staff_type": "worker",
+  "worker_type": "reska",
+  "fixed_salary": 3000000.0,
+  "kpi_rates": {
+    "kpi_salary": 300,
+    "kpi_tayyor_mahsulotlar_reskasi": 500,
+    "kpi_tayyor_mahsulot_peremotkasi": null,
+    "kpi_plyonka_peremotkasi": 400,
+    "kpi_3_5_sm_reska": null,
+    "kpi_asobiy_tarif": null
+  },
+  "records": [
+    {
+      "id": 10,
+      "year": 2026,
+      "month": 2,
+      "fixed_amount": 3000000.0,
+      "kpi_amount": 850000.0,
+      "total_amount": 3850000.0,
+      "status": "paid",
+      "confirmed_at": "2026-03-01T10:00:00",
+      "paid_at": "2026-03-05T14:30:00",
+      "kpi_breakdown": [
+        {
+          "work_type": "tayyor_mahsulotlar_reskasi",
+          "meters": 1700.0,
+          "rate": 500.0,
+          "subtotal": 850000.0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "year": 2026,
+      "month": 1,
+      "fixed_amount": 3000000.0,
+      "kpi_amount": 600000.0,
+      "total_amount": 3600000.0,
+      "status": "paid",
+      "confirmed_at": "2026-02-01T09:00:00",
+      "paid_at": "2026-02-03T11:00:00",
+      "kpi_breakdown": [
+        {
+          "work_type": "tayyor_mahsulotlar_reskasi",
+          "meters": 1200.0,
+          "rate": 500.0,
+          "subtotal": 600000.0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_fixed": 6000000.0,
+    "total_kpi": 1450000.0,
+    "total_earned": 7450000.0,
+    "total_paid": 7450000.0,
+    "total_unpaid": 0.0,
+    "months_count": 2
+  }
+}
+```
+
+**Notes:**
+- Records are ordered newest month first.
+- When `include_preview=true`, a live-calculated record for the current month appears first with `id=0` (not yet confirmed).
+- `kpi_rates` is `null` for office staff (they have no KPI).
+
 ### `GET /salary/{id}`
 
 Get a single salary record by ID.

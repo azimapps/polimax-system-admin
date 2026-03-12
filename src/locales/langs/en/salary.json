@@ -34,6 +34,17 @@
     "notes": "Notes",
     "confirmed_at": "Confirmed At",
     "paid_at": "Paid At",
+    "detail_title": "Salary Detail",
+    "kpi_rates": "KPI Rates",
+    "kpi_rate_labels": {
+        "kpi_salary": "Standard KPI"
+    },
+    "monthly_history": "Monthly History",
+    "total_earned": "Total Earned",
+    "total_paid": "Total Paid",
+    "total_unpaid": "Unpaid",
+    "no_rate": "Not set",
+    "preview": "Preview",
     "work_types": {
         "tayyor_mahsulotlar_reskasi": "Finished products cutting",
         "tayyor_mahsulot_peremotkasi": "Finished product rewinding",

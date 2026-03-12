@@ -34,6 +34,17 @@
     "notes": "Izoh",
     "confirmed_at": "Tasdiqlangan vaqt",
     "paid_at": "To'langan vaqt",
+    "detail_title": "Maosh tafsiloti",
+    "kpi_rates": "KPI tariflari",
+    "kpi_rate_labels": {
+        "kpi_salary": "Standart KPI"
+    },
+    "monthly_history": "Oylik tarixi",
+    "total_earned": "Jami ishlangan",
+    "total_paid": "Jami to'langan",
+    "total_unpaid": "To'lanmagan",
+    "no_rate": "Belgilanmagan",
+    "preview": "Oldindan ko'rish",
     "work_types": {
         "tayyor_mahsulotlar_reskasi": "Tayyor mahsulotlar reskasi",
         "tayyor_mahsulot_peremotkasi": "Tayyor mahsulot peremotkasi",

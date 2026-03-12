@@ -34,6 +34,17 @@
     "notes": "Изоҳ",
     "confirmed_at": "Тасдиқланган вақт",
     "paid_at": "Тўланган вақт",
+    "detail_title": "Маош тафсилоти",
+    "kpi_rates": "KPI тарифлари",
+    "kpi_rate_labels": {
+        "kpi_salary": "Стандарт KPI"
+    },
+    "monthly_history": "Ойлик тарихи",
+    "total_earned": "Жами ишланган",
+    "total_paid": "Жами тўланган",
+    "total_unpaid": "Тўланмаган",
+    "no_rate": "Белгиланмаган",
+    "preview": "Олдиндан кўриш",
     "work_types": {
         "tayyor_mahsulotlar_reskasi": "Тайёр маҳсулотлар рескаси",
         "tayyor_mahsulot_peremotkasi": "Тайёр маҳсулот перемоткаси",

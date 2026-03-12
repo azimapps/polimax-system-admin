@@ -7,6 +7,7 @@ import { salaryApi } from 'src/api/salary-api';
 const QUERY_KEYS = {
     preview: (year: number, month: number) => ['salary', 'preview', year, month],
     list: ['salary', 'list'],
+    staffDetail: (id: number) => ['salary', 'staff', id],
 };
 
 // ----------------------------------------------------------------------
@@ -28,6 +29,14 @@ export function useGetSalaryRecords(params?: {
     return useQuery({
         queryKey: [...QUERY_KEYS.list, params],
         queryFn: () => salaryApi.list(params),
+    });
+}
+
+export function useGetStaffSalaryDetail(staffId: number, year?: number, includePreview?: boolean) {
+    return useQuery({
+        queryKey: [...QUERY_KEYS.staffDetail(staffId), { year, includePreview }],
+        queryFn: () => salaryApi.staffDetail(staffId, year, includePreview),
+        enabled: staffId > 0,
     });
 }
 
