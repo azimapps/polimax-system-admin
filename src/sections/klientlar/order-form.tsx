@@ -43,15 +43,22 @@ function NapravlenieIcon({ type, color }: { type: string; color: string }) {
     const deg = rotations[type] ?? 0;
 
     return (
-        <svg width={56} height={72} viewBox="0 0 56 72" fill="none">
-            {/* Roll core circle */}
-            <circle cx="28" cy="14" r="10" stroke={color} strokeWidth="2.5" fill="none" />
-            <circle cx="28" cy="14" r="3.5" stroke={color} strokeWidth="1.5" fill="none" opacity="0.5" />
+        <svg width={82} height={56} viewBox="0 0 82 56" fill="none">
+            {/* Upward arrow (strelka) — always points up, on the left */}
+            <line x1="18" y1="50" x2="18" y2="10" stroke={color} strokeWidth="3.5" strokeLinecap="round" />
+            <path
+                d="M8,20 L18,10 L28,20"
+                stroke={color}
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+            />
             {/* "A" drawn as path, rotated around center of A area */}
-            <g transform={`rotate(${deg}, 28, 50)`}>
+            <g transform={`rotate(${deg}, 58, 28)`}>
                 {/* Two legs */}
                 <path
-                    d="M16,64 L28,34 L40,64"
+                    d="M46,48 L58,18 L70,48"
                     stroke={color}
                     strokeWidth="3"
                     strokeLinecap="round"
@@ -60,7 +67,7 @@ function NapravlenieIcon({ type, color }: { type: string; color: string }) {
                 />
                 {/* Crossbar */}
                 <line
-                    x1="20" y1="53" x2="36" y2="53"
+                    x1="50" y1="37" x2="66" y2="37"
                     stroke={color}
                     strokeWidth="3"
                     strokeLinecap="round"
